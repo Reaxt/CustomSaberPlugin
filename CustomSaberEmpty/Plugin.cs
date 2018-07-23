@@ -41,10 +41,7 @@ namespace CustomSaber
 
         public static List<string> RetrieveCustomSabers()
         {
-            _saberPaths = Directory.GetFiles(Path.Combine(Application.dataPath, "../Plugin Content/Custom Saber/"),
-                "*.saber", SearchOption.AllDirectories).ToList();
-            Console.WriteLine("Found " + _saberPaths.Count + " sabers");
-            return _saberPaths;
+            return new List<string>();
         }
 
         public void OnUpdate()

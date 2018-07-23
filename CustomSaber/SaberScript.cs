@@ -36,7 +36,7 @@ namespace CustomSaber
         private ScoreController _scoreController;
         private ObstacleSaberSparkleEffectManager _saberCollisionManager;
         private GameEnergyCounter _gameEnergyCounter;
-        private SongController _songController;
+        private BeatmapObjectCallbackController _beatmapCallback;
 
         public static void LoadAssets()
         {
@@ -70,25 +70,50 @@ namespace CustomSaber
             
             _leftEventManager.OnLevelStart.Invoke();
             _rightEventManager.OnLevelStart.Invoke();
+            try
+            {
+                _scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
+                if(_scoreController == null)
+                {
+                    Console.WriteLine("SCORE CONTROLLER NULL");
+                }
+                _saberCollisionManager =
+                    Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().FirstOrDefault();
+                if(_saberCollisionManager == null)
+                {
+                    Console.WriteLine("COLLISION MANAGER NULL");
+                }
+                _gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault();
+                if(_gameEnergyCounter == null)
+                {
+                    Console.WriteLine("energery counter null");
 
-            _scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
-            _saberCollisionManager =
-                Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().FirstOrDefault();
-            _gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault();
-            _songController = Resources.FindObjectsOfTypeAll<SongController>().FirstOrDefault();
+                }
+                _beatmapCallback = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
+                if(_beatmapCallback == null)
+                {
+                    Console.WriteLine("BEATMAP CALLBACK NULL");
+                }
 
+                _scoreController.noteWasCutEvent += SliceCallBack;
+                _scoreController.noteWasMissedEvent += NoteMissCallBack;
+                _scoreController.multiplierDidChangeEvent += MultiplierCallBack;
+                _scoreController.comboDidChangeEvent += ComboChangeEvent;
 
-            _scoreController.noteWasCutEvent += SliceCallBack;
-            _scoreController.noteWasMissedEvent += NoteMissCallBack;
-            _scoreController.multiplierDidChangeEvent += MultiplierCallBack;
-            _scoreController.comboDidChangeEvent += ComboChangeEvent;
+                _saberCollisionManager.sparkleEffectDidStartEvent += SaberStartCollide;
+                _saberCollisionManager.sparkleEffectDidEndEvent += SaberEndCollide;
 
-            _saberCollisionManager.sparkleEffectDidStartEvent += SaberStartCollide;
-            _saberCollisionManager.sparkleEffectDidEndEvent += SaberEndCollide;
+                _gameEnergyCounter.gameEnergyDidReach0Event += FailLevelCallBack;
 
-            _gameEnergyCounter.gameEnergyDidReach0Event += FailLevelCallBack;
+                _beatmapCallback.beatmapEventDidTriggerEvent += LightEventCallBack;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
+                throw;
+            }
 
-            _songController.songEvent += LightEventCallBack;
         }
 
         void Awake()
@@ -183,7 +208,8 @@ namespace CustomSaber
 
         private void NoteMissCallBack(NoteData noteData, int multiplier)
         {
-            if (noteData.noteType != NoteData.NoteType.Bomb)
+            
+            if (noteData.noteType != NoteType.Bomb)
             {
                 _leftEventManager.OnComboBreak.Invoke();
                 _rightEventManager.OnComboBreak.Invoke();
@@ -229,7 +255,7 @@ namespace CustomSaber
             _rightEventManager.OnLevelFail.Invoke();
         }
 
-        private void LightEventCallBack(SongEventData songEvent)
+        private void LightEventCallBack(BeatmapEventData songEvent)
         {
             if ((int) songEvent.type < 5)
             {

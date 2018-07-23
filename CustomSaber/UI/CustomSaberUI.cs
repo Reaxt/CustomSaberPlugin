@@ -8,18 +8,18 @@ using VRUI;
 
 namespace CustomSaber
 {
-    class ModMenuUi : MonoBehaviour
+    class CustomSaberUI : MonoBehaviour
     {
         static RectTransform _rightPos;
         static VRUIViewController _rightScreen;
-        internal static ModMenuUi Instance;
+        internal static CustomSaberUI Instance;
 
         public static List<Sprite> Icons = new List<Sprite>();
 
         private MainMenuViewController _mainMenuViewController;
         private MainFlowCoordinator _menuMasterViewController;
-        // Custom view controller
-        private static ModMenuMasterViewController _modMenuController;
+
+        private static CustomSaberMasterViewController _sabersMasterViewController;
 
         private Button _buttonInstance;
         private Button _cogWheelButtonInstance;
@@ -28,32 +28,22 @@ namespace CustomSaber
         private Button _upArrowBtn;
         private Button _downArrowBtn;
         private RectTransform _mainMenuRectTransform;
-        void Update()
-        {
-            //DEBUG LINE<
-   
-
-        }
+        
         public static void OnLoad()
         {
 
-            if (ModMenuUi.Instance != null)
+            if (Instance != null)
             {
-                ModMenuUi.Instance.Awake();
+                Instance.Awake();
                 return;
             }
-            if (GameObject.FindObjectOfType<ModMenuUi>() != null)
-            {
-                return;
-            }
-            new GameObject("modmenu").AddComponent<ModMenuUi>();
+            new GameObject("modmenu").AddComponent<CustomSaberUI>();
         }
 
         void Awake()
         {
 
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
 
             foreach (Sprite sprite in Resources.FindObjectsOfTypeAll<Sprite>())
             {
@@ -62,7 +52,6 @@ namespace CustomSaber
 
             try
             {
-                // Get necessary button instances and main menu VC
                 var allButtons = Resources.FindObjectsOfTypeAll<Button>();
 
                 _buttonInstance = Resources.FindObjectsOfTypeAll<Button>().First(x => x.name == "QuitButton");
@@ -74,74 +63,35 @@ namespace CustomSaber
                 _menuMasterViewController = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
                 _mainMenuRectTransform = (RectTransform)_buttonInstance.transform.parent;
 
-                AddModMenuButton();
+                AddCustomSaberButton();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }
 
-        private void AddModMenuButton()
+        private void AddCustomSaberButton()
         {
-            try
-            {
-                _rightScreen =
-                    ReflectionUtil.GetPrivateField<VRUIViewController>(_mainMenuViewController,
-                        "_releaseInfoViewController");
-                _rightPos = _rightScreen.gameObject.transform as RectTransform;
-                var modMenuButton = CreateButton(_rightPos);
-                SetButtonText(ref modMenuButton, "Saber Menu");
-                SetButtonIcon(ref modMenuButton, Icons.First(x => x.name == "SingleSaberIcon"));
+            _rightScreen = ReflectionUtil.GetPrivateField<VRUIViewController>(_mainMenuViewController, "_releaseInfoViewController");
+            _rightPos = _rightScreen.rectTransform;
+            var customSaberButton = CreateButton(_rightPos);
 
-                if (modMenuButton == null)
+            if (customSaberButton == null)
+            {
+                return;
+            }
+
+            SetButtonText(ref customSaberButton, "Saber Menu");
+            customSaberButton.onClick.AddListener(delegate
+            {
+
+                if (_sabersMasterViewController == null)
                 {
-                    return;
+                    _sabersMasterViewController = CreateViewController<CustomSaberMasterViewController>();
                 }
 
-                // Change button text and add listener
-                modMenuButton.onClick.AddListener(delegate
-                {
-                    try
-                    {
-                        if (_modMenuController == null)
-                        {
-                            _modMenuController = CreateViewController<ModMenuMasterViewController>();
-                        }
-                        try
-                        {
-
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e.ToString());
-                            throw;
-                        }
-                        _rightScreen.PresentModalViewController(_modMenuController, null);
-                        //DELETE POSSIBLE DIFFICULTY TEXT
-                        var modlisttemp = GameObject.FindObjectOfType<ModsListViewController>();
-                        if (modlisttemp != null)
-                        {
-                            var textmeshs = modlisttemp.gameObject.GetComponentsInChildren<TextMeshProUGUI>();
-
-
-                            foreach (TextMeshProUGUI textmesh in textmeshs)
-                            {
-                                if (textmesh.rectTransform.parent.name == "DifficultyTableCell(Clone)")
-                                {
-                                    DestroyImmediate(textmesh.rectTransform.parent.gameObject);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                    }
-                });
-            }
-
-            catch (Exception ex)
-            {
-            }
+                _rightScreen.PresentModalViewController(_sabersMasterViewController, null);
+            });
         }
 
         public T CreateViewController<T>() where T : VRUIViewController

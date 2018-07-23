@@ -19,7 +19,7 @@ namespace CustomSaber
 
         public string Version
         {
-            get { return "1.1"; }
+            get { return "2.0"; }
         }
 
         private static List<string> _saberPaths;
@@ -58,7 +58,7 @@ namespace CustomSaber
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex == 4)
+            if (scene.buildIndex == 5)
             {
                 LoadNewSaber(_currentSaberPath);
                 SaberScript.LoadAssets();
@@ -69,7 +69,7 @@ namespace CustomSaber
                 {
                     _currentSaber.Unload(true);
                 }
-                ModMenuUi.OnLoad();
+                CustomSaberUI.OnLoad();
             }
         }
 

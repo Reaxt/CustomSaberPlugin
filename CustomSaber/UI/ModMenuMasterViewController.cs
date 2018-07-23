@@ -49,12 +49,12 @@ namespace CustomSaber
         private Button _backButton;
 
         public ModsListViewController ModsListViewController;
-        public SongDetailViewController ModDetailsViewController;
+        public StandardLevelDetailViewController ModDetailsViewController;
         public bool ModDetailsPushed = false;
 
         private ModMenuMasterViewController _modList;
 
-        protected override void DidActivate()
+        protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
             // Find ModMenuUi object and create back button on screen
 
@@ -85,7 +85,7 @@ namespace CustomSaber
 
 
 
-                base.DidActivate();
+                //base.DidActivate();
             }
             catch (Exception ex)
             {
@@ -93,7 +93,7 @@ namespace CustomSaber
         }
 
 
-        protected override void DidDeactivate()
+        protected override void DidDeactivate(DeactivationType type)
         {
             ModDetailsPushed = false;
             if(ModsListViewController.preview != null)

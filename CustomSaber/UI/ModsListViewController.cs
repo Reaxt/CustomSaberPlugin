@@ -28,16 +28,17 @@ namespace CustomSaber
         private List<CustSaber> _mods = new List<CustSaber>();
         public AssetBundle preview;
         private TableView _modsTableView;
-        SongListTableCell _songListTableCellInstance;
-
-        protected override void DidActivate()
+        StandardLevelListTableCell _songListTableCellInstance;
+        
+        protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
+            Console.WriteLine("checkpoint 1");
             previewparent = Instantiate(new GameObject("preview parent"));
             previewparent.transform.position = new Vector3(2.5f, 1, 0.3f);
             previewparent.transform.Rotate(new Vector3(0, -30, 0));
             _modMenuUi = FindObjectOfType<ModMenuUi>();
             _parentViewController = transform.parent.GetComponent<ModMenuMasterViewController>();
-
+            Console.WriteLine("checkpoint 2");
             try
             {
                 if (_pageDownButton == null)
@@ -45,7 +46,7 @@ namespace CustomSaber
                     try
                     {
                         _pageDownButton = _modMenuUi.CreateButton(rectTransform, "PageDownButton");
-
+                        Console.WriteLine("checkpoint 3");
                         ((RectTransform)_pageDownButton.transform).anchorMin = new Vector2(0.5f, 0f);
                         ((RectTransform)_pageDownButton.transform).anchorMax = new Vector2(0.5f, 0f);
                         ((RectTransform)_pageDownButton.transform).anchoredPosition = new Vector2(0f, 10f);
@@ -55,9 +56,9 @@ namespace CustomSaber
                             _modsTableView.PageScrollDown();
                         });
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-
+                        Console.WriteLine(e);
                         throw;
                     }
 
@@ -66,6 +67,7 @@ namespace CustomSaber
                 {
                     try
                     {
+                        Console.WriteLine("checkpoint 4");
                         _pageUpButton = _modMenuUi.CreateButton(rectTransform, "PageUpButton");
                         ((RectTransform)_pageUpButton.transform).anchorMin = new Vector2(0.5f, 1f);
                         ((RectTransform)_pageUpButton.transform).anchorMax = new Vector2(0.5f, 1f);
@@ -91,11 +93,11 @@ namespace CustomSaber
             }
 
 
-            _songListTableCellInstance = Resources.FindObjectsOfTypeAll<SongListTableCell>().First(x => (x.name == "SongListTableCell"));
+            _songListTableCellInstance = Resources.FindObjectsOfTypeAll<StandardLevelListTableCell>().First(x => (x.name == "StandardLevelListTableCell"));
 
             LoadMods();
 
-            base.DidActivate();
+            base.DidActivate(true, ActivationType.AddedToHierarchy);
         }
 
         private void LoadMods()
@@ -175,7 +177,7 @@ namespace CustomSaber
                 ((RectTransform)_modsTableView.transform).sizeDelta = new Vector2(0f, 60f);
                 ((RectTransform)_modsTableView.transform).anchoredPosition = new Vector2(0f, 0f);
 
-                _modsTableView.DidSelectRowEvent += _modsTableView_DidSelectRowEvent;
+                _modsTableView.didSelectRowEvent += _modsTableView_DidSelectRowEvent;
 
                 ReflectionUtil.SetPrivateField(_modsTableView, "_pageUpButton", _pageUpButton);
                 ReflectionUtil.SetPrivateField(_modsTableView, "_pageDownButton", _pageDownButton);
@@ -191,6 +193,7 @@ namespace CustomSaber
 
         private void _modsTableView_DidSelectRowEvent(TableView sender, int row)
         {
+            Console.WriteLine(row);
             if (preview != null)
             {
                 Destroy(previewobj);
@@ -209,7 +212,7 @@ namespace CustomSaber
             {
                 if (_parentViewController.ModDetailsViewController == null)
                 {
-                    _parentViewController.ModDetailsViewController = Instantiate(Resources.FindObjectsOfTypeAll<SongDetailViewController>().First(), rectTransform, false);
+                    _parentViewController.ModDetailsViewController = Instantiate(Resources.FindObjectsOfTypeAll<StandardLevelDetailViewController>().First(), rectTransform, false);
 
                     SetModDetailsData(_parentViewController.ModDetailsViewController, row);
 
@@ -239,7 +242,7 @@ namespace CustomSaber
             }
         }
 
-        private void SetModDetailsData(SongDetailViewController modDetails, int selectedMod)
+        private void SetModDetailsData(StandardLevelDetailViewController modDetails, int selectedMod)
         {
             modDetails.GetComponentsInChildren<TextMeshProUGUI>().First(x => x.name == "SongNameText").text = _mods[selectedMod].Name;
             modDetails.GetComponentsInChildren<TextMeshProUGUI>().First(x => x.name == "DurationText").text = "Author";

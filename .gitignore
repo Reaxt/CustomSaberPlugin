@@ -352,3 +352,7 @@ sysinfo.txt
 
 # Custom
 CustomSaber/*.dll
+CustomSaber/DynamicBoneCollider.cs
+CustomSaber/DynamicBone.cs
+CustomSaberEmpty/DynamicBone.cs
+CustomSaberEmpty/DynamicBoneCollider.cs

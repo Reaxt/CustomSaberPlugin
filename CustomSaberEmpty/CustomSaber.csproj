@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CustomSaber</RootNamespace>
     <AssemblyName>CustomSaber</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.WebBrowser">
@@ -45,6 +48,10 @@
     <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\programmes\Oculus\Software\Software\hyperbolic-magnetism-beat-saber\Beat Saber_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -79,10 +86,6 @@
   <ItemGroup>
     <Compile Include="CustomTrails.cs" />
     <Compile Include="SaberDescriptor.cs" />
-    <Compile Include="UI\ModMenuMasterViewController.cs" />
-    <Compile Include="UI\ModMenuUi.cs" />
-    <Compile Include="UI\ModsListViewController.cs" />
-    <Compile Include="UI\ReflectionUtil.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="DynamicBone.cs" />
     <Compile Include="DynamicBoneCollider.cs" />
@@ -91,16 +94,6 @@
     <Compile Include="EventFilters.cs" />
     <Compile Include="SaberScript.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="UnityEngine.CoreModule.dll" />
-    <Content Include="UnityEngine.dll" />
-    <Content Include="UnityEngine.TextRenderingModule.dll" />
-    <Content Include="UnityEngine.UI.dll" />
-    <Content Include="UnityEngine.UIElementsModule.dll" />
-    <Content Include="UnityEngine.UIModule.dll" />
-    <Content Include="UnityEngine.UnityWebRequestWWWModule.dll" />
-    <Content Include="UnityEngine.WebModule.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
