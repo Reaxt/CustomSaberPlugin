@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CustomSaber.UI;
@@ -212,13 +212,24 @@ namespace CustomSaber
             
             //TODO: IMPLEMENT STUFFS
             _toggleButton.gameObject.SetActive(true);
-            _customSaberUI.SetButtonText(ref _toggleButton, "Select");
+            if (Plugin._currentSaberPath == _sabers[selected].Path)
+            {
+                _customSaberUI.SetButtonText(ref _toggleButton, "Selected");
+                _toggleButton.interactable = false;
+            }
+            else
+            {
+                _customSaberUI.SetButtonText(ref _toggleButton, "Select");
+                _toggleButton.interactable = true;
+            }
 
             DestroyImmediate(_toggleButton.GetComponent<GameEventOnUIButtonClick>());
             _toggleButton.onClick = new Button.ButtonClickedEvent();
             _toggleButton.onClick.AddListener(delegate
             {
                 Plugin._currentSaberPath = _sabers[selected].Path;
+                _customSaberUI.SetButtonText(ref _toggleButton, "Selected");
+                _toggleButton.interactable = false;
             });
         }
 
@@ -247,3 +258,4 @@ namespace CustomSaber
 
     }
 }
+
