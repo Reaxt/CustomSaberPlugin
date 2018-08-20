@@ -117,7 +117,7 @@ namespace CustomSaber
 
                 // Create temporary button to return as new button
                 var tmp = Instantiate(_cogWheelButtonInstance, parent, false);
-                DestroyImmediate(tmp.GetComponent<GameEventOnUIButtonClick>());
+                DestroyImmediate(tmp.GetComponent<SignalOnUIButtonClick>());
                 tmp.onClick = new Button.ButtonClickedEvent();
 
                 return tmp;
@@ -139,7 +139,7 @@ namespace CustomSaber
 
                 // Create temporary button to return as new button
                 var tmp = Instantiate(templateButton, parent, false);
-                DestroyImmediate(tmp.GetComponent<GameEventOnUIButtonClick>());
+                DestroyImmediate(tmp.GetComponent<SignalOnUIButtonClick>());
                 tmp.onClick = new Button.ButtonClickedEvent();
 
                 return tmp;
@@ -158,7 +158,7 @@ namespace CustomSaber
             }
 
             var tmp = Instantiate(_downArrowBtn, parent, false);
-            DestroyImmediate(tmp.GetComponent<GameEventOnUIButtonClick>());
+            DestroyImmediate(tmp.GetComponent<SignalOnUIButtonClick>());
             tmp.onClick = new Button.ButtonClickedEvent();
 
             return tmp;
@@ -172,7 +172,7 @@ namespace CustomSaber
             }
 
             var tmp = Instantiate(_upArrowBtn, parent, false);
-            DestroyImmediate(tmp.GetComponent<GameEventOnUIButtonClick>());
+            DestroyImmediate(tmp.GetComponent<SignalOnUIButtonClick>());
             tmp.onClick = new Button.ButtonClickedEvent();
             return tmp;
         }
@@ -231,7 +231,7 @@ namespace CustomSaber
             }
 
             var tmp = Instantiate(_backButtonInstance, parent, false);
-            DestroyImmediate(tmp.GetComponent<GameEventOnUIButtonClick>());
+            DestroyImmediate(tmp.GetComponent<SignalOnUIButtonClick>());
             tmp.onClick = new Button.ButtonClickedEvent();
             return tmp;
         }

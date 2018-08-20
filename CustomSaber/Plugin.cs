@@ -58,12 +58,13 @@ namespace CustomSaber
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex == 5)
+            if (scene.name == "StandardLevel")
             {
                 LoadNewSaber(_currentSaberPath);
                 SaberScript.LoadAssets();
             }
-            if(scene.buildIndex == 1)
+
+            if (scene.name == "Menu")
             {
                 if(_currentSaber != null)
                 {

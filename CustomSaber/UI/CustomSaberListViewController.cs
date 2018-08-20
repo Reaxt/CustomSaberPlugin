@@ -222,8 +222,9 @@ namespace CustomSaber
                 _customSaberUI.SetButtonText(ref _toggleButton, "Select");
                 _toggleButton.interactable = true;
             }
+            
 
-            DestroyImmediate(_toggleButton.GetComponent<GameEventOnUIButtonClick>());
+            DestroyImmediate(_toggleButton.GetComponent<SignalOnUIButtonClick>());
             _toggleButton.onClick = new Button.ButtonClickedEvent();
             _toggleButton.onClick.AddListener(delegate
             {
