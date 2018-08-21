@@ -140,12 +140,22 @@ namespace CustomSaber
                 _leftSaber = _saberRoot.transform.Find("LeftSaber").gameObject;
             }
 
+            StartCoroutine(WaitForSabers(saberRoot));
+        }
+
+        private IEnumerator WaitForSabers(GameObject saberRoot)
+        {
+            yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
+
             var sabers = Resources.FindObjectsOfTypeAll<Saber>();
+            Console.WriteLine("Saber list get: " + sabers.Length);
             foreach (var saber in sabers)
             {
+                Console.WriteLine(saber.saberType + " " + saber.transform.GetChild(0) + saber.transform.GetChild(1) + saber.transform.GetChild(2) + saber.transform.GetChild(3));
                 var handle = saber.transform.Find("Handle");
                 var blade = saber.transform.Find("Blade");
                 var top = saber.transform.Find("Top");
+                Console.WriteLine("Saber Transform Found");
 
                 blade.GetComponent<MeshFilter>().sharedMesh = null;
                 blade.transform.localRotation = Quaternion.identity;
@@ -158,7 +168,8 @@ namespace CustomSaber
                     if (saberRoot == null) { }
                     else
                         _rightSaber.transform.parent = blade.transform;
-                    _rightSaber.transform.position = blade.transform.position;
+                    _rightSaber.transform.position = saber.transform.position;
+                    _rightSaber.transform.rotation = saber.transform.rotation;
                     _rightTop = top.gameObject;
                 }
                 else if (saber.saberType == Saber.SaberType.SaberA)
@@ -166,8 +177,8 @@ namespace CustomSaber
                     if (saberRoot == null) { }
                     else
                         _leftSaber.transform.parent = blade.transform;
-                    _leftSaber.transform.position = blade.transform.position;
-
+                    _leftSaber.transform.position = saber.transform.position;
+                    _leftSaber.transform.rotation = saber.transform.rotation;
                     _leftTop = top.gameObject;
                 }
             }
@@ -184,7 +195,6 @@ namespace CustomSaber
             LeftTopLocation = LeftTop.transform.position;
             RightTopLocation = RightTop.transform.position;*/
         }
-
 
         private void SliceCallBack(NoteData noteData, NoteCutInfo noteCutInfo, int multiplier)
         {

@@ -58,7 +58,7 @@ namespace CustomSaber
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.name == "StandardLevel")
+            if (scene.name == "NiceEnvironment" || scene.name == "DefaultEnvironment" || scene.name == "BigMirrorEnvironment" || scene.name == "TriangleEnvironment")
             {
                 LoadNewSaber(_currentSaberPath);
                 SaberScript.LoadAssets();
