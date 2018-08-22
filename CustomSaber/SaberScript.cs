@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using System.Collections;
 using System.IO;
+using Object = UnityEngine.Object;
 
 namespace CustomSaber
 {
@@ -37,6 +38,7 @@ namespace CustomSaber
         private ObstacleSaberSparkleEffectManager _saberCollisionManager;
         private GameEnergyCounter _gameEnergyCounter;
         private BeatmapObjectCallbackController _beatmapCallback;
+        private GamePauseManager _gamePauseManager;
 
         public static void LoadAssets()
         {
@@ -95,6 +97,12 @@ namespace CustomSaber
                     Console.WriteLine("BEATMAP CALLBACK NULL");
                 }
 
+                _gamePauseManager = Resources.FindObjectsOfTypeAll<GamePauseManager>().FirstOrDefault();
+                if (_gamePauseManager == null)
+                {
+                    Console.WriteLine("GamePauseManager Null");
+                }
+
                 _scoreController.noteWasCutEvent += SliceCallBack;
                 _scoreController.noteWasMissedEvent += NoteMissCallBack;
                 _scoreController.multiplierDidChangeEvent += MultiplierCallBack;
@@ -106,6 +114,7 @@ namespace CustomSaber
                 _gameEnergyCounter.gameEnergyDidReach0Event += FailLevelCallBack;
 
                 _beatmapCallback.beatmapEventDidTriggerEvent += LightEventCallBack;
+                ReflectionUtil.SetPrivateField(_gamePauseManager, "_gameDidResumeSignal", (Action)OnPauseMenuClosed); //For some reason _gameDidResumeSignal isn't public.
             }
             catch (Exception e)
             {
@@ -139,7 +148,6 @@ namespace CustomSaber
                 _rightSaber = _saberRoot.transform.Find("RightSaber").gameObject;
                 _leftSaber = _saberRoot.transform.Find("LeftSaber").gameObject;
             }
-
             StartCoroutine(WaitForSabers(saberRoot));
         }
 
@@ -182,6 +190,11 @@ namespace CustomSaber
                     _leftTop = top.gameObject;
                 }
             }
+        }
+
+        private void OnPauseMenuClosed()
+        {
+            StartCoroutine(WaitForSabers(_saberRoot));
         }
 
         private void Update()
