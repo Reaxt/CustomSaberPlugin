@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using System.Collections;
 using System.IO;
+using Object = UnityEngine.Object;
 
 namespace CustomSaber
 {
@@ -37,6 +38,7 @@ namespace CustomSaber
         private ObstacleSaberSparkleEffectManager _saberCollisionManager;
         private GameEnergyCounter _gameEnergyCounter;
         private BeatmapObjectCallbackController _beatmapCallback;
+        private GamePauseManager _gamePauseManager;
 
         public static void LoadAssets()
         {
@@ -95,6 +97,12 @@ namespace CustomSaber
                     Console.WriteLine("BEATMAP CALLBACK NULL");
                 }
 
+                _gamePauseManager = Resources.FindObjectsOfTypeAll<GamePauseManager>().FirstOrDefault();
+                if (_gamePauseManager == null)
+                {
+                    Console.WriteLine("GamePauseManager Null");
+                }
+
                 _scoreController.noteWasCutEvent += SliceCallBack;
                 _scoreController.noteWasMissedEvent += NoteMissCallBack;
                 _scoreController.multiplierDidChangeEvent += MultiplierCallBack;
@@ -106,6 +114,7 @@ namespace CustomSaber
                 _gameEnergyCounter.gameEnergyDidReach0Event += FailLevelCallBack;
 
                 _beatmapCallback.beatmapEventDidTriggerEvent += LightEventCallBack;
+                ReflectionUtil.SetPrivateField(_gamePauseManager, "_gameDidResumeSignal", (Action)OnPauseMenuClosed); //For some reason _gameDidResumeSignal isn't public.
             }
             catch (Exception e)
             {
@@ -139,13 +148,22 @@ namespace CustomSaber
                 _rightSaber = _saberRoot.transform.Find("RightSaber").gameObject;
                 _leftSaber = _saberRoot.transform.Find("LeftSaber").gameObject;
             }
+            StartCoroutine(WaitForSabers(saberRoot));
+        }
+
+        private IEnumerator WaitForSabers(GameObject saberRoot)
+        {
+            yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
 
             var sabers = Resources.FindObjectsOfTypeAll<Saber>();
+            Console.WriteLine("Saber list get: " + sabers.Length);
             foreach (var saber in sabers)
             {
+                Console.WriteLine(saber.saberType + " " + saber.transform.GetChild(0) + saber.transform.GetChild(1) + saber.transform.GetChild(2) + saber.transform.GetChild(3));
                 var handle = saber.transform.Find("Handle");
                 var blade = saber.transform.Find("Blade");
                 var top = saber.transform.Find("Top");
+                Console.WriteLine("Saber Transform Found");
 
                 blade.GetComponent<MeshFilter>().sharedMesh = null;
                 blade.transform.localRotation = Quaternion.identity;
@@ -158,7 +176,8 @@ namespace CustomSaber
                     if (saberRoot == null) { }
                     else
                         _rightSaber.transform.parent = blade.transform;
-                    _rightSaber.transform.position = blade.transform.position;
+                    _rightSaber.transform.position = saber.transform.position;
+                    _rightSaber.transform.rotation = saber.transform.rotation;
                     _rightTop = top.gameObject;
                 }
                 else if (saber.saberType == Saber.SaberType.SaberA)
@@ -166,11 +185,16 @@ namespace CustomSaber
                     if (saberRoot == null) { }
                     else
                         _leftSaber.transform.parent = blade.transform;
-                    _leftSaber.transform.position = blade.transform.position;
-
+                    _leftSaber.transform.position = saber.transform.position;
+                    _leftSaber.transform.rotation = saber.transform.rotation;
                     _leftTop = top.gameObject;
                 }
             }
+        }
+
+        private void OnPauseMenuClosed()
+        {
+            StartCoroutine(WaitForSabers(_saberRoot));
         }
 
         private void Update()
@@ -184,7 +208,6 @@ namespace CustomSaber
             LeftTopLocation = LeftTop.transform.position;
             RightTopLocation = RightTop.transform.position;*/
         }
-
 
         private void SliceCallBack(NoteData noteData, NoteCutInfo noteCutInfo, int multiplier)
         {
