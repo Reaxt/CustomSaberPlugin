@@ -74,7 +74,7 @@ namespace CustomSaber
         {
             _rightScreen = ReflectionUtil.GetPrivateField<VRUIViewController>(_mainMenuViewController, "_releaseInfoViewController");
             _rightPos = _rightScreen.rectTransform;
-            var customSaberButton = CreateButton(_rightPos);
+            var customSaberButton = CreateButton(_mainMenuRectTransform, new Vector3(0, 10, 0));
 
             if (customSaberButton == null)
             {
@@ -106,7 +106,7 @@ namespace CustomSaber
             return vc;
         }
 
-        public Button CreateButton(RectTransform parent)
+        public Button CreateButton(RectTransform parent, Vector3 localOffset = new Vector3())
         {
             try
             {
@@ -117,6 +117,7 @@ namespace CustomSaber
 
                 // Create temporary button to return as new button
                 var tmp = Instantiate(_cogWheelButtonInstance, parent, false);
+                tmp.transform.localPosition = tmp.transform.localPosition + localOffset;
                 DestroyImmediate(tmp.GetComponent<SignalOnUIButtonClick>());
                 tmp.onClick = new Button.ButtonClickedEvent();
 
