@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using System.IO;
 using Object = UnityEngine.Object;
 
@@ -34,6 +35,7 @@ namespace CustomSaber
         private GameObject _rightSaber;
         private GameObject _saberRoot;
 
+        private BeatmapObjectSpawnController _beatmapObjectSpawnController;
         private ScoreController _scoreController;
         private ObstacleSaberSparkleEffectManager _saberCollisionManager;
         private GameEnergyCounter _gameEnergyCounter;
@@ -60,7 +62,29 @@ namespace CustomSaber
             }
         }
 
+        public void Restart()
+        {
+            CancelInvoke("_Restart");
+            Invoke("_Restart", 0.5f);
+        }
+
+        private void _Restart()
+        {
+            OnDestroy();
+            AddEvents();
+        }
+
+        private void SceneManagerOnSceneLoaded(Scene newScene, LoadSceneMode mode)
+        {
+            Restart();
+        }
+
         private void Start()
+        {
+            Restart();
+        }
+
+        private void AddEvents()
         {
             _leftEventManager = _leftSaber.GetComponent<EventManager>();
             if (_leftEventManager == null)
@@ -74,37 +98,47 @@ namespace CustomSaber
             _rightEventManager.OnLevelStart.Invoke();
             try
             {
+                _beatmapObjectSpawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
+                if (_beatmapObjectSpawnController == null)
+                {
+                    Console.WriteLine("SPAWN CONTROLLER NULL");
+                    //_beatmapObjectSpawnController = _saberRoot.AddComponent<BeatmapObjectSpawnController>();
+                }
                 _scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
                 if(_scoreController == null)
                 {
                     Console.WriteLine("SCORE CONTROLLER NULL");
+                    //_scoreController = _saberRoot.AddComponent<ScoreController>();
                 }
                 _saberCollisionManager =
                     Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().FirstOrDefault();
                 if(_saberCollisionManager == null)
                 {
                     Console.WriteLine("COLLISION MANAGER NULL");
+                    //_saberCollisionManager = _saberRoot.AddComponent<ObstacleSaberSparkleEffectManager>();
                 }
                 _gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault();
                 if(_gameEnergyCounter == null)
                 {
                     Console.WriteLine("energery counter null");
-
+                    //_gameEnergyCounter = _saberRoot.AddComponent<GameEnergyCounter>();
                 }
                 _beatmapCallback = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
                 if(_beatmapCallback == null)
                 {
                     Console.WriteLine("BEATMAP CALLBACK NULL");
+                    //_beatmapCallback = _saberRoot.AddComponent<BeatmapObjectCallbackController>();
                 }
 
                 _gamePauseManager = Resources.FindObjectsOfTypeAll<GamePauseManager>().FirstOrDefault();
                 if (_gamePauseManager == null)
                 {
                     Console.WriteLine("GamePauseManager Null");
+                    //_gamePauseManager = _saberRoot.AddComponent<GamePauseManager>();
                 }
 
-                _scoreController.noteWasCutEvent += SliceCallBack;
-                _scoreController.noteWasMissedEvent += NoteMissCallBack;
+                _beatmapObjectSpawnController.noteWasCutEvent += SliceCallBack;
+                _beatmapObjectSpawnController.noteWasMissedEvent += NoteMissCallBack;
                 _scoreController.multiplierDidChangeEvent += MultiplierCallBack;
                 _scoreController.comboDidChangeEvent += ComboChangeEvent;
 
@@ -125,6 +159,23 @@ namespace CustomSaber
 
         }
 
+        private void OnDestroy()
+        {
+            if (_scoreController == null) return;
+            _beatmapObjectSpawnController.noteWasCutEvent -= SliceCallBack;
+            _beatmapObjectSpawnController.noteWasMissedEvent -= NoteMissCallBack;
+            _scoreController.multiplierDidChangeEvent -= MultiplierCallBack;
+            _scoreController.comboDidChangeEvent -= ComboChangeEvent;
+
+            _saberCollisionManager.sparkleEffectDidStartEvent -= SaberStartCollide;
+            _saberCollisionManager.sparkleEffectDidEndEvent -= SaberEndCollide;
+
+            _gameEnergyCounter.gameEnergyDidReach0Event -= FailLevelCallBack;
+
+
+            _beatmapCallback.beatmapEventDidTriggerEvent -= LightEventCallBack;
+        }
+
         void Awake()
         {
             _leftTopLocation = Vector3.zero;
@@ -137,12 +188,10 @@ namespace CustomSaber
                 return;
             }
 
-     
-
             GameObject saberRoot = CustomSaber.LoadAsset<GameObject>("_customsaber");
+
             if (saberRoot != null)
             {
-
                 Console.WriteLine(saberRoot.GetComponent<SaberDescriptor>().SaberName);
                 _saberRoot = Instantiate(saberRoot);
                 _rightSaber = _saberRoot.transform.Find("RightSaber").gameObject;
@@ -209,7 +258,7 @@ namespace CustomSaber
             RightTopLocation = RightTop.transform.position;*/
         }
 
-        private void SliceCallBack(NoteData noteData, NoteCutInfo noteCutInfo, int multiplier)
+        private void SliceCallBack(BeatmapObjectSpawnController beatmapObjectSpawnController, NoteController noteController, NoteCutInfo noteCutInfo)
         {
             if (!noteCutInfo.allIsOK)
             {
@@ -229,10 +278,10 @@ namespace CustomSaber
             }
         }
 
-        private void NoteMissCallBack(NoteData noteData, int multiplier)
+        private void NoteMissCallBack(BeatmapObjectSpawnController beatmapObjectSpawnController, NoteController noteController)
         {
             
-            if (noteData.noteType != NoteType.Bomb)
+            if (noteController.noteData.noteType != NoteType.Bomb)
             {
                 _leftEventManager.OnComboBreak.Invoke();
                 _rightEventManager.OnComboBreak.Invoke();
