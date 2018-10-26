@@ -353,3 +353,16 @@ sysinfo.txt
 # Custom
 CustomSaber/*.dll
 
+/CustomSaberEmpty/UnityEngine.CoreModule.dll
+/CustomSaberEmpty/UnityEngine.dll
+/CustomSaberEmpty/UnityEngine.ParticleSystemModule.dll
+/CustomSaberEmpty/UnityEngine.TextRenderingModule.dll
+/CustomSaberEmpty/UnityEngine.UI.dll
+/CustomSaberEmpty/UnityEngine.UIElementsModule.dll
+/CustomSaberEmpty/UnityEngine.UIModule.dll
+/CustomSaberEmpty/UnityEngine.UnityWebRequestWWWModule.dll
+/CustomSaberEmpty/UnityEngine.WebModule.dll
+/CustomSaberEmpty/Mono.WebBrowser.dll
+/CustomSaberEmpty/UnityEngine.AnimationModule.dll
+/CustomSaberEmpty/UnityEngine.AssetBundleModule.dll
+/CustomSaberEmpty/UnityEngine.AudioModule.dll

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CustomSaber</RootNamespace>
     <AssemblyName>CustomSaber</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -112,6 +112,7 @@
   <ItemGroup>
     <Compile Include="CustomTrails.cs" />
     <Compile Include="SaberDescriptor.cs" />
+    <Compile Include="TrailColorManager.cs" />
     <Compile Include="UI\CustomSaberDetailViewController.cs" />
     <Compile Include="UI\CustomSaberMasterViewController.cs" />
     <Compile Include="UI\CustomSaberUI.cs" />
@@ -125,6 +126,29 @@
     <Compile Include="EventFilters.cs" />
     <Compile Include="SaberScript.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assembly-CSharp-firstpass.dll" />
+    <Content Include="Assembly-CSharp.dll" />
+    <Content Include="IllusionInjector.dll" />
+    <Content Include="IllusionPlugin.dll" />
+    <Content Include="Mono.Data.Sqlite.dll" />
+    <Content Include="Mono.Posix.dll" />
+    <Content Include="Mono.Security.dll" />
+    <Content Include="Mono.WebBrowser.dll" />
+    <Content Include="TextMeshPro-1.0.55.2017.1.0b12.dll" />
+    <Content Include="UnityEngine.AnimationModule.dll" />
+    <Content Include="UnityEngine.AssetBundleModule.dll" />
+    <Content Include="UnityEngine.AudioModule.dll" />
+    <Content Include="UnityEngine.CoreModule.dll" />
+    <Content Include="UnityEngine.dll" />
+    <Content Include="UnityEngine.ParticleSystemModule.dll" />
+    <Content Include="UnityEngine.TextRenderingModule.dll" />
+    <Content Include="UnityEngine.UI.dll" />
+    <Content Include="UnityEngine.UIElementsModule.dll" />
+    <Content Include="UnityEngine.UIModule.dll" />
+    <Content Include="UnityEngine.UnityWebRequestWWWModule.dll" />
+    <Content Include="UnityEngine.WebModule.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

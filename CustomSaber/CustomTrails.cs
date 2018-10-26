@@ -7,7 +7,7 @@ using Xft;
 
 namespace CustomSaber
 {
-    class CustomTrail : MonoBehaviour
+    public class CustomTrail : MonoBehaviour
     {
 
         public Transform PointStart;
@@ -16,11 +16,19 @@ namespace CustomSaber
         public Color TrailColor = new Color(1.0f,1.0f,1.0f,1.0f);
         public int Length = 14;
 
-        private XWeaponTrail trail;
+        private SaberWeaponTrail trail;
+        private Saber saber;
 
-        private void Start()
+        private TrailColorManager trailColorManager;
+
+        public void Init(Saber parentSaber)
         {
             Console.WriteLine("Replacing Trail");
+
+            saber = parentSaber;
+
+            trailColorManager = new TrailColorManager();
+            trailColorManager.trailColor = TrailColor;
 
             if (gameObject.name != "LeftSaber" && gameObject.name != "RightSaber")
             {
@@ -28,29 +36,39 @@ namespace CustomSaber
                 Destroy(this);
             }
 
-            GameObject _saber = FindParentWithName(this.gameObject, "Saber");
-
-            if (_saber == null)
+            if (saber == null)
             {
                 Console.WriteLine("Saber not found");
                 Destroy(this);
             }
 
-            trail = _saber.GetComponent<XWeaponTrail>();
+            trail = saber.GetComponent<SaberWeaponTrail>();
             if (trail != null)
             {
-                ReflectionUtil.SetPrivateField(trail, "PointStart", PointStart);
-                ReflectionUtil.SetPrivateField(trail, "PointEnd", PointEnd);
-                ReflectionUtil.SetPrivateField(trail, "MyColor", TrailColor);
-                ReflectionUtil.SetPrivateField(trail, "MyMaterial", TrailMaterial);
-                ReflectionUtil.SetPrivateField(trail, "MaxFrame", Length);
+                try
+                {
+                    ReflectionUtil.SetPrivateField(trail, "_colorManager", trailColorManager);
 
-                XWeaponTrailRenderer trailRenderer = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(trail, "_trailRenderer");
-                MeshRenderer meshRenderer = ReflectionUtil.GetPrivateField<MeshRenderer>(trailRenderer, "_meshRenderer");
-                meshRenderer.material = TrailMaterial;
+                    if (PointStart != null)
+                        ReflectionUtil.SetPrivateField(trail, "_pointStart", PointStart);
+                    if (PointEnd != null)
+                        ReflectionUtil.SetPrivateField(trail, "_pointEnd", PointEnd);
 
-                trail.UpdateHeadElem();
-                trail.UpdateVertex();
+                    ReflectionUtil.SetPrivateField(trail, "_color", TrailColor);
+                    ReflectionUtil.SetPrivateField(trail, "_maxFrame", Length);
+                    ReflectionUtil.SetPrivateField(trail, "_multiplierSaberColor", new Color(1f, 1f, 1f, 1f));
+
+                    XWeaponTrailRenderer trailRenderer = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(trail, "_trailRenderer");
+                    MeshRenderer meshRenderer = ReflectionUtil.GetPrivateField<MeshRenderer>(trailRenderer, "_meshRenderer");
+                    meshRenderer.material = TrailMaterial;
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
             }
             else
             {

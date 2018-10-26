@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CustomSaber
 {
-    class CustomTrail : MonoBehaviour
+    public class CustomTrail : MonoBehaviour
     {
 
         public Transform PointStart;

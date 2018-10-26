@@ -95,5 +95,20 @@
     <Compile Include="SaberScript.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Mono.WebBrowser.dll" />
+    <Content Include="UnityEngine.AnimationModule.dll" />
+    <Content Include="UnityEngine.AssetBundleModule.dll" />
+    <Content Include="UnityEngine.AudioModule.dll" />
+    <Content Include="UnityEngine.CoreModule.dll" />
+    <Content Include="UnityEngine.dll" />
+    <Content Include="UnityEngine.ParticleSystemModule.dll" />
+    <Content Include="UnityEngine.TextRenderingModule.dll" />
+    <Content Include="UnityEngine.UI.dll" />
+    <Content Include="UnityEngine.UIElementsModule.dll" />
+    <Content Include="UnityEngine.UIModule.dll" />
+    <Content Include="UnityEngine.UnityWebRequestWWWModule.dll" />
+    <Content Include="UnityEngine.WebModule.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
