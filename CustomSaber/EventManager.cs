@@ -13,6 +13,7 @@ namespace CustomSaber
         public UnityEvent SaberStopColliding;
         public UnityEvent OnLevelStart;
         public UnityEvent OnLevelFail;
+        public UnityEvent OnSongEnded;
         public UnityEvent OnBlueLightOn;
         public UnityEvent OnRedLightOn;
 
