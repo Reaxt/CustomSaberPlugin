@@ -34,6 +34,8 @@ namespace CustomSaber
         private GameObject _leftSaber;
         private GameObject _rightSaber;
         private GameObject _saberRoot;
+        
+        private int LastNoteId;
 
         private BeatmapObjectSpawnController _beatmapObjectSpawnController;
         private ScoreController _scoreController;
@@ -41,6 +43,9 @@ namespace CustomSaber
         private GameEnergyCounter _gameEnergyCounter;
         private BeatmapObjectCallbackController _beatmapCallback;
         private GamePauseManager _gamePauseManager;
+        private PlayerHeadAndObstacleInteraction _playerHeadAndObstacleInteraction;
+
+        private bool _playerHeadWasInObstacle;
 
         public static void LoadAssets()
         {
@@ -81,7 +86,18 @@ namespace CustomSaber
 
         private void Start()
         {
+            LastNoteId = -1;
             Restart();
+        }
+
+        MainGameSceneSetup GetGameSceneSetup()
+        {
+            MainGameSceneSetup s = GameObject.FindObjectOfType<MainGameSceneSetup>();
+            if (s == null)
+            {
+                s = UnityEngine.Resources.FindObjectsOfTypeAll<MainGameSceneSetup>().FirstOrDefault();
+            }
+            return s;
         }
 
         private void AddEvents()
@@ -137,6 +153,13 @@ namespace CustomSaber
                     //_gamePauseManager = _saberRoot.AddComponent<GamePauseManager>();
                 }
 
+                _playerHeadAndObstacleInteraction = Resources.FindObjectsOfTypeAll<PlayerHeadAndObstacleInteraction>().FirstOrDefault();
+                if (_playerHeadAndObstacleInteraction == null)
+                {
+                    Console.WriteLine("PlayerHeadAndObstacleInteraction Null");
+                    //_playerHeadAndObstacleInteraction = _saberRoot.AddComponent<PlayerHeadAndObstacleInteraction>();
+                }
+
                 _beatmapObjectSpawnController.noteWasCutEvent += SliceCallBack;
                 _beatmapObjectSpawnController.noteWasMissedEvent += NoteMissCallBack;
                 _scoreController.multiplierDidChangeEvent += MultiplierCallBack;
@@ -156,6 +179,41 @@ namespace CustomSaber
                 Console.WriteLine(e.Message);
                 throw;
             }
+
+            try
+            {
+                MainGameSceneSetup mgs = GetGameSceneSetup();
+                BeatmapDataModel _beatmapDataModel = ReflectionUtil.GetPrivateField<BeatmapDataModel>(mgs, "_beatmapDataModel");
+                BeatmapData beatmapData = _beatmapDataModel.beatmapData;
+
+                BeatmapLineData[] beatmapLinesData = beatmapData.beatmapLinesData;
+                float LastTime = 0.0f;
+
+                for (int i = 0; i < beatmapLinesData.Length; i++)
+                {
+                    BeatmapObjectData[] beatmapObjectsData = beatmapLinesData[i].beatmapObjectsData;
+                    for (int j = 0; j < beatmapObjectsData.Length; j++)
+                    {
+                        if (beatmapObjectsData[j].time > LastTime)
+                        {
+                            if (beatmapObjectsData[j].beatmapObjectType == BeatmapObjectType.Note)
+                            {
+                                if (((NoteData)beatmapObjectsData[j]).noteType != NoteType.Bomb)
+                                {
+                                    LastNoteId = beatmapObjectsData[j].id;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
+                throw;
+            }
+            
 
         }
 
@@ -258,6 +316,27 @@ namespace CustomSaber
 
         private void Update()
         {
+
+            if (_playerHeadAndObstacleInteraction != null)
+            {
+                if (_playerHeadAndObstacleInteraction.intersectingObstacles.Count > 0)
+                {
+                    if (!_playerHeadWasInObstacle)
+                    {
+                        if (_leftEventManager != null && _rightEventManager != null)
+                        {
+                            _leftEventManager.OnComboBreak.Invoke();
+                            _rightEventManager.OnComboBreak.Invoke();
+                        }
+                        _playerHeadWasInObstacle = true;
+                    }
+                    else
+                    {
+                        _playerHeadWasInObstacle = false;
+                    }
+                }
+            }
+
             /*Vector3 LeftVelocity = LeftTop.transform.position - LeftTopLocation;
             Vector3 RightVelocity = RightTop.transform.position - RightTopLocation;
 
@@ -286,6 +365,12 @@ namespace CustomSaber
                     _rightEventManager.OnSlice.Invoke();
                 }
             }
+
+            if (noteController.noteData.id == LastNoteId)
+            {
+                _leftEventManager.OnLevelEnded.Invoke();
+                _rightEventManager.OnLevelEnded.Invoke();
+            }
         }
 
         private void NoteMissCallBack(BeatmapObjectSpawnController beatmapObjectSpawnController, NoteController noteController)
@@ -295,6 +380,12 @@ namespace CustomSaber
             {
                 _leftEventManager.OnComboBreak.Invoke();
                 _rightEventManager.OnComboBreak.Invoke();
+            }
+
+            if (noteController.noteData.id == LastNoteId)
+            {
+                _leftEventManager.OnLevelEnded.Invoke();
+                _rightEventManager.OnLevelEnded.Invoke();
             }
         }
 
