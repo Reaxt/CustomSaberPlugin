@@ -192,15 +192,17 @@ namespace CustomSaber
                 for (int i = 0; i < beatmapLinesData.Length; i++)
                 {
                     BeatmapObjectData[] beatmapObjectsData = beatmapLinesData[i].beatmapObjectsData;
-                    for (int j = 0; j < beatmapObjectsData.Length; j++)
+                    for (int j = beatmapObjectsData.Length-1; j > 0; j--)
                     {
-                        if (beatmapObjectsData[j].time > LastTime)
+                        if (beatmapObjectsData[j].beatmapObjectType == BeatmapObjectType.Note)
                         {
-                            if (beatmapObjectsData[j].beatmapObjectType == BeatmapObjectType.Note)
+                            if (((NoteData)beatmapObjectsData[j]).noteType != NoteType.Bomb)
                             {
-                                if (((NoteData)beatmapObjectsData[j]).noteType != NoteType.Bomb)
+                                if (beatmapObjectsData[j].time > LastTime)
                                 {
                                     LastNoteId = beatmapObjectsData[j].id;
+                                    LastTime = beatmapObjectsData[j].time;
+                                    break;
                                 }
                             }
                         }
