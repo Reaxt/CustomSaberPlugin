@@ -202,8 +202,8 @@ namespace CustomSaber
                                 {
                                     LastNoteId = beatmapObjectsData[j].id;
                                     LastTime = beatmapObjectsData[j].time;
-                                    break;
                                 }
+                                break;
                             }
                         }
                     }
@@ -367,7 +367,7 @@ namespace CustomSaber
                     _rightEventManager.OnSlice.Invoke();
                 }
             }
-
+            
             if (noteController.noteData.id == LastNoteId)
             {
                 _leftEventManager.OnLevelEnded.Invoke();
