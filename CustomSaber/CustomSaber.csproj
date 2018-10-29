@@ -86,6 +86,9 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>D:\ikeiwa\Downloads\Beat.Saber.Update.02.09.2018\Beat Saber_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\programmes\Oculus\Software\Software\hyperbolic-magnetism-beat-saber\Beat Saber_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
@@ -111,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomTrails.cs" />
+    <Compile Include="DebugPrint.cs" />
     <Compile Include="SaberDescriptor.cs" />
     <Compile Include="TrailColorManager.cs" />
     <Compile Include="UI\CustomSaberDetailViewController.cs" />

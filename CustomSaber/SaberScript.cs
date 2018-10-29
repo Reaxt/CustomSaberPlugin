@@ -208,6 +208,8 @@ namespace CustomSaber
                         }
                     }
                 }
+                
+                //DebugPrint.Print("LAST NOTE ID :" + LastNoteId + " || LAST NOTE TIME : " + LastTime);
             }
             catch (Exception e)
             {
