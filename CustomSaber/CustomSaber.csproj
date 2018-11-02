@@ -114,7 +114,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomTrails.cs" />
-    <Compile Include="DebugPrint.cs" />
     <Compile Include="SaberDescriptor.cs" />
     <Compile Include="TrailColorManager.cs" />
     <Compile Include="UI\CustomSaberDetailViewController.cs" />

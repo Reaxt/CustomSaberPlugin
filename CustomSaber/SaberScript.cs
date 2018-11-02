@@ -171,7 +171,7 @@ namespace CustomSaber
                 _gameEnergyCounter.gameEnergyDidReach0Event += FailLevelCallBack;
 
                 _beatmapCallback.beatmapEventDidTriggerEvent += LightEventCallBack;
-                ReflectionUtil.SetPrivateField(_gamePauseManager, "_gameDidResumeSignal", (Action)OnPauseMenuClosed); //For some reason _gameDidResumeSignal isn't public.
+              //  ReflectionUtil.SetPrivateField(_gamePauseManager, "_gameDidResumeSignal", (Action)OnPauseMenuClosed); //For some reason _gameDidResumeSignal isn't public.
             }
             catch (Exception e)
             {
@@ -208,8 +208,7 @@ namespace CustomSaber
                         }
                     }
                 }
-                
-                //DebugPrint.Print("LAST NOTE ID :" + LastNoteId + " || LAST NOTE TIME : " + LastTime);
+
             }
             catch (Exception e)
             {
@@ -217,7 +216,6 @@ namespace CustomSaber
                 Console.WriteLine(e.Message);
                 throw;
             }
-            
 
         }
 
@@ -374,6 +372,7 @@ namespace CustomSaber
             {
                 _leftEventManager.OnLevelEnded.Invoke();
                 _rightEventManager.OnLevelEnded.Invoke();
+ 
             }
         }
 
@@ -390,6 +389,7 @@ namespace CustomSaber
             {
                 _leftEventManager.OnLevelEnded.Invoke();
                 _rightEventManager.OnLevelEnded.Invoke();
+
             }
         }
 
