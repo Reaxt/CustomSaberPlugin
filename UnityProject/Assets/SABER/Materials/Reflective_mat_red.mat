@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Reflective_mat_red
-  m_Shader: {fileID: 4800000, guid: 28a1e3ed5de34bc4ab370c048b428dd4, type: 3}
+  m_Shader: {fileID: 4800000, guid: 7930112b3ec99a244b8a1b4a88e01af0, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -59,7 +59,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Tex:
-        m_Texture: {fileID: 2800000, guid: 9c11c7b54f93fb44593b240b95ef97b5, type: 3}
+        m_Texture: {fileID: 2800000, guid: ceab2992cd4972443ae78dd07281a284, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
