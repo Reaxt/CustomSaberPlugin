@@ -19,7 +19,7 @@ namespace CustomSaber
 
         public string Version
         {
-            get { return "2.0"; }
+            get { return "2.5"; }
         }
 
         private static List<string> _saberPaths;

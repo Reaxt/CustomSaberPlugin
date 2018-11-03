@@ -7,28 +7,34 @@ using Xft;
 
 namespace CustomSaber
 {
+    public enum ColorType
+    {
+        LeftSaber,
+        RightSaber,
+        CustomColor
+    }
+
     public class CustomTrail : MonoBehaviour
     {
 
         public Transform PointStart;
         public Transform PointEnd;
         public Material TrailMaterial;
+        public ColorType colorType;
         public Color TrailColor = new Color(1.0f,1.0f,1.0f,1.0f);
-        public int Length = 14;
+        public Color MultiplierColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        public int Length = 20;
 
-        private SaberWeaponTrail trail;
+        private CustomWeaponTrail trail;
+        private ColorManager oldColorManager;
+        private XWeaponTrailRenderer oldTrailRendererPrefab;
         private Saber saber;
-
-        private TrailColorManager trailColorManager;
 
         public void Init(Saber parentSaber)
         {
             Console.WriteLine("Replacing Trail");
 
             saber = parentSaber;
-
-            trailColorManager = new TrailColorManager();
-            trailColorManager.trailColor = TrailColor;
 
             if (gameObject.name != "LeftSaber" && gameObject.name != "RightSaber")
             {
@@ -42,26 +48,14 @@ namespace CustomSaber
                 Destroy(this);
             }
 
-            trail = saber.GetComponent<SaberWeaponTrail>();
-            if (trail != null)
+            SaberWeaponTrail oldtrail = saber.GetComponent<SaberWeaponTrail>();
+            if (oldtrail != null)
             {
                 try
                 {
-                    ReflectionUtil.SetPrivateField(trail, "_colorManager", trailColorManager);
-
-                    if (PointStart != null)
-                        ReflectionUtil.SetPrivateField(trail, "_pointStart", PointStart);
-                    if (PointEnd != null)
-                        ReflectionUtil.SetPrivateField(trail, "_pointEnd", PointEnd);
-
-                    ReflectionUtil.SetPrivateField(trail, "_color", TrailColor);
-                    ReflectionUtil.SetPrivateField(trail, "_maxFrame", Length);
-                    ReflectionUtil.SetPrivateField(trail, "_multiplierSaberColor", new Color(1f, 1f, 1f, 1f));
-
-                    XWeaponTrailRenderer trailRenderer = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(trail, "_trailRenderer");
-                    MeshRenderer meshRenderer = ReflectionUtil.GetPrivateField<MeshRenderer>(trailRenderer, "_meshRenderer");
-                    meshRenderer.material = TrailMaterial;
-
+                    ReflectionUtil.SetPrivateField(oldtrail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
+                    oldColorManager = ReflectionUtil.GetPrivateField<ColorManager>(oldtrail, "_colorManager");
+                    oldTrailRendererPrefab = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(oldtrail, "_trailRendererPrefab");
                 }
                 catch (Exception e)
                 {
@@ -69,6 +63,9 @@ namespace CustomSaber
                     Console.WriteLine(e.Message);
                     throw;
                 }
+
+                trail = gameObject.AddComponent<CustomWeaponTrail>();
+                trail.init(oldTrailRendererPrefab, oldColorManager, PointStart, PointEnd, TrailMaterial, TrailColor, Length, MultiplierColor, colorType);
             }
             else
             {
@@ -85,27 +82,13 @@ namespace CustomSaber
         public void SetMaterial(Material newMat)
         {
             TrailMaterial = newMat;
-            ReflectionUtil.SetPrivateField(trail, "MyMaterial", TrailMaterial);
+            trail.SetMaterial(newMat);
         }
 
         public void SetColor(Color newColor)
         {
             TrailColor = newColor;
-            ReflectionUtil.SetPrivateField(trail, "MyColor", TrailColor);
-        }
-
-        public static GameObject FindParentWithName(GameObject childObject, string name)
-        {
-            Transform t = childObject.transform;
-            while (t.parent != null)
-            {
-                if (t.parent.gameObject.name == name)
-                {
-                    return t.parent.gameObject;
-                }
-                t = t.parent.transform;
-            }
-            return null;
+            trail.SetColor(newColor);
         }
     }
 }

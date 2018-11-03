@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomTrails.cs" />
+    <Compile Include="CustomWeaponTrail.cs" />
     <Compile Include="SaberDescriptor.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="DynamicBone.cs" />

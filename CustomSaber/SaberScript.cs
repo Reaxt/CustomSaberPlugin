@@ -280,7 +280,7 @@ namespace CustomSaber
                 blade.transform.localPosition = new Vector3(0, -0.01f, 0);
                 handle.gameObject.SetActive(false);
 
-                CustomTrail trail;
+                CustomTrail[] trails;
 
                 if (saber.saberType == Saber.SaberType.SaberB)
                 {
@@ -291,9 +291,12 @@ namespace CustomSaber
                     _rightSaber.transform.rotation = saber.transform.rotation;
                     _rightTop = top.gameObject;
 
-                    trail = _rightSaber.GetComponent<CustomTrail>();
-                    if (trail != null)
+                    trails = _rightSaber.GetComponents<CustomTrail>();
+                    foreach (CustomTrail trail in trails)
+                    {
                         trail.Init(saber);
+                    }
+
                 }
                 else if (saber.saberType == Saber.SaberType.SaberA)
                 {
@@ -304,9 +307,11 @@ namespace CustomSaber
                     _leftSaber.transform.rotation = saber.transform.rotation;
                     _leftTop = top.gameObject;
 
-                    trail = _leftSaber.GetComponent<CustomTrail>();
-                    if (trail != null)
+                    trails = _leftSaber.GetComponents<CustomTrail>();
+                    foreach (CustomTrail trail in trails)
+                    {
                         trail.Init(saber);
+                    }
                 }
             }
         }
