@@ -20,7 +20,7 @@ namespace CustomSaber
         public Transform PointStart;
         public Transform PointEnd;
         public Material TrailMaterial;
-        public ColorType colorType;
+        public ColorType colorType = ColorType.CustomColor;
         public Color TrailColor = new Color(1.0f,1.0f,1.0f,1.0f);
         public Color MultiplierColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         public int Length = 20;
