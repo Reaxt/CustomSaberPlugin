@@ -26,7 +26,7 @@ namespace CustomSaber
         private List<CustomSaber> _sabers = new List<CustomSaber>();
         public AssetBundle preview;
         private TableView _sabersTableView;
-        StandardLevelListTableCell _songListTableCellInstance;
+        LevelListTableCell _songListTableCellInstance;
         
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
@@ -117,7 +117,7 @@ namespace CustomSaber
             }
 
 
-            _songListTableCellInstance = Resources.FindObjectsOfTypeAll<StandardLevelListTableCell>().First(x => (x.name == "StandardLevelListTableCell"));
+            /*_songListTableCellInstance =*/ Resources.FindObjectsOfTypeAll<LevelListTableCell>().ToList().ForEach(l => Console.WriteLine($"Cell: {l.name}"));//.First(x => (x.name == "StandardLevelListTableCell"));
 
             LoadSabers();
 
@@ -175,7 +175,7 @@ namespace CustomSaber
                     Destroy(_songDetailGameObject.GetComponent<StandardLevelDetailViewController>());
                     _parentViewController.customSaberDetailsViewController = _songDetailGameObject.AddComponent<CustomSaberDetailViewController>();
 
-                    _parentViewController.PushViewController(_parentViewController.customSaberDetailsViewController, false);
+                    //_parentViewController.PushViewController(_parentViewController.customSaberDetailsViewController, false);
                     
                     _parentViewController.ModDetailsPushed = true;
                     SetSaberDetailsData(_parentViewController.customSaberDetailsViewController, row);
@@ -189,7 +189,7 @@ namespace CustomSaber
                     else
                     {
                         SetSaberDetailsData(_parentViewController.customSaberDetailsViewController, row);
-                        _parentViewController.PushViewController(_parentViewController.customSaberDetailsViewController, false);
+                        //_parentViewController.PushViewController(_parentViewController.customSaberDetailsViewController, false);
 
                         _parentViewController.ModDetailsPushed = true;
                     }

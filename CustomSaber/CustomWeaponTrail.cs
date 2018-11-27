@@ -13,7 +13,7 @@ namespace CustomSaber
         public Color _customColor;
         public Material _customMaterial;
 
-        protected override Color Color
+        protected override Color color
         {
             get
             {

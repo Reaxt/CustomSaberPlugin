@@ -58,7 +58,7 @@ namespace CustomSaber
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.name == "NiceEnvironment" || scene.name == "DefaultEnvironment" || scene.name == "BigMirrorEnvironment" || scene.name == "TriangleEnvironment")
+            if (scene.name == "GameCore")
             {
                 LoadNewSaber(_currentSaberPath);
                 SaberScript.LoadAssets();
@@ -70,7 +70,7 @@ namespace CustomSaber
                 {
                     _currentSaber.Unload(true);
                 }
-                CustomSaberUI.OnLoad();
+                //CustomSaberUI.OnLoad();
             }
         }
 
@@ -141,6 +141,7 @@ namespace CustomSaber
             }
             
             PlayerPrefs.SetString("lastSaber", _currentSaberPath);
+            Console.WriteLine($"Loaded saber {path}");
         }
 
         public void OnFixedUpdate()

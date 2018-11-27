@@ -53,7 +53,7 @@ namespace CustomSaber
             (_backButton.transform as RectTransform).anchoredPosition = new Vector2(0, 0.5f);
             _backButton.onClick.AddListener(delegate ()
             {
-                DismissModalViewController(null, false);
+                //DismissModalViewController(null, false);
             });
             if (customSaberListViewController == null)
             {
@@ -63,7 +63,7 @@ namespace CustomSaber
                 customSaberListViewController.rectTransform.anchorMax = new Vector2(0.7f, 1f);
             }
 
-            PushViewController(customSaberListViewController, true);
+            //PushViewController(customSaberListViewController, true);
 
             Resources.FindObjectsOfTypeAll<MainMenuViewController>().First().didFinishEvent += MainMenuNavigated;
         }
@@ -71,7 +71,7 @@ namespace CustomSaber
         private void MainMenuNavigated(MainMenuViewController sender, MainMenuViewController.MenuButton subMenuType)
         {
             VRUIViewController parent = parentViewController;
-            DismissModalViewController(null, true);
+            //DismissModalViewController(null, true);
             parent.gameObject.SetActive(false);
         }
 

@@ -90,12 +90,12 @@ namespace CustomSaber
             Restart();
         }
 
-        MainGameSceneSetup GetGameSceneSetup()
+        StandardLevelSceneSetup GetGameSceneSetup()
         {
-            MainGameSceneSetup s = GameObject.FindObjectOfType<MainGameSceneSetup>();
+            StandardLevelSceneSetup s = GameObject.FindObjectOfType<StandardLevelSceneSetup>();
             if (s == null)
             {
-                s = UnityEngine.Resources.FindObjectsOfTypeAll<MainGameSceneSetup>().FirstOrDefault();
+                s = UnityEngine.Resources.FindObjectsOfTypeAll<StandardLevelSceneSetup>().FirstOrDefault();
             }
             return s;
         }
@@ -182,9 +182,8 @@ namespace CustomSaber
 
             try
             {
-                MainGameSceneSetup mgs = GetGameSceneSetup();
-                BeatmapDataModel _beatmapDataModel = ReflectionUtil.GetPrivateField<BeatmapDataModel>(mgs, "_beatmapDataModel");
-                BeatmapData beatmapData = _beatmapDataModel.beatmapData;
+                StandardLevelSceneSetup mgs = GetGameSceneSetup();
+                BeatmapData beatmapData = mgs.standardLevelSceneSetupData.difficultyBeatmap.beatmapData;
 
                 BeatmapLineData[] beatmapLinesData = beatmapData.beatmapLinesData;
                 float LastTime = 0.0f;
@@ -269,12 +268,24 @@ namespace CustomSaber
             foreach (var saber in sabers)
             {
                 Console.WriteLine(saber.saberType + " " + saber.transform.GetChild(0) + saber.transform.GetChild(1) + saber.transform.GetChild(2) + saber.transform.GetChild(3));
-                var handle = saber.transform.Find("Handle");
-                var blade = saber.transform.Find("Blade");
+                var handle = saber.transform.Find("Bottom");
+                var blade = saber.transform.Find("Saber");
                 var top = saber.transform.Find("Top");
+                
                 Console.WriteLine("Saber Transform Found");
+                
+                foreach (Transform t in saber.transform)
+                {
+                    var filter = t.GetComponentInChildren<MeshFilter>();
+                    if (filter) filter.sharedMesh = null;
 
-                blade.GetComponent<MeshFilter>().sharedMesh = null;
+                    foreach (Transform t2 in t)
+                    {
+                        filter = t2.GetComponentInChildren<MeshFilter>();
+                        if (filter) filter.sharedMesh = null;
+                    }
+                }
+
                 blade.transform.localRotation = Quaternion.identity;
                 blade.transform.localScale = new Vector3(1, 1, 1);
                 blade.transform.localPosition = new Vector3(0, -0.01f, 0);
@@ -323,7 +334,6 @@ namespace CustomSaber
 
         private void Update()
         {
-
             if (_playerHeadAndObstacleInteraction != null)
             {
                 if (_playerHeadAndObstacleInteraction.intersectingObstacles.Count > 0)

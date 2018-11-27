@@ -90,7 +90,7 @@ namespace CustomSaber
                     _sabersMasterViewController = CreateViewController<CustomSaberMasterViewController>();
                 }
 
-                _rightScreen.PresentModalViewController(_sabersMasterViewController, null);
+                //_rightScreen.PresentModalViewController(_sabersMasterViewController, null);
             });
         }
 
