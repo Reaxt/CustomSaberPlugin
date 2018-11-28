@@ -34,7 +34,7 @@ namespace CustomSaber
         private GameObject _leftSaber;
         private GameObject _rightSaber;
         private GameObject _saberRoot;
-        
+
         private int LastNoteId;
 
         private BeatmapObjectSpawnController _beatmapObjectSpawnController;
@@ -109,7 +109,7 @@ namespace CustomSaber
             _rightEventManager = _rightSaber.GetComponent<EventManager>();
             if (_rightEventManager == null)
                 _rightEventManager = _rightSaber.AddComponent<EventManager>();
-            
+
             _leftEventManager.OnLevelStart.Invoke();
             _rightEventManager.OnLevelStart.Invoke();
             try
@@ -121,26 +121,26 @@ namespace CustomSaber
                     //_beatmapObjectSpawnController = _saberRoot.AddComponent<BeatmapObjectSpawnController>();
                 }
                 _scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
-                if(_scoreController == null)
+                if (_scoreController == null)
                 {
                     Console.WriteLine("SCORE CONTROLLER NULL");
                     //_scoreController = _saberRoot.AddComponent<ScoreController>();
                 }
                 _saberCollisionManager =
                     Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().FirstOrDefault();
-                if(_saberCollisionManager == null)
+                if (_saberCollisionManager == null)
                 {
                     Console.WriteLine("COLLISION MANAGER NULL");
                     //_saberCollisionManager = _saberRoot.AddComponent<ObstacleSaberSparkleEffectManager>();
                 }
                 _gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault();
-                if(_gameEnergyCounter == null)
+                if (_gameEnergyCounter == null)
                 {
                     Console.WriteLine("energery counter null");
                     //_gameEnergyCounter = _saberRoot.AddComponent<GameEnergyCounter>();
                 }
                 _beatmapCallback = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
-                if(_beatmapCallback == null)
+                if (_beatmapCallback == null)
                 {
                     Console.WriteLine("BEATMAP CALLBACK NULL");
                     //_beatmapCallback = _saberRoot.AddComponent<BeatmapObjectCallbackController>();
@@ -171,7 +171,7 @@ namespace CustomSaber
                 _gameEnergyCounter.gameEnergyDidReach0Event += FailLevelCallBack;
 
                 _beatmapCallback.beatmapEventDidTriggerEvent += LightEventCallBack;
-              //  ReflectionUtil.SetPrivateField(_gamePauseManager, "_gameDidResumeSignal", (Action)OnPauseMenuClosed); //For some reason _gameDidResumeSignal isn't public.
+                //  ReflectionUtil.SetPrivateField(_gamePauseManager, "_gameDidResumeSignal", (Action)OnPauseMenuClosed); //For some reason _gameDidResumeSignal isn't public.
             }
             catch (Exception e)
             {
@@ -191,7 +191,7 @@ namespace CustomSaber
                 for (int i = 0; i < beatmapLinesData.Length; i++)
                 {
                     BeatmapObjectData[] beatmapObjectsData = beatmapLinesData[i].beatmapObjectsData;
-                    for (int j = beatmapObjectsData.Length-1; j > 0; j--)
+                    for (int j = beatmapObjectsData.Length - 1; j > 0; j--)
                     {
                         if (beatmapObjectsData[j].beatmapObjectType == BeatmapObjectType.Note)
                         {
@@ -230,8 +230,6 @@ namespace CustomSaber
             _saberCollisionManager.sparkleEffectDidEndEvent -= SaberEndCollide;
 
             _gameEnergyCounter.gameEnergyDidReach0Event -= FailLevelCallBack;
-
-
             _beatmapCallback.beatmapEventDidTriggerEvent -= LightEventCallBack;
         }
 
@@ -271,9 +269,9 @@ namespace CustomSaber
                 var handle = saber.transform.Find("Bottom");
                 var blade = saber.transform.Find("Saber");
                 var top = saber.transform.Find("Top");
-                
+
                 Console.WriteLine("Saber Transform Found");
-                
+
                 foreach (Transform t in saber.transform)
                 {
                     var filter = t.GetComponentInChildren<MeshFilter>();
@@ -307,7 +305,6 @@ namespace CustomSaber
                     {
                         trail.Init(saber);
                     }
-
                 }
                 else if (saber.saberType == Saber.SaberType.SaberA)
                 {
@@ -382,18 +379,18 @@ namespace CustomSaber
                     _rightEventManager.OnSlice.Invoke();
                 }
             }
-            
+
             if (noteController.noteData.id == LastNoteId)
             {
                 _leftEventManager.OnLevelEnded.Invoke();
                 _rightEventManager.OnLevelEnded.Invoke();
- 
+
             }
         }
 
         private void NoteMissCallBack(BeatmapObjectSpawnController beatmapObjectSpawnController, NoteController noteController)
         {
-            
+
             if (noteController.noteData.noteType != NoteType.Bomb)
             {
                 _leftEventManager.OnComboBreak.Invoke();
@@ -404,7 +401,6 @@ namespace CustomSaber
             {
                 _leftEventManager.OnLevelEnded.Invoke();
                 _rightEventManager.OnLevelEnded.Invoke();
-
             }
         }
 
@@ -449,7 +445,7 @@ namespace CustomSaber
 
         private void LightEventCallBack(BeatmapEventData songEvent)
         {
-            if ((int) songEvent.type < 5)
+            if ((int)songEvent.type < 5)
             {
                 if (songEvent.value > 0 && songEvent.value < 4)
                 {

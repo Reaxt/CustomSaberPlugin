@@ -32,8 +32,9 @@ namespace CustomSaber
         {
             if (_init) return;
             _init = true;
-            
+
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
+            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
 
             var sabers = RetrieveCustomSabers();
             if (sabers.Count == 0)
@@ -41,19 +42,26 @@ namespace CustomSaber
                 Console.WriteLine("No custom sabers found.");
                 return;
             }
-            
+
             _currentSaberPath = PlayerPrefs.GetString("lastSaber", null);
             if (_currentSaberPath == null || !sabers.Contains(_currentSaberPath))
             {
                 _currentSaberPath = sabers[0];
             }
-            
-            //LoadNewSaber(_currentSaberPath);
         }
 
         public void OnApplicationQuit()
         {
             SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
+            SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+        }
+
+        private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+        {
+            if (arg0.name == "Menu")
+            {
+                
+            }
         }
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
@@ -66,17 +74,16 @@ namespace CustomSaber
 
             if (scene.name == "Menu")
             {
-                if(_currentSaber != null)
+                if (_currentSaber != null)
                 {
                     _currentSaber.Unload(true);
                 }
-                //CustomSaberUI.OnLoad();
+                CustomSaberUI.OnLoad();
             }
         }
 
         public static List<string> RetrieveCustomSabers()
         {
-           
             _saberPaths = (Directory.GetFiles(Path.Combine(Application.dataPath, "../CustomSabers/"),
                 "*.saber", SearchOption.AllDirectories).ToList());
             Console.WriteLine("Found " + _saberPaths.Count + " sabers");
@@ -126,7 +133,7 @@ namespace CustomSaber
             }
 
             _currentSaberPath = path;
-            
+
             _currentSaber =
                 AssetBundle.LoadFromFile(_currentSaberPath);
             Console.WriteLine(_currentSaber.GetAllAssetNames()[0]);
@@ -139,7 +146,7 @@ namespace CustomSaber
                 Console.WriteLine("Succesfully obtained the asset bundle!");
                 SaberScript.CustomSaber = _currentSaber;
             }
-            
+
             PlayerPrefs.SetString("lastSaber", _currentSaberPath);
             Console.WriteLine($"Loaded saber {path}");
         }
