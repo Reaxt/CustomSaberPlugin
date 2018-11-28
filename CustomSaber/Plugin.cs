@@ -34,7 +34,6 @@ namespace CustomSaber
             _init = true;
 
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
-            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
 
             var sabers = RetrieveCustomSabers();
             if (sabers.Count == 0)
@@ -53,17 +52,8 @@ namespace CustomSaber
         public void OnApplicationQuit()
         {
             SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
-            SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
         }
-
-        private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
-        {
-            if (arg0.name == "Menu")
-            {
-                
-            }
-        }
-
+        
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
             if (scene.name == "GameCore")
