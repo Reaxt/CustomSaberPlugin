@@ -77,6 +77,7 @@ namespace CustomSaber
             _saberPaths = (Directory.GetFiles(Path.Combine(Application.dataPath, "../CustomSabers/"),
                 "*.saber", SearchOption.AllDirectories).ToList());
             Console.WriteLine("Found " + _saberPaths.Count + " sabers");
+            _saberPaths.Insert(0, "DefaultSabers");
             return _saberPaths;
         }
 
@@ -122,19 +123,22 @@ namespace CustomSaber
                 _currentSaber.Unload(true);
             }
 
-            _currentSaberPath = path;
+            if (path != "DefaultSabers")
+            {
+                _currentSaberPath = path;
 
-            _currentSaber =
-                AssetBundle.LoadFromFile(_currentSaberPath);
-            Console.WriteLine(_currentSaber.GetAllAssetNames()[0]);
-            if (_currentSaber == null)
-            {
-                Console.WriteLine("something went wrong getting the asset bundle");
-            }
-            else
-            {
-                Console.WriteLine("Succesfully obtained the asset bundle!");
-                SaberScript.CustomSaber = _currentSaber;
+                _currentSaber =
+                    AssetBundle.LoadFromFile(_currentSaberPath);
+                Console.WriteLine(_currentSaber.GetAllAssetNames()[0]);
+                if (_currentSaber == null)
+                {
+                    Console.WriteLine("something went wrong getting the asset bundle");
+                }
+                else
+                {
+                    Console.WriteLine("Succesfully obtained the asset bundle!");
+                    SaberScript.CustomSaber = _currentSaber;
+                }
             }
 
             PlayerPrefs.SetString("lastSaber", _currentSaberPath);

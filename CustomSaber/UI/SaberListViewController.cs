@@ -41,7 +41,7 @@ namespace CustomSaber
                 if (firstActivation)
                 {
                     LoadSabers();
-
+                    
                     for(int i=0; i<_sabers.Count; i++)
                         if (_sabers[i].Path == Plugin._currentSaberPath)
                             selected = i;
@@ -134,25 +134,34 @@ namespace CustomSaber
             Console.WriteLine("Loading sabers!");
             foreach (string sab in Plugin.RetrieveCustomSabers())
             {
-                var tempbundle = AssetBundle.LoadFromFile(sab);
-                GameObject sabroot = tempbundle.LoadAsset<GameObject>("_customsaber");
-                SaberDescriptor tempdesciptor = sabroot.GetComponent<SaberDescriptor>();
                 CustomSaber tempsab = new CustomSaber();
-                if (tempdesciptor == null)
+                if (sab == "DefaultSabers")
                 {
-                    tempsab.Name = sab.Split('/').Last().Split('.').First();
-                    tempsab.Author = "THIS SHOULD NEVER HAPPEN";
-                    tempsab.Path = sab;
+                    tempsab.Name = "Default Sabers";
+                    tempsab.Author = "Beat Saber";
+                    tempsab.Path = "DefaultSabers";
                 }
                 else
                 {
-                    tempsab.Name = tempdesciptor.SaberName;
-                    tempsab.Author = tempdesciptor.AuthorName;
-                    tempsab.Path = sab;
+                    var tempbundle = AssetBundle.LoadFromFile(sab);
+                    GameObject sabroot = tempbundle.LoadAsset<GameObject>("_customsaber");
+                    SaberDescriptor tempdesciptor = sabroot.GetComponent<SaberDescriptor>();
+                    if (tempdesciptor == null)
+                    {
+                        tempsab.Name = sab.Split('/').Last().Split('.').First();
+                        tempsab.Author = "THIS SHOULD NEVER HAPPEN";
+                        tempsab.Path = sab;
+                    }
+                    else
+                    {
+                        tempsab.Name = tempdesciptor.SaberName;
+                        tempsab.Author = tempdesciptor.AuthorName;
+                        tempsab.Path = sab;
+                    }
+                    tempbundle.Unload(true);
                 }
 
                 _sabers.Add(tempsab);
-                tempbundle.Unload(true);
             }
             Console.WriteLine("Added all sabers");
 
