@@ -1,5 +1,6 @@
 ﻿using CustomUI.BeatSaber;
 using CustomUI.MenuButton;
+using CustomUI.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,8 @@ namespace CustomSaber
 
     class CustomSaber
     {
-
+        public AssetBundle AssetBundle { get; set; }
+        public GameObject GameObject { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
         public string Author { get; set; }
@@ -41,6 +43,7 @@ namespace CustomSaber
 
         public static CustomSaberUI _instance;
 
+        public class SaberListFlowCoordinator : GenericFlowCoordinator<SaberListViewController, SaberPreviewController> { };
         public SaberListFlowCoordinator _saberListFlowCoordinator;
 
         internal static void OnLoad()
@@ -83,6 +86,15 @@ namespace CustomSaber
                 {
                     _saberListFlowCoordinator = new GameObject("SaberListFlowCoordinator").AddComponent<SaberListFlowCoordinator>(); 
                     _saberListFlowCoordinator.mainFlowCoordinator = _mainFlowCoordinator;
+                    _saberListFlowCoordinator.OnContentCreated = (content) =>
+                    {
+                        content.backButtonPressed = () =>
+                        {
+                            _mainFlowCoordinator.InvokePrivateMethod("DismissFlowCoordinator", new object[] { _saberListFlowCoordinator, null, false });
+                        };
+                        return "Saber Select";
+                    };
+                    //_mainFlowCoordinator
                 }
 
                 ReflectionUtil.InvokePrivateMethod(_mainFlowCoordinator, "PresentFlowCoordinator", new object[] { _saberListFlowCoordinator, null, false, false });
