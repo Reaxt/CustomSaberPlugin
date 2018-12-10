@@ -21,6 +21,8 @@ namespace CustomSaber
         private GameObject _previewParent;
         public GameObject _saberPreviewA;
         public GameObject _saberPreviewB;
+        public GameObject _saberPreviewAParent;
+        public GameObject _saberPreviewBParent;
 
         public Button _pageUpButton;
         public Button _pageDownButton;
@@ -308,21 +310,35 @@ namespace CustomSaber
         public void GeneratePreviewOriginal()
         {
             DestroyPreview();
+            if (_saberPreviewAParent)
+                Destroy(_saberPreviewAParent);
+            if (_saberPreviewBParent)
+                Destroy(_saberPreviewBParent);
             if (Plugin.LeftSaber == null || Plugin.RightSaber == null)
                 return;
             PreviewStatus = true;
             try
             {
                 _previewParent = new GameObject();
+                _saberPreviewAParent = new GameObject();
+                _saberPreviewBParent = new GameObject();
+
                 _previewParent.transform.Translate(2.2f, 1.1f, 0.6f);
                 _previewParent.transform.Rotate(0, -30, 0);
-                
-                _saberPreviewA = Instantiate(Plugin.LeftSaber.gameObject, _previewParent.transform);
-                _saberPreviewB = Instantiate(Plugin.RightSaber.gameObject, _previewParent.transform);
+                _saberPreviewAParent.transform.parent = _previewParent.transform;
+                _saberPreviewBParent.transform.parent = _previewParent.transform;
+
+                _saberPreviewA = Instantiate(Plugin.LeftSaber.gameObject, _saberPreviewAParent.transform);
+                _saberPreviewB = Instantiate(Plugin.RightSaber.gameObject, _saberPreviewBParent.transform);
                 _saberPreviewA.SetActive(true);
                 _saberPreviewB.SetActive(true);
 
-                _saberPreviewB.transform.Translate(0, 0.5f, 0);
+                _saberPreviewAParent.transform.localPosition = new Vector3(-_saberPreviewA.transform.localPosition.x, -_saberPreviewA.transform.localPosition.y, -_saberPreviewA.transform.localPosition.z);
+                _saberPreviewBParent.transform.localPosition = new Vector3(-_saberPreviewB.transform.localPosition.x, -_saberPreviewB.transform.localPosition.y, -_saberPreviewB.transform.localPosition.z);
+                _saberPreviewAParent.transform.localEulerAngles = new Vector3(-_saberPreviewA.transform.localEulerAngles.x, -_saberPreviewA.transform.localEulerAngles.y, -_saberPreviewA.transform.localEulerAngles.z);
+                _saberPreviewBParent.transform.localEulerAngles = new Vector3(-_saberPreviewB.transform.localEulerAngles.x, -_saberPreviewB.transform.localEulerAngles.y, -_saberPreviewB.transform.localEulerAngles.z);
+
+                _saberPreviewBParent.transform.Translate(0, 0.5f, 0);
             }
             catch (Exception e)
             {
