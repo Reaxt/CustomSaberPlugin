@@ -7,6 +7,8 @@ using IllusionPlugin;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
+using Harmony;
+using System.Reflection;
 
 namespace CustomSaber
 {
@@ -35,6 +37,8 @@ namespace CustomSaber
             if (_init) return;
             _init = true;
 
+            Console.WriteLine($"Custom Sabers v{Version} loaded!");
+            
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
 
             var sabers = RetrieveCustomSabers();
@@ -59,8 +63,16 @@ namespace CustomSaber
         bool doeet = true;
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if(scene.buildIndex > 0)
-                if(doeet) SharedCoroutineStarter.instance.StartCoroutine(SaberTest());
+            if (scene.buildIndex > 0)
+            {
+                if (doeet)
+                {
+                    Console.WriteLine("Launching coroutine to grab original sabers!");
+                    SharedCoroutineStarter.instance.StartCoroutine(PreloadDefaultSabers());
+                    Console.WriteLine("Launched!");
+                }
+            }
+
             if (scene.name == "GameCore")
             {
                 LoadNewSaber(_currentSaberPath);
@@ -76,20 +88,31 @@ namespace CustomSaber
                 CustomSaberUI.OnLoad();
             }
         }
-
-        private IEnumerator SaberTest()
+        
+        private IEnumerator PreloadDefaultSabers()
         {
             doeet = false;
-            Application.LoadLevelAdditiveAsync("GameCore");
+            Console.WriteLine("Preloading default sabers!");
+            var harmony = HarmonyInstance.Create("CustomSaberHarmonyInstance");
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            Console.WriteLine("Loading GameCore scene");
+            SceneManager.LoadSceneAsync("GameCore", LoadSceneMode.Additive);
+            Console.WriteLine("Loaded!");
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Count() > 1);
-            foreach (Saber s in Resources.FindObjectsOfTypeAll<Saber>()) {
+            Console.WriteLine("Got sabers!");
+            foreach (Saber s in Resources.FindObjectsOfTypeAll<Saber>())
+            {
                 Console.WriteLine($"Saber: {s.name}, GameObj: {s.gameObject.name}, {s.ToString()}");
                 if (s.name == "RightSaber") RightSaber = Saber.Instantiate(s);
                 else if (s.name == "LeftSaber") LeftSaber = Saber.Instantiate(s);
             }
-            if (RightSaber) UnityEngine.Object.DontDestroyOnLoad(RightSaber.gameObject);
-            if (LeftSaber) UnityEngine.Object.DontDestroyOnLoad(LeftSaber.gameObject);
+            Console.WriteLine("Finished! Got default sabers! Setting active state");
+            if (RightSaber) { UnityEngine.Object.DontDestroyOnLoad(RightSaber.gameObject); RightSaber.gameObject.SetActive(false); }
+            if (LeftSaber) { UnityEngine.Object.DontDestroyOnLoad(LeftSaber.gameObject); LeftSaber.gameObject.SetActive(false); }
+            Console.WriteLine("Unloading GameCore");
             SceneManager.UnloadSceneAsync("GameCore");
+            Console.WriteLine("Unloading harmony patches");
+            harmony.UnpatchAll();
         }
 
         public static List<string> RetrieveCustomSabers()

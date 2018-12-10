@@ -19,8 +19,6 @@ namespace CustomSaber
         public GameObject _saberPreview;
         private GameObject PreviewSaber;
         private GameObject _previewParent;
-        public static GameObject OriginalSaberA;
-        public static GameObject OriginalSaberB;
         public GameObject _saberPreviewA;
         public GameObject _saberPreviewB;
 
@@ -47,8 +45,6 @@ namespace CustomSaber
 
                 if (firstActivation)
                 {
-                    OriginalSabers();
-
                     for (int i=0; i<_sabers.Count; i++)
                         if (_sabers[i].Path == Plugin._currentSaberPath)
                             selected = i;
@@ -259,9 +255,11 @@ namespace CustomSaber
 
         public void DestroyPreview()
         {
-            Destroy(_saberPreview);
+            if(_saberPreview)
+                Destroy(_saberPreview);
             PreviewSaber = null;
-            Destroy(_previewParent);
+            if(_previewParent)
+                Destroy(_previewParent);
         }
 
         public void GeneratePreview(int SaberIndex)
@@ -310,9 +308,7 @@ namespace CustomSaber
         public void GeneratePreviewOriginal()
         {
             DestroyPreview();
-            OriginalSaberA = Plugin.LeftSaber.gameObject;
-            OriginalSaberB = Plugin.RightSaber.gameObject;
-            if (OriginalSaberA == null || OriginalSaberB == null)
+            if (Plugin.LeftSaber == null || Plugin.RightSaber == null)
                 return;
             PreviewStatus = true;
             try
@@ -320,24 +316,21 @@ namespace CustomSaber
                 _previewParent = new GameObject();
                 _previewParent.transform.Translate(2.2f, 1.1f, 0.6f);
                 _previewParent.transform.Rotate(0, -30, 0);
-                _saberPreviewA = Instantiate(OriginalSaberA, _previewParent.transform);
-                _saberPreviewB = Instantiate(OriginalSaberB, _previewParent.transform);
+                
+                _saberPreviewA = Instantiate(Plugin.LeftSaber.gameObject, _previewParent.transform);
+                _saberPreviewB = Instantiate(Plugin.RightSaber.gameObject, _previewParent.transform);
+                _saberPreviewA.SetActive(true);
+                _saberPreviewB.SetActive(true);
 
                 _saberPreviewB.transform.Translate(0, 0.5f, 0);
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e);
             }
             PreviewStatus = false;
         }
-
-        private void OriginalSabers()
-        {
-            // https://i.imgur.com/00QPZL0.png
-            // _saberPreviewA = original left saber
-            // _saberPreviewB = original right saber
-        }
-
+        
         public float RowHeight()
         {
             return 10f;
