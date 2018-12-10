@@ -284,12 +284,15 @@ namespace CustomSaber
                     PreviewSaber = _sabers[SaberIndex].GameObject;
 
                     _previewParent = new GameObject();
-                    _previewParent.transform.Translate(2.2f, 1.1f , 0.6f);
+                    _previewParent.transform.Translate(2.2f, 1.1f, 0.6f);
                     _previewParent.transform.Rotate(0, -30, 0);
-                    _saberPreview = Instantiate(PreviewSaber, _previewParent.transform);
-                    _saberPreview.transform.Find("LeftSaber").transform.localPosition = new Vector3(0, 0, 0);
-                    _saberPreview.transform.Find("RightSaber").transform.localPosition = new Vector3(0, 0, 0);
-                    _saberPreview.transform.Find("RightSaber").transform.Translate(0, 0.5f, 0);
+                    if (PreviewSaber)
+                    {
+                        _saberPreview = Instantiate(PreviewSaber, _previewParent.transform);
+                        _saberPreview.transform.Find("LeftSaber").transform.localPosition = new Vector3(0, 0, 0);
+                        _saberPreview.transform.Find("RightSaber").transform.localPosition = new Vector3(0, 0, 0);
+                        _saberPreview.transform.Find("RightSaber").transform.Translate(0, 0.5f, 0);
+                    }
 
                 }
                 catch (Exception e)
@@ -307,6 +310,8 @@ namespace CustomSaber
         public void GeneratePreviewOriginal()
         {
             DestroyPreview();
+            OriginalSaberA = Plugin.LeftSaber.gameObject;
+            OriginalSaberB = Plugin.RightSaber.gameObject;
             if (OriginalSaberA == null || OriginalSaberB == null)
                 return;
             PreviewStatus = true;

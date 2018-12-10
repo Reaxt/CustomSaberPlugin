@@ -25,6 +25,8 @@ namespace CustomSaber
         private static List<string> _saberPaths;
         private static AssetBundle _currentSaber;
         public static string _currentSaberPath;
+        public static Saber RightSaber;
+        public static Saber LeftSaber;
 
         private bool _init;
 
@@ -54,8 +56,11 @@ namespace CustomSaber
             SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
         }
         
+        bool doeet = true;
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
+            if(scene.buildIndex > 0)
+                if(doeet) SharedCoroutineStarter.instance.StartCoroutine(SaberTest());
             if (scene.name == "GameCore")
             {
                 LoadNewSaber(_currentSaberPath);
@@ -70,6 +75,21 @@ namespace CustomSaber
                 }
                 CustomSaberUI.OnLoad();
             }
+        }
+
+        private IEnumerator SaberTest()
+        {
+            doeet = false;
+            Application.LoadLevelAdditiveAsync("GameCore");
+            yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Count() > 1);
+            foreach (Saber s in Resources.FindObjectsOfTypeAll<Saber>()) {
+                Console.WriteLine($"Saber: {s.name}, GameObj: {s.gameObject.name}, {s.ToString()}");
+                if (s.name == "RightSaber") RightSaber = Saber.Instantiate(s);
+                else if (s.name == "LeftSaber") LeftSaber = Saber.Instantiate(s);
+            }
+            if (RightSaber) UnityEngine.Object.DontDestroyOnLoad(RightSaber.gameObject);
+            if (LeftSaber) UnityEngine.Object.DontDestroyOnLoad(LeftSaber.gameObject);
+            SceneManager.UnloadSceneAsync("GameCore");
         }
 
         public static List<string> RetrieveCustomSabers()
