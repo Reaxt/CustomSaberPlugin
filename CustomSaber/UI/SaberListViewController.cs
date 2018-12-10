@@ -170,24 +170,36 @@ namespace CustomSaber
                     }
                     else
                     {
-                        var tempbundle = AssetBundle.LoadFromFile(sab);
-                        GameObject sabroot = tempbundle.LoadAsset<GameObject>("_customsaber");
-                        SaberDescriptor tempdesciptor = sabroot.GetComponent<SaberDescriptor>();
-                        if (tempdesciptor == null)
+                        try
                         {
-                            tempsab.Name = sab.Split('/').Last().Split('.').First();
-                            tempsab.Author = "THIS SHOULD NEVER HAPPEN";
+                            AssetBundle tempbundle = AssetBundle.LoadFromFile(sab);
+                            GameObject sabroot = tempbundle.LoadAsset<GameObject>("_customsaber");
+                            SaberDescriptor tempdesciptor = sabroot.GetComponent<SaberDescriptor>();
+                            if (tempdesciptor == null)
+                            {
+                                tempsab.Name = sab.Split('/').Last().Split('.').First();
+                                tempsab.Author = "THIS SHOULD NEVER HAPPEN";
+                                tempsab.Path = sab;
+                                tempsab.AssetBundle = null;
+                                tempsab.GameObject = null;
+                            }
+                            else
+                            {
+                                tempsab.Name = tempdesciptor.SaberName;
+                                tempsab.Author = tempdesciptor.AuthorName;
+                                tempsab.Path = sab;
+                                tempsab.AssetBundle = tempbundle;
+                                tempsab.GameObject = sabroot;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            tempsab.Name = "This saber is broken, delete it.";
+                            tempsab.Author = sab.Split('/').Last();//.Split('.').First();
                             tempsab.Path = sab;
                             tempsab.AssetBundle = null;
                             tempsab.GameObject = null;
-                        }
-                        else
-                        {
-                            tempsab.Name = tempdesciptor.SaberName;
-                            tempsab.Author = tempdesciptor.AuthorName;
-                            tempsab.Path = sab;
-                            tempsab.AssetBundle = tempbundle;
-                            tempsab.GameObject = sabroot;
                         }
                     }
                     _sabers.Add(tempsab);
@@ -269,13 +281,16 @@ namespace CustomSaber
             {
                 try
                 {
-                PreviewSaber = _sabers[SaberIndex].GameObject;
+                    PreviewSaber = _sabers[SaberIndex].GameObject;
 
-                _previewParent = new GameObject();
-                _previewParent.transform.Translate(2.2f, 1.1f , 0.6f);
-                _previewParent.transform.Rotate(0, -30, 0);
-                _saberPreview = Instantiate(PreviewSaber, _previewParent.transform);
-                _saberPreview.transform.Find("RightSaber").transform.Translate(0, 0.5f, 0);
+                    _previewParent = new GameObject();
+                    _previewParent.transform.Translate(2.2f, 1.1f , 0.6f);
+                    _previewParent.transform.Rotate(0, -30, 0);
+                    _saberPreview = Instantiate(PreviewSaber, _previewParent.transform);
+                    _saberPreview.transform.Find("LeftSaber").transform.localPosition = new Vector3(0, 0, 0);
+                    _saberPreview.transform.Find("RightSaber").transform.localPosition = new Vector3(0, 0, 0);
+                    _saberPreview.transform.Find("RightSaber").transform.Translate(0, 0.5f, 0);
+
                 }
                 catch (Exception e)
                 {
