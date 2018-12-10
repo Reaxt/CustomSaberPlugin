@@ -15,11 +15,14 @@ namespace CustomSaber
 {
     class SaberListViewController : VRUIViewController, TableView.IDataSource
     {
-        private Button _toggleButton;
         private int selected;
-        public GameObject previewobj;
-        private GameObject previewparent;
-        public AssetBundle preview;
+        public GameObject _saberPreview;
+        private GameObject PreviewSaber;
+        private GameObject _previewParent;
+        public static GameObject OriginalSaberA;
+        public static GameObject OriginalSaberB;
+        public GameObject _saberPreviewA;
+        public GameObject _saberPreviewB;
 
         public Button _pageUpButton;
         public Button _pageDownButton;
@@ -32,17 +35,21 @@ namespace CustomSaber
         public TableView _sabersTableView;
         LevelListTableCell _songListTableCellInstance;
 
+        private bool PreviewStatus;
+
         public Action backButtonPressed;
 
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
             try
             {
+                LoadSabers(firstActivation);
+
                 if (firstActivation)
                 {
-                    LoadSabers();
-                    
-                    for(int i=0; i<_sabers.Count; i++)
+                    OriginalSabers();
+
+                    for (int i=0; i<_sabers.Count; i++)
                         if (_sabers[i].Path == Plugin._currentSaberPath)
                             selected = i;
 
@@ -101,6 +108,8 @@ namespace CustomSaber
                         _backButton.onClick.AddListener(delegate ()
                         {
                             if (backButtonPressed != null) backButtonPressed();
+                            DestroyPreview();
+                            UnLoadSabers();
                         });
                     }
                 }
@@ -111,6 +120,8 @@ namespace CustomSaber
                 
                 _sabersTableView.SelectRow(selected);
                 _sabersTableView.ScrollToRow(selected, true);
+
+                PreviewCurrent();
             }
             catch (Exception e)
             {
@@ -123,142 +134,203 @@ namespace CustomSaber
             base.DidDeactivate(type);
         }
 
+        private void PreviewCurrent()
+        {
+            if (selected != 0)
+            {
+                GeneratePreview(selected);
+            }
+            else
+            {
+                GeneratePreviewOriginal();
+            }
+        }
+
         public void RefreshScreen()
         {
             _sabersTableView.ReloadData();
         }
 
         // ReSharper disable once InconsistentNaming
-        public void LoadSabers()
+        public void LoadSabers(bool FirstRun)
         {
             Console.WriteLine("Loading sabers!");
-            foreach (string sab in Plugin.RetrieveCustomSabers())
+            if (FirstRun)
             {
-                CustomSaber tempsab = new CustomSaber();
-                if (sab == "DefaultSabers")
+                foreach (string sab in Plugin.RetrieveCustomSabers())
                 {
-                    tempsab.Name = "Default Sabers";
-                    tempsab.Author = "Beat Saber";
-                    tempsab.Path = "DefaultSabers";
-                }
-                else
-                {
-                    var tempbundle = AssetBundle.LoadFromFile(sab);
-                    GameObject sabroot = tempbundle.LoadAsset<GameObject>("_customsaber");
-                    SaberDescriptor tempdesciptor = sabroot.GetComponent<SaberDescriptor>();
-                    if (tempdesciptor == null)
+                    CustomSaber tempsab = new CustomSaber();
+                    if (sab == "DefaultSabers")
                     {
-                        tempsab.Name = sab.Split('/').Last().Split('.').First();
-                        tempsab.Author = "THIS SHOULD NEVER HAPPEN";
-                        tempsab.Path = sab;
+                        tempsab.Name = "Default Sabers";
+                        tempsab.Author = "Beat Saber";
+                        tempsab.Path = "DefaultSabers";
+                        tempsab.AssetBundle = null;
+                        tempsab.GameObject = null;
                     }
                     else
                     {
-                        tempsab.Name = tempdesciptor.SaberName;
-                        tempsab.Author = tempdesciptor.AuthorName;
-                        tempsab.Path = sab;
+                        try
+                        {
+                            AssetBundle tempbundle = AssetBundle.LoadFromFile(sab);
+                            GameObject sabroot = tempbundle.LoadAsset<GameObject>("_customsaber");
+                            SaberDescriptor tempdesciptor = sabroot.GetComponent<SaberDescriptor>();
+                            if (tempdesciptor == null)
+                            {
+                                tempsab.Name = sab.Split('/').Last().Split('.').First();
+                                tempsab.Author = "THIS SHOULD NEVER HAPPEN";
+                                tempsab.Path = sab;
+                                tempsab.AssetBundle = null;
+                                tempsab.GameObject = null;
+                            }
+                            else
+                            {
+                                tempsab.Name = tempdesciptor.SaberName;
+                                tempsab.Author = tempdesciptor.AuthorName;
+                                tempsab.Path = sab;
+                                tempsab.AssetBundle = tempbundle;
+                                tempsab.GameObject = sabroot;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            tempsab.Name = "This saber is broken, delete it.";
+                            tempsab.Author = sab.Split('/').Last();//.Split('.').First();
+                            tempsab.Path = sab;
+                            tempsab.AssetBundle = null;
+                            tempsab.GameObject = null;
+                        }
                     }
-                    tempbundle.Unload(true);
+                    _sabers.Add(tempsab);
                 }
-
-                _sabers.Add(tempsab);
+            }
+            else
+            {
+                foreach (CustomSaber tempsab in _sabers)
+                {
+                    if (tempsab.Path != "DefaultSabers")
+                    {
+                        var tempbundle = AssetBundle.LoadFromFile(tempsab.Path);
+                        GameObject sabroot = tempbundle.LoadAsset<GameObject>("_customsaber");
+                        SaberDescriptor tempdesciptor = sabroot.GetComponent<SaberDescriptor>();
+                        if (tempdesciptor == null)
+                        {
+                            tempsab.AssetBundle = null;
+                            tempsab.GameObject = null;
+                        }
+                        else
+                        {
+                            tempsab.AssetBundle = tempbundle;
+                            tempsab.GameObject = sabroot;
+                        }
+                    }
+                }
             }
             Console.WriteLine("Added all sabers");
+        }
 
+        public void UnLoadSabers()
+        {
+            Console.WriteLine("Unloading sabers!");
+            foreach (CustomSaber saber in _sabers)
+            {
+                if(saber.Path != "DefaultSabers") { 
+                    saber.AssetBundle.Unload(true);
+                    saber.AssetBundle = null;
+                    saber.GameObject = null;
+                }
+            }
         }
 
         private void _sabersTableView_DidSelectRowEvent(TableView sender, int row)
         {
             Plugin._currentSaberPath = _sabers[row].Path;
             selected = row;
-            Console.WriteLine($"Selected saber {_sabers[row].Name} created by {_sabers[row].Author}");
-
-            //if (preview != null)
-            //{
-            //    Destroy(previewobj);
-            //    preview.Unload(true);
-            //    preview = null;
-            //}
-            //preview = AssetBundle.LoadFromFile(_sabers[row].Path);
-            //GameObject previewsabers = preview.LoadAsset<GameObject>("_customsaber");
-            //previewobj = Instantiate(previewsabers, previewparent.transform);
-            //previewobj.transform.Find("RightSaber").transform.Translate(0, 0.5f, 0);
-
-            //try
-            //{
-            //    if (_parentViewController.customSaberDetailsViewController == null)
-            //    {
-            //        GameObject _songDetailGameObject = Instantiate(Resources.FindObjectsOfTypeAll<StandardLevelDetailViewController>().First(), rectTransform, false).gameObject;
-            //        Destroy(_songDetailGameObject.GetComponent<StandardLevelDetailViewController>());
-            //        _parentViewController.customSaberDetailsViewController = _songDetailGameObject.AddComponent<CustomSaberDetailViewController>();
-
-            //        StartCoroutine(_parentViewController.PushViewControllerCoroutine(_parentViewController.customSaberDetailsViewController, () =>
-            //        {
-            //            _parentViewController.ModDetailsPushed = true;
-            //            SetSaberDetailsData(_parentViewController.customSaberDetailsViewController, row);
-            //        }, true));
-
-
-            //    }
-            //    else
-            //    {
-            //        if (_parentViewController.ModDetailsPushed)
-            //        {
-            //            SetSaberDetailsData(_parentViewController.customSaberDetailsViewController, row);
-            //        }
-            //        else
-            //        {
-            //            SetSaberDetailsData(_parentViewController.customSaberDetailsViewController, row);
-            //            StartCoroutine(_parentViewController.PushViewControllerCoroutine(_parentViewController.customSaberDetailsViewController, () => { _parentViewController.ModDetailsPushed = true; }, true));
-
-
-            //        }
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine(e);
-            //}
+            if (row == 0)
+            {
+                GeneratePreviewOriginal();
+            }
+            else
+            {
+                GeneratePreview(row);
+            }
         }
 
-        private void SetSaberDetailsData(object saberDetails, int selectedMod)
+        public void DestroyPreview()
         {
-            //try
-            //{
-            //    saberDetails.UpdateContent(_sabers[selectedMod]);
+            Destroy(_saberPreview);
+            PreviewSaber = null;
+            Destroy(_previewParent);
+        }
 
-            //    if (_toggleButton == null)
-            //    {
-            //        _toggleButton = saberDetails.GetComponentInChildren<Button>();
-            //    }
+        public void GeneratePreview(int SaberIndex)
+        {
+            Plugin._currentSaberPath = _sabers[SaberIndex].Path;
+            selected = SaberIndex;
+            Console.WriteLine($"Selected saber {_sabers[SaberIndex].Name} created by {_sabers[SaberIndex].Author}");
 
-            //    //TODO: IMPLEMENT STUFFS
-            //    _toggleButton.gameObject.SetActive(true);
-            //    if (Plugin._currentSaberPath == _sabers[selected].Path)
-            //    {
-            //        _toggleButton.SetButtonText("Selected");
-            //        _toggleButton.interactable = false;
-            //    }
-            //    else
-            //    {
-            //        _toggleButton.SetButtonText("Select");
-            //        _toggleButton.interactable = true;
-            //    }
+            if (PreviewStatus)
+            {
+                return;
+            }
+            PreviewStatus = true;
+            DestroyPreview();
 
+            if (_sabers[SaberIndex] != null)
+            {
+                try
+                {
+                    PreviewSaber = _sabers[SaberIndex].GameObject;
 
-            //    DestroyImmediate(_toggleButton.GetComponent<SignalOnUIButtonClick>());
-            //    _toggleButton.onClick = new Button.ButtonClickedEvent();
-            //    _toggleButton.onClick.AddListener(delegate
-            //    {
-            //        Plugin._currentSaberPath = _sabers[selected].Path;
-            //        _toggleButton.SetButtonText("Selected");
-            //        _toggleButton.interactable = false;
-            //    });
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine($"Died in SetSaberDetailData {e.ToString()}");
-            //}
+                    _previewParent = new GameObject();
+                    _previewParent.transform.Translate(2.2f, 1.1f , 0.6f);
+                    _previewParent.transform.Rotate(0, -30, 0);
+                    _saberPreview = Instantiate(PreviewSaber, _previewParent.transform);
+                    _saberPreview.transform.Find("LeftSaber").transform.localPosition = new Vector3(0, 0, 0);
+                    _saberPreview.transform.Find("RightSaber").transform.localPosition = new Vector3(0, 0, 0);
+                    _saberPreview.transform.Find("RightSaber").transform.Translate(0, 0.5f, 0);
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Failed to load preview. " + _sabers[SaberIndex].Name);
+            }
+            PreviewStatus = false;
+        }
+
+        public void GeneratePreviewOriginal()
+        {
+            DestroyPreview();
+            if (OriginalSaberA == null || OriginalSaberB == null)
+                return;
+            PreviewStatus = true;
+            try
+            {
+                _previewParent = new GameObject();
+                _previewParent.transform.Translate(2.2f, 1.1f, 0.6f);
+                _previewParent.transform.Rotate(0, -30, 0);
+                _saberPreviewA = Instantiate(OriginalSaberA, _previewParent.transform);
+                _saberPreviewB = Instantiate(OriginalSaberB, _previewParent.transform);
+
+                _saberPreviewB.transform.Translate(0, 0.5f, 0);
+            }catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            PreviewStatus = false;
+        }
+
+        private void OriginalSabers()
+        {
+            // https://i.imgur.com/00QPZL0.png
+            // _saberPreviewA = original left saber
+            // _saberPreviewB = original right saber
         }
 
         public float RowHeight()
