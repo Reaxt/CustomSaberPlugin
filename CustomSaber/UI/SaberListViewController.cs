@@ -23,6 +23,7 @@ namespace CustomSaber
         public GameObject _saberPreviewB;
         public GameObject _saberPreviewAParent;
         public GameObject _saberPreviewBParent;
+        private MenuShockwave menuShockwave = Resources.FindObjectsOfTypeAll<MenuShockwave>().FirstOrDefault();
 
         public Button _pageUpButton;
         public Button _pageDownButton;
@@ -36,6 +37,7 @@ namespace CustomSaber
         LevelListTableCell _songListTableCellInstance;
 
         private bool PreviewStatus;
+        private bool menuShockwaveOriginalState;
 
         public Action backButtonPressed;
 
@@ -44,6 +46,8 @@ namespace CustomSaber
             try
             {
                 LoadSabers(firstActivation);
+                menuShockwaveOriginalState = menuShockwave.enabled;
+                menuShockwave.enabled = false;
 
                 if (firstActivation)
                 {
@@ -108,6 +112,7 @@ namespace CustomSaber
                             if (backButtonPressed != null) backButtonPressed();
                             DestroyPreview();
                             UnLoadSabers();
+                            menuShockwave.enabled = menuShockwaveOriginalState;
                         });
                     }
                 }
@@ -293,7 +298,6 @@ namespace CustomSaber
                         _saberPreview.transform.Find("RightSaber").transform.localPosition = new Vector3(0, 0, 0);
                         _saberPreview.transform.Find("RightSaber").transform.Translate(0, 0.5f, 0);
                     }
-
                 }
                 catch (Exception e)
                 {
@@ -346,7 +350,7 @@ namespace CustomSaber
             }
             PreviewStatus = false;
         }
-        
+
         public float RowHeight()
         {
             return 10f;
