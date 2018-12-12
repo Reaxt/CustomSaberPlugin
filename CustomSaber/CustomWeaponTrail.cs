@@ -13,11 +13,11 @@ namespace CustomSaber
         public Color _customColor;
         public Material _customMaterial;
 
-        protected override Color Color
+        protected override Color color
         {
             get
             {
-                if (_saberType.Equals(ColorType.LeftSaber) && _colorManager!=null)
+                if (_saberType.Equals(ColorType.LeftSaber) && _colorManager != null)
                 {
                     return _colorManager.ColorForSaberType(Saber.SaberType.SaberA) * _multiplierSaberColor;
                 }
@@ -32,7 +32,7 @@ namespace CustomSaber
             }
         }
 
-        public void init(XWeaponTrailRenderer TrailRendererPrefab, ColorManager colorManager, Transform PointStart, Transform PointEnd,Material TrailMaterial, Color TrailColor, int Length, Color multiplierSaberColor, ColorType colorType)
+        public void init(XWeaponTrailRenderer TrailRendererPrefab, ColorManager colorManager, Transform PointStart, Transform PointEnd, Material TrailMaterial, Color TrailColor, int Length, Color multiplierSaberColor, ColorType colorType)
         {
             _pointStart = PointStart;
             _pointEnd = PointEnd;
