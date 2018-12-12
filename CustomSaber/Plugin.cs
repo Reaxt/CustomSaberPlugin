@@ -103,12 +103,13 @@ namespace CustomSaber
             foreach (Saber s in Resources.FindObjectsOfTypeAll<Saber>())
             {
                 Console.WriteLine($"Saber: {s.name}, GameObj: {s.gameObject.name}, {s.ToString()}");
-                if (s.name == "RightSaber") RightSaber = Saber.Instantiate(s);
-                else if (s.name == "LeftSaber") LeftSaber = Saber.Instantiate(s);
+                if (s.name == "LeftSaber") LeftSaber = Saber.Instantiate(s);
+                else if (s.name == "RightSaber") RightSaber = Saber.Instantiate(s);
             }
             Console.WriteLine("Finished! Got default sabers! Setting active state");
-            if (RightSaber) { UnityEngine.Object.DontDestroyOnLoad(RightSaber.gameObject); RightSaber.gameObject.SetActive(false); RightSaber.transform.SetParent(null); }
-            if (LeftSaber) { UnityEngine.Object.DontDestroyOnLoad(LeftSaber.gameObject); LeftSaber.gameObject.SetActive(false); LeftSaber.transform.SetParent(null); }
+            if (LeftSaber) { UnityEngine.Object.DontDestroyOnLoad(LeftSaber.gameObject); LeftSaber.gameObject.SetActive(false); LeftSaber.name = "___OriginalSaberPreviewB"; }
+            if (RightSaber) { UnityEngine.Object.DontDestroyOnLoad(RightSaber.gameObject); RightSaber.gameObject.SetActive(false); RightSaber.name = "___OriginalSaberPreviewA"; }
+
             Console.WriteLine("Unloading GameCore");
             SceneManager.UnloadSceneAsync("GameCore");
             Console.WriteLine("Unloading harmony patches");

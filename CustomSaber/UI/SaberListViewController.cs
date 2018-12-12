@@ -23,8 +23,14 @@ namespace CustomSaber
         public GameObject _saberPreviewB;
         public GameObject _saberPreviewAParent;
         public GameObject _saberPreviewBParent;
-        public readonly static Saber LeftSaber = Instantiate(Plugin.LeftSaber);
-        public readonly static Saber RightSaber = Instantiate(Plugin.RightSaber);
+        private Mesh _BladeA;
+        private Mesh _GlowingA;
+        private Mesh _NormalA;
+        private Mesh _BladeB;
+        private Mesh _GlowingB;
+        private Mesh _NormalB;
+
+
         private MenuShockwave menuShockwave = Resources.FindObjectsOfTypeAll<MenuShockwave>().FirstOrDefault();
 
         public Button _pageUpButton;
@@ -317,13 +323,9 @@ namespace CustomSaber
         public void DestroyOriginalPreview()
         {
             if (_saberPreviewAParent)
-            {
                 _saberPreviewAParent.SetActive(false);
-            }
             if (_saberPreviewBParent)
-            {
                 _saberPreviewBParent.SetActive(false);
-            }
         }
 
         public void GeneratePreviewOriginal()
@@ -336,26 +338,51 @@ namespace CustomSaber
             {
                 if (_saberPreviewAParent)
                 {
-                    Console.WriteLine("_saberPreviewAParent found." + _saberPreviewAParent.gameObject.activeSelf + " | " + _saberPreviewAParent.gameObject.activeInHierarchy);
                     _saberPreviewAParent.SetActive(true);
                     if (_saberPreviewA)
-                    {
                         _saberPreviewA.SetActive(true);
-                        Console.WriteLine("_saberPreviewA found." + _saberPreviewA.gameObject.activeSelf + " | " + _saberPreviewA.gameObject.activeInHierarchy);
-                    }
-                    else
+
+                    foreach (Transform t in _saberPreviewA.transform)
                     {
-                        Console.WriteLine("_saberPreviewA Not found.");
+                        var filter = t.GetComponentInChildren<MeshFilter>();
+                        foreach (Transform t2 in t)
+                        {
+                            filter = t2.GetComponentInChildren<MeshFilter>();
+                            if (filter.name == "Blade")
+                                if (filter.sharedMesh == null)
+                                    filter.sharedMesh = _BladeA;
+                            if (filter.name == "Normal")
+                                if (filter.sharedMesh == null)
+                                    filter.sharedMesh = _NormalA;
+                            if (filter.name == "Glowing")
+                                if (filter.sharedMesh == null)
+                                    filter.sharedMesh = _GlowingA;
+                        }
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Making Default Saber A");
                     _saberPreviewAParent = new GameObject("Saber Prewview A Parent");
                     if (_saberPreviewAParent) DontDestroyOnLoad(_saberPreviewAParent.gameObject);
                     _saberPreviewA = Instantiate(Plugin.LeftSaber.gameObject, _saberPreviewAParent.transform);
                     Destroy(_saberPreviewA.GetComponent<VRController>());
                     _saberPreviewA.SetActive(true);
+
+                    foreach (Transform t in _saberPreviewA.transform)
+                    {
+                        var filter = t.GetComponentInChildren<MeshFilter>();
+                        foreach (Transform t2 in t)
+                        {
+                            filter = t2.GetComponentInChildren<MeshFilter>();
+                            if (filter.name == "Blade")
+                                _BladeA = filter.mesh;
+                            if (filter.name == "Normal")
+                                _NormalA = filter.mesh;
+                            if (filter.name == "Glowing")
+                                _GlowingA = filter.mesh;
+                        }
+                    }
+
                     _saberPreviewA.transform.localEulerAngles = new Vector3(0, 0, 0);
                     _saberPreviewA.transform.localPosition = new Vector3(0, 0, 0);
                     _saberPreviewAParent.transform.position = new Vector3(2.2f, 1.1f, 0.6f);
@@ -369,26 +396,50 @@ namespace CustomSaber
             try {
                 if (_saberPreviewBParent)
                 {
-                    Console.WriteLine("_saberPreviewBParent found." + _saberPreviewBParent.gameObject.activeSelf + " | " + _saberPreviewBParent.gameObject.activeInHierarchy);
                     _saberPreviewBParent.SetActive(true);
                     if (_saberPreviewB)
-                    {
-                        Console.WriteLine("_saberPreviewB found." + _saberPreviewB.gameObject.activeSelf + " | " + _saberPreviewB.gameObject.activeInHierarchy);
                         _saberPreviewB.SetActive(true);
-                    }
-                    else
+                    foreach (Transform t in _saberPreviewB.transform)
                     {
-                        Console.WriteLine("_saberPreviewB Not found.");
+                        var filter = t.GetComponentInChildren<MeshFilter>();
+                        foreach (Transform t2 in t)
+                        {
+                            filter = t2.GetComponentInChildren<MeshFilter>();
+                            if (filter.name == "Blade")
+                                if (filter.sharedMesh == null)
+                                    filter.sharedMesh = _BladeB;
+                            if (filter.name == "Normal")
+                                if (filter.sharedMesh == null)
+                                    filter.sharedMesh = _NormalB;
+                            if (filter.name == "Glowing")
+                                if (filter.sharedMesh == null)
+                                    filter.sharedMesh = _GlowingB;
+                        }
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Making Default Saber B");
                     _saberPreviewBParent = new GameObject("Saber Prewview B Parent");
                     if (_saberPreviewBParent) DontDestroyOnLoad(_saberPreviewBParent.gameObject);
                     _saberPreviewB = Instantiate(Plugin.RightSaber.gameObject, _saberPreviewBParent.transform);
                     Destroy(_saberPreviewB.GetComponent<VRController>());
                     _saberPreviewB.SetActive(true);
+
+                    foreach (Transform t in _saberPreviewB.transform)
+                    {
+                        var filter = t.GetComponentInChildren<MeshFilter>();
+                        foreach (Transform t2 in t)
+                        {
+                            filter = t2.GetComponentInChildren<MeshFilter>();
+                            if (filter.name == "Blade")
+                                _BladeB = filter.mesh;
+                            if (filter.name == "Normal")
+                                _NormalB = filter.mesh;
+                            if (filter.name == "Glowing")
+                                _GlowingB = filter.mesh;
+                        }
+                    }
+
                     _saberPreviewB.transform.localEulerAngles = new Vector3(0, 0, 0);
                     _saberPreviewB.transform.localPosition = new Vector3(0, 0, 0);
                     _saberPreviewBParent.transform.position = new Vector3(2.2f, 1.6f, 0.6f);
