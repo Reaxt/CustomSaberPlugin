@@ -23,6 +23,8 @@ namespace CustomSaber
         public GameObject _saberPreviewB;
         public GameObject _saberPreviewAParent;
         public GameObject _saberPreviewBParent;
+        public readonly static Saber LeftSaber = Instantiate(Plugin.LeftSaber);
+        public readonly static Saber RightSaber = Instantiate(Plugin.RightSaber);
         private MenuShockwave menuShockwave = Resources.FindObjectsOfTypeAll<MenuShockwave>().FirstOrDefault();
 
         public Button _pageUpButton;
@@ -166,7 +168,7 @@ namespace CustomSaber
                     if (sab == "DefaultSabers")
                     {
                         tempsab.Name = "Default Sabers";
-                        tempsab.Author = "Beat Saber";
+                        tempsab.Author = "Beat Games";
                         tempsab.Path = "DefaultSabers";
                         tempsab.AssetBundle = null;
                         tempsab.GameObject = null;
@@ -262,7 +264,8 @@ namespace CustomSaber
 
         public void DestroyPreview()
         {
-            if(_saberPreview)
+            DestroyOriginalPreview();
+            if (_saberPreview)
                 Destroy(_saberPreview);
             PreviewSaber = null;
             if(_previewParent)
@@ -311,38 +314,86 @@ namespace CustomSaber
             PreviewStatus = false;
         }
 
+        public void DestroyOriginalPreview()
+        {
+            if (_saberPreviewAParent)
+            {
+                _saberPreviewAParent.SetActive(false);
+            }
+            if (_saberPreviewBParent)
+            {
+                _saberPreviewBParent.SetActive(false);
+            }
+        }
+
         public void GeneratePreviewOriginal()
         {
-            DestroyPreview();
-            if (_saberPreviewAParent)
-                Destroy(_saberPreviewAParent);
-            if (_saberPreviewBParent)
-                Destroy(_saberPreviewBParent);
             if (Plugin.LeftSaber == null || Plugin.RightSaber == null)
                 return;
             PreviewStatus = true;
+            DestroyPreview();
             try
             {
-                _previewParent = new GameObject();
-                _saberPreviewAParent = new GameObject();
-                _saberPreviewBParent = new GameObject();
-
-                _previewParent.transform.Translate(2.2f, 1.1f, 0.6f);
-                _previewParent.transform.Rotate(0, -30, 0);
-                _saberPreviewAParent.transform.parent = _previewParent.transform;
-                _saberPreviewBParent.transform.parent = _previewParent.transform;
-
-                _saberPreviewA = Instantiate(Plugin.LeftSaber.gameObject, _saberPreviewAParent.transform);
-                _saberPreviewB = Instantiate(Plugin.RightSaber.gameObject, _saberPreviewBParent.transform);
-                _saberPreviewA.SetActive(true);
-                _saberPreviewB.SetActive(true);
-
-                _saberPreviewAParent.transform.localPosition = new Vector3(-_saberPreviewA.transform.localPosition.x, -_saberPreviewA.transform.localPosition.y, -_saberPreviewA.transform.localPosition.z);
-                _saberPreviewBParent.transform.localPosition = new Vector3(-_saberPreviewB.transform.localPosition.x, -_saberPreviewB.transform.localPosition.y, -_saberPreviewB.transform.localPosition.z);
-                _saberPreviewAParent.transform.localEulerAngles = new Vector3(-_saberPreviewA.transform.localEulerAngles.x, -_saberPreviewA.transform.localEulerAngles.y, -_saberPreviewA.transform.localEulerAngles.z);
-                _saberPreviewBParent.transform.localEulerAngles = new Vector3(-_saberPreviewB.transform.localEulerAngles.x, -_saberPreviewB.transform.localEulerAngles.y, -_saberPreviewB.transform.localEulerAngles.z);
-
-                _saberPreviewBParent.transform.Translate(0, 0.5f, 0);
+                if (_saberPreviewAParent)
+                {
+                    Console.WriteLine("_saberPreviewAParent found." + _saberPreviewAParent.gameObject.activeSelf + " | " + _saberPreviewAParent.gameObject.activeInHierarchy);
+                    _saberPreviewAParent.SetActive(true);
+                    if (_saberPreviewA)
+                    {
+                        _saberPreviewA.SetActive(true);
+                        Console.WriteLine("_saberPreviewA found." + _saberPreviewA.gameObject.activeSelf + " | " + _saberPreviewA.gameObject.activeInHierarchy);
+                    }
+                    else
+                    {
+                        Console.WriteLine("_saberPreviewA Not found.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Making Default Saber A");
+                    _saberPreviewAParent = new GameObject("Saber Prewview A Parent");
+                    if (_saberPreviewAParent) DontDestroyOnLoad(_saberPreviewAParent.gameObject);
+                    _saberPreviewA = Instantiate(Plugin.LeftSaber.gameObject, _saberPreviewAParent.transform);
+                    Destroy(_saberPreviewA.GetComponent<VRController>());
+                    _saberPreviewA.SetActive(true);
+                    _saberPreviewA.transform.localEulerAngles = new Vector3(0, 0, 0);
+                    _saberPreviewA.transform.localPosition = new Vector3(0, 0, 0);
+                    _saberPreviewAParent.transform.position = new Vector3(2.2f, 1.1f, 0.6f);
+                    _saberPreviewAParent.transform.eulerAngles = new Vector3(0, -30, 0);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            try {
+                if (_saberPreviewBParent)
+                {
+                    Console.WriteLine("_saberPreviewBParent found." + _saberPreviewBParent.gameObject.activeSelf + " | " + _saberPreviewBParent.gameObject.activeInHierarchy);
+                    _saberPreviewBParent.SetActive(true);
+                    if (_saberPreviewB)
+                    {
+                        Console.WriteLine("_saberPreviewB found." + _saberPreviewB.gameObject.activeSelf + " | " + _saberPreviewB.gameObject.activeInHierarchy);
+                        _saberPreviewB.SetActive(true);
+                    }
+                    else
+                    {
+                        Console.WriteLine("_saberPreviewB Not found.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Making Default Saber B");
+                    _saberPreviewBParent = new GameObject("Saber Prewview B Parent");
+                    if (_saberPreviewBParent) DontDestroyOnLoad(_saberPreviewBParent.gameObject);
+                    _saberPreviewB = Instantiate(Plugin.RightSaber.gameObject, _saberPreviewBParent.transform);
+                    Destroy(_saberPreviewB.GetComponent<VRController>());
+                    _saberPreviewB.SetActive(true);
+                    _saberPreviewB.transform.localEulerAngles = new Vector3(0, 0, 0);
+                    _saberPreviewB.transform.localPosition = new Vector3(0, 0, 0);
+                    _saberPreviewBParent.transform.position = new Vector3(2.2f, 1.6f, 0.6f);
+                    _saberPreviewBParent.transform.eulerAngles = new Vector3(0, -30, 0);
+                }
             }
             catch (Exception e)
             {
