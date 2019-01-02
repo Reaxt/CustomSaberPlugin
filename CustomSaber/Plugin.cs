@@ -113,7 +113,7 @@ namespace CustomSaber
             Console.WriteLine("Unloading GameCore");
             SceneManager.UnloadSceneAsync("GameCore");
             Console.WriteLine("Unloading harmony patches");
-            harmony.UnpatchAll();
+            harmony.UnpatchAll("CustomSaberHarmonyInstance");
         }
 
         public static List<string> RetrieveCustomSabers()
