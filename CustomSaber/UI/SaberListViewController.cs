@@ -10,7 +10,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VRUI;
-
 namespace CustomSaber
 {
     class SaberListViewController : VRUIViewController, TableView.IDataSource
@@ -29,7 +28,7 @@ namespace CustomSaber
         private Mesh _BladeB;
         private Mesh _GlowingB;
         private Mesh _NormalB;
-
+        private bool CustomColorsPresent = IllusionInjector.PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit");
 
         private MenuShockwave menuShockwave = Resources.FindObjectsOfTypeAll<MenuShockwave>().FirstOrDefault();
 
@@ -121,6 +120,10 @@ namespace CustomSaber
                             DestroyPreview();
                             UnLoadSabers();
                             menuShockwave.enabled = menuShockwaveOriginalState;
+                            if (CustomColorsPresent)
+                            {
+                                CallCustomColors(false);
+                            }
                         });
                     }
                 }
@@ -272,7 +275,11 @@ namespace CustomSaber
         {
             DestroyOriginalPreview();
             if (_saberPreview)
+            {
+                _saberPreview.name = "";
                 Destroy(_saberPreview);
+            }
+
             PreviewSaber = null;
             if(_previewParent)
                 Destroy(_previewParent);
@@ -303,15 +310,21 @@ namespace CustomSaber
                     if (PreviewSaber)
                     {
                         _saberPreview = Instantiate(PreviewSaber, _previewParent.transform);
+                        _saberPreview.name = "Saber Preview";
                         _saberPreview.transform.Find("LeftSaber").transform.localPosition = new Vector3(0, 0, 0);
                         _saberPreview.transform.Find("RightSaber").transform.localPosition = new Vector3(0, 0, 0);
                         _saberPreview.transform.Find("RightSaber").transform.Translate(0, 0.5f, 0);
+                        if (CustomColorsPresent)
+                        {
+                            CallCustomColors(true);
+                        }
                     }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                 }
+
             }
             else
             {
@@ -474,5 +487,11 @@ namespace CustomSaber
 
             return tableCell;
         }
+
+        private void CallCustomColors(bool loading)
+        {
+            CustomColors.Plugin.ForceOverrideCustomSabers(loading);
+        }
+
     }
 }
