@@ -291,7 +291,11 @@ namespace CustomSaber
 
                 CustomTrail[] trails;
 
-                if (saber.saberType == Saber.SaberType.SaberB)
+                Saber.SaberType[] typeForHands = new Saber.SaberType[] { Saber.SaberType.SaberB, Saber.SaberType.SaberA };
+                var playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModelSO>().FirstOrDefault();
+                if (playerDataModel && playerDataModel.currentLocalPlayer.playerSpecificSettings.swapColors) typeForHands = typeForHands.Reverse().ToArray();
+
+                if (saber.saberType == typeForHands[0])
                 {
                     if (saberRoot == null) { }
                     else
@@ -306,7 +310,7 @@ namespace CustomSaber
                         trail.Init(saber);
                     }
                 }
-                else if (saber.saberType == Saber.SaberType.SaberA)
+                else if (saber.saberType == typeForHands[1])
                 {
                     if (saberRoot == null) { }
                     else
