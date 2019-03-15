@@ -79,7 +79,7 @@ namespace CustomSaber
                 SaberScript.LoadAssets();
             }
 
-            if (scene.name == "Menu")
+            if (scene.name == "MenuCore")
             {
                 if (_currentSaber != null)
                 {

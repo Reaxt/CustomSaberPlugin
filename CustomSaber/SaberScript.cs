@@ -90,14 +90,10 @@ namespace CustomSaber
             Restart();
         }
 
-        StandardLevelSceneSetup GetGameSceneSetup()
+        BS_Utils.Gameplay.LevelData GetGameSceneSetup()
         {
-            StandardLevelSceneSetup s = GameObject.FindObjectOfType<StandardLevelSceneSetup>();
-            if (s == null)
-            {
-                s = UnityEngine.Resources.FindObjectsOfTypeAll<StandardLevelSceneSetup>().FirstOrDefault();
-            }
-            return s;
+
+            return BS_Utils.Plugin.LevelData;
         }
 
         private void AddEvents()
@@ -182,8 +178,8 @@ namespace CustomSaber
 
             try
             {
-                StandardLevelSceneSetup mgs = GetGameSceneSetup();
-                BeatmapData beatmapData = mgs.standardLevelSceneSetupData.difficultyBeatmap.beatmapData;
+                BS_Utils.Gameplay.LevelData mgs = GetGameSceneSetup();
+                BeatmapData beatmapData = mgs.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData;
 
                 BeatmapLineData[] beatmapLinesData = beatmapData.beatmapLinesData;
                 float LastTime = 0.0f;

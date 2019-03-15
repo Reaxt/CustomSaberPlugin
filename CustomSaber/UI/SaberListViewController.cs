@@ -81,7 +81,7 @@ namespace CustomSaber
                     _sabersTableView.SetPrivateField("_isInitialized", false);
                     _sabersTableView.dataSource = this;
 
-                    _sabersTableView.didSelectRowEvent += _sabersTableView_DidSelectRowEvent;
+                    _sabersTableView.didSelectCellWithIdxEvent += _sabersTableView_DidSelectRowEvent;
 
                     _pageUpButton = Instantiate(Resources.FindObjectsOfTypeAll<Button>().First(x => (x.name == "PageUpButton")), container, false);
                     (_pageUpButton.transform as RectTransform).anchoredPosition = new Vector2(0f, 30f);//-14
@@ -132,8 +132,8 @@ namespace CustomSaber
                 //    _sabersTableView.ReloadData();
                 //}
                 
-                _sabersTableView.SelectRow(selected);
-                _sabersTableView.ScrollToRow(selected, true);
+                _sabersTableView.SelectCellWithIdx(selected);
+                _sabersTableView.ScrollToCellWithIdx(selected,TableView.ScrollPositionType.Center, true);
 
                 PreviewCurrent();
             }
@@ -163,6 +163,19 @@ namespace CustomSaber
         public void RefreshScreen()
         {
             _sabersTableView.ReloadData();
+        }
+        public float CellSize()
+        {
+            return 12f;
+        }
+
+        public int NumberOfCells()
+        {
+            if (this._sabers == null)
+            {
+                return 0;
+            }
+            return this._sabers.Count;
         }
 
         // ReSharper disable once InconsistentNaming
@@ -476,16 +489,24 @@ namespace CustomSaber
             return _sabers.Count;
         }
 
-        public TableCell CellForRow(int row)
+        public TableCell CellForIdx(int row)
         {
-            var tableCell = Instantiate(_songListTableCellInstance);
+            LevelListTableCell _tableCell = _sabersTableView.DequeueReusableCellForIdentifier("LevelListTableCell") as LevelListTableCell;
+            if (!_tableCell)
+            {
+                _tableCell = Instantiate(_songListTableCellInstance);
+                _tableCell.reuseIdentifier = "LevelListTableCell";
+            }
+
+            _tableCell.SetPrivateField("_beatmapCharacteristicAlphas", new float[0]);
+            _tableCell.SetPrivateField("_beatmapCharacteristicImages", new UnityEngine.UI.Image[0]);
 
             var saber = _sabers.ElementAtOrDefault(row);
-            tableCell.songName = saber?.Name;
-            tableCell.author = saber?.Author;
-            tableCell.coverImage = Sprite.Create(Texture2D.blackTexture, new Rect(), Vector2.zero);
+            _tableCell.GetPrivateField<TextMeshProUGUI>("_songNameText").text = saber?.Name;
+            _tableCell.GetPrivateField<TextMeshProUGUI>("_authorText").text = saber?.Author;
+            _tableCell.GetPrivateField<UnityEngine.UI.Image>("_coverImage").sprite = Sprite.Create(Texture2D.blackTexture, new Rect(), Vector2.zero);
 
-            return tableCell;
+            return _tableCell;
         }
 
         private void CallCustomColors(bool loading)
