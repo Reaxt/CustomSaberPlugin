@@ -123,17 +123,21 @@
     <Reference Include="UnityEngine.WebModule">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.WebModule.dll</HintPath>
     </Reference>
+    <Reference Include="Zenject, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Zenject.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomTrails.cs" />
     <Compile Include="CustomWeaponTrail.cs" />
     <Compile Include="GameHooks.cs" />
+    <Compile Include="ReflectionUtil.cs" />
     <Compile Include="SaberDescriptor.cs" />
     <Compile Include="UI\SaberPreviewController.cs" />
     <Compile Include="UI\CustomSaberDetailViewController.cs" />
     <Compile Include="UI\CustomSaberUI.cs" />
     <Compile Include="UI\GenericFlowCoordinator.cs" />
-    <Compile Include="UI\ReflectionUtil.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="DynamicBone.cs" />
     <Compile Include="DynamicBoneCollider.cs" />

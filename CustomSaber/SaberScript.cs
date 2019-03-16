@@ -258,29 +258,26 @@ namespace CustomSaber
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
 
             var sabers = Resources.FindObjectsOfTypeAll<Saber>();
-            Console.WriteLine("Saber list get: " + sabers.Length);
-
             foreach (var saber in sabers)
             {
                 //  Console.WriteLine(saber.saberType + " " + saber.transform.GetChild(0) + saber.transform.GetChild(1) + saber.transform.GetChild(2) + saber.transform.GetChild(3));
-                Console.WriteLine("Children: " + saber.transform.childCount);
                 foreach (MeshFilter t in saber.GetComponentsInChildren<MeshFilter>())
+                {
                     t.sharedMesh = null;
+
+                }
             }
                 foreach (var saber in sabers)
             {
                 //  Console.WriteLine(saber.saberType + " " + saber.transform.GetChild(0) + saber.transform.GetChild(1) + saber.transform.GetChild(2) + saber.transform.GetChild(3));
-                Console.WriteLine("Children: " + saber.transform.childCount);
-                foreach (Transform t in saber.GetComponentsInChildren<Transform>())
-                    Console.WriteLine(t.name);
              //   var handle = saber.transform.Find("SaberHandle");
                // var blade = saber.transform.Find("SaberBlade");
                // var top = saber.transform.Find("SaberGlowingEdges");
 
-                Console.WriteLine("Saber Transform Found");
 
                 foreach (Transform t in saber.transform)
                 {
+
                     var filter = t.GetComponentInChildren<MeshFilter>();
                     if (filter) filter.sharedMesh = null;
 
@@ -290,7 +287,6 @@ namespace CustomSaber
                         if (filter) filter.sharedMesh = null;
                     }
                 }
-                Console.WriteLine("C1");
 
            //    blade.transform.localRotation = Quaternion.identity;
             //    blade.transform.localScale = new Vector3(1, 1, 1);
@@ -298,12 +294,11 @@ namespace CustomSaber
              //   handle.gameObject.SetActive(false);
 
                 CustomTrail[] trails;
-                Console.WriteLine("C2");
                 Saber.SaberType[] typeForHands = new Saber.SaberType[] { Saber.SaberType.SaberB, Saber.SaberType.SaberA };
                 var playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModelSO>().FirstOrDefault();
                 if (playerDataModel && playerDataModel.currentLocalPlayer.playerSpecificSettings.swapColors) typeForHands = typeForHands.Reverse().ToArray();
 
-                Console.WriteLine("C3");
+
                 if (saber.saberType == typeForHands[0])
                 {
                     if (saberRoot == null) { }

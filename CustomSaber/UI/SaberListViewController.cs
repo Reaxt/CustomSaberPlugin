@@ -318,7 +318,7 @@ namespace CustomSaber
                     PreviewSaber = _sabers[SaberIndex].GameObject;
 
                     _previewParent = new GameObject();
-                    _previewParent.transform.Translate(2.2f, 1.1f, 0.6f);
+                    _previewParent.transform.Translate(2.2f, 1.3f, 0.75f);
                     _previewParent.transform.Rotate(0, -30, 0);
                     if (PreviewSaber)
                     {
