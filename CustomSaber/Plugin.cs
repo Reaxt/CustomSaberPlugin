@@ -21,7 +21,7 @@ namespace CustomSaber
 
         public string Version
         {
-            get { return "2.8.2"; }
+            get { return "2.8.3"; }
         }
 
         private static List<string> _saberPaths;
@@ -67,9 +67,12 @@ namespace CustomSaber
             {
                 if (FirstFetch)
                 {
+                    /*
                     Console.WriteLine("Launching coroutine to grab original sabers!");
                     SharedCoroutineStarter.instance.StartCoroutine(PreloadDefaultSabers());
                     Console.WriteLine("Launched!");
+                    */
+                    
                 }
             }
 

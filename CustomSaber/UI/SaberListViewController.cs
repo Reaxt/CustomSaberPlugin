@@ -83,7 +83,7 @@ namespace CustomSaber
 
                     _sabersTableView.didSelectCellWithIdxEvent += _sabersTableView_DidSelectRowEvent;
 
-                    _pageUpButton = Instantiate(Resources.FindObjectsOfTypeAll<Button>().First(x => (x.name == "PageUpButton")), container, false);
+                    _pageUpButton = Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == "PageUpButton")), container, false);
                     (_pageUpButton.transform as RectTransform).anchoredPosition = new Vector2(0f, 30f);//-14
                     _pageUpButton.interactable = true;
                     _pageUpButton.onClick.AddListener(delegate ()
@@ -91,7 +91,7 @@ namespace CustomSaber
                         _sabersTableView.PageScrollUp();
                     });
 
-                    _pageDownButton = Instantiate(Resources.FindObjectsOfTypeAll<Button>().First(x => (x.name == "PageDownButton")), container, false);
+                    _pageDownButton = Instantiate(Resources.FindObjectsOfTypeAll<Button>().Last(x => (x.name == "PageDownButton")), container, false);
                     (_pageDownButton.transform as RectTransform).anchoredPosition = new Vector2(0f, -30f);//8
                     _pageDownButton.interactable = true;
                     _pageDownButton.onClick.AddListener(delegate ()

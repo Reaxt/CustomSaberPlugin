@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 namespace CustomSaber.Harmony_Patches
 {
+    /*
     [HarmonyPatch(typeof(SceneManager), "Internal_SceneLoaded",
     new Type[] { typeof(Scene), typeof(LoadSceneMode) })]
     class SceneLoadedHooks
@@ -24,6 +25,7 @@ namespace CustomSaber.Harmony_Patches
         }
 
     }
+    */
 
    // [HarmonyPatch(typeof(SceneManager), "Internal_ActiveSceneChanged",
    //new Type[] { typeof(Scene), typeof(Scene) })]
