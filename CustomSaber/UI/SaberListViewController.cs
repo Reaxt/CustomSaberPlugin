@@ -135,7 +135,7 @@ namespace CustomSaber
                 //}
                 
                 _sabersTableView.SelectCellWithIdx(selected);
-                _sabersTableView.ScrollToCellWithIdx(selected,TableView.ScrollPositionType.Center, true);
+                _sabersTableView.ScrollToCellWithIdx(selected, TableView.ScrollPositionType.Beginning, true);
 
                 PreviewCurrent();
             }

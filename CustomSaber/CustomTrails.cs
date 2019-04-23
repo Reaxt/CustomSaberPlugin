@@ -59,7 +59,7 @@ namespace CustomSaber
                     ReflectionUtil.SetPrivateField(oldtrail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
                     oldColorManager = ReflectionUtil.GetPrivateField<ColorManager>(oldtrail, "_colorManager");
                     oldTrailRendererPrefab = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(oldtrail, "_trailRendererPrefab");
-                    oldtrail.gameObject.SetActive(false);
+                //    oldtrail.gameObject.SetActive(false);
                 }
                 catch (Exception e)
                 {

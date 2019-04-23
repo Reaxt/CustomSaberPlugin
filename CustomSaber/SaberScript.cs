@@ -54,16 +54,17 @@ namespace CustomSaber
             {
                 Console.WriteLine("SABER ASSET BUNDLE DOESNT EXIST");
             }
-                if (Instance != null)
-                {
-                    Destroy(Instance._leftSaber);
-                    Destroy(Instance._rightSaber);
-                    Destroy(Instance._saberRoot);
-                    Destroy(Instance.gameObject);
-                }
-                var loader = new GameObject("Saber Loader");
-                Instance = loader.AddComponent<SaberScript>();
-            
+            if (Instance != null)
+            {
+                Destroy(Instance._leftSaber);
+                Destroy(Instance._rightSaber);
+                Destroy(Instance._saberRoot);
+                Destroy(Instance.gameObject);
+            }
+
+            var loader = new GameObject("Saber Loader");
+            Instance = loader.AddComponent<SaberScript>();
+
         }
 
         public void Restart()
@@ -97,16 +98,27 @@ namespace CustomSaber
 
         private void AddEvents()
         {
-            _leftEventManager = _leftSaber.GetComponent<EventManager>();
-            if (_leftEventManager == null)
-                _leftEventManager = _leftSaber.AddComponent<EventManager>();
+            if (_leftSaber)
+            {
+                _leftEventManager = _leftSaber.GetComponent<EventManager>();
+                if (_leftEventManager == null)
+                    _leftEventManager = _leftSaber.AddComponent<EventManager>();
+            }
+            if (_rightSaber)
+            {
+                _rightEventManager = _rightSaber.GetComponent<EventManager>();
+                if (_rightEventManager == null)
+                    _rightEventManager = _rightSaber.AddComponent<EventManager>();
+            }
 
-            _rightEventManager = _rightSaber.GetComponent<EventManager>();
-            if (_rightEventManager == null)
-                _rightEventManager = _rightSaber.AddComponent<EventManager>();
-
-            _leftEventManager.OnLevelStart.Invoke();
-            _rightEventManager.OnLevelStart.Invoke();
+            if (_leftEventManager)
+                _leftEventManager.OnLevelStart.Invoke();
+            else
+                return;
+            if (_rightEventManager)
+                _rightEventManager.OnLevelStart.Invoke();
+            else
+                return;
             try
             {
                 _beatmapObjectSpawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
@@ -232,11 +244,11 @@ namespace CustomSaber
         {
             _leftTopLocation = Vector3.zero;
             _rightTopLocation = Vector3.zero;
-      //      Console.WriteLine(Plugin._currentSaberPath);
-            if(Plugin._currentSaberPath == "DefaultSabers")
+            _saberRoot = null;
+            //      Console.WriteLine(Plugin._currentSaberPath);
+            if (Plugin._currentSaberPath == "DefaultSabers")
             {
-                Console.WriteLine("Default Sabers. Not Replacing");
-          //      StartCoroutine(WaitToCheckDefault());
+                StartCoroutine(WaitToCheckDefault());
                 return;
             }
             Console.WriteLine("Replacing sabers");
@@ -270,10 +282,11 @@ namespace CustomSaber
             foreach (var saber in sabers)
             {
                 //Disappear default saber
-                foreach (MeshFilter t in saber.transform.GetComponentsInChildren< MeshFilter>())
+                foreach (MeshFilter t in saber.transform.GetComponentsInChildren<MeshFilter>())
                 {
+                    t.gameObject.SetActive(saberRoot == null);
                     var filter = t.GetComponentInChildren<MeshFilter>();
-                    if (filter) filter.sharedMesh = null;
+                    if (filter) filter.gameObject.SetActive(saberRoot == null);//.sharedMesh = null;
                 }
                 Console.WriteLine("Replacing " + saber.saberType);
                 CustomTrail[] trails;
@@ -285,7 +298,7 @@ namespace CustomSaber
                     _rightSaber.transform.position = saber.transform.position;
                     _rightSaber.transform.rotation = saber.transform.rotation;
 
-                //    Console.WriteLine("PreTrail");
+                    //    Console.WriteLine("PreTrail");
                     trails = _rightSaber.GetComponents<CustomTrail>();
                     foreach (CustomTrail trail in trails)
                     {
@@ -300,7 +313,7 @@ namespace CustomSaber
                     _leftSaber.transform.position = saber.transform.position;
                     _leftSaber.transform.rotation = saber.transform.rotation;
 
-                //    Console.WriteLine("PreTrail");
+                    //    Console.WriteLine("PreTrail");
                     trails = _leftSaber.GetComponents<CustomTrail>();
                     foreach (CustomTrail trail in trails)
                     {
@@ -320,18 +333,15 @@ namespace CustomSaber
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
             var sabers = Resources.FindObjectsOfTypeAll<Saber>();
+            Console.WriteLine("Default Sabers. Not Replacing");
             foreach (var saber in sabers)
             {
-                foreach (Transform t in saber.transform)
+                saber.gameObject.SetActive(true);
+                foreach (MeshFilter t in saber.transform.GetComponentsInChildren<MeshFilter>())
                 {
+                    t.gameObject.SetActive(_saberRoot == null);
                     var filter = t.GetComponentInChildren<MeshFilter>();
-                    if (filter) filter.sharedMesh = null;
-
-                    foreach (Transform t2 in t)
-                    {
-                        filter = t2.GetComponentInChildren<MeshFilter>();
-                        if (filter) filter.sharedMesh = null;
-                    }
+                    if (filter) filter.gameObject.SetActive(_saberRoot == null);//.sharedMesh = null;
                 }
             }
         }
