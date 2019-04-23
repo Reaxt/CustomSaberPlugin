@@ -68,9 +68,9 @@ namespace CustomSaber
                 if (FirstFetch)
                 {
                     
-                    Console.WriteLine("Launching coroutine to grab original sabers!");
-                    SharedCoroutineStarter.instance.StartCoroutine(PreloadDefaultSabers());
-                    Console.WriteLine("Launched!");
+            //        Console.WriteLine("Launching coroutine to grab original sabers!");
+            //        SharedCoroutineStarter.instance.StartCoroutine(PreloadDefaultSabers());
+            //        Console.WriteLine("Launched!");
                     
                     
                 }
