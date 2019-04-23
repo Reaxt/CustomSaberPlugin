@@ -16,14 +16,14 @@ namespace CustomSaber
     {
         public string Name
         {
-            get { return "Saber Mod"; }
+            get { return "Custom Sabers"; }
         }
 
         public string Version
         {
-            get { return "2.8.3"; }
+            get { return "2.8.5"; }
         }
-
+        public static string PluginVersion { get; private set; }
         private static List<string> _saberPaths;
         private static AssetBundle _currentSaber;
         public static string _currentSaberPath;
@@ -36,7 +36,7 @@ namespace CustomSaber
         {
             if (_init) return;
             _init = true;
-
+            PluginVersion = Version;
             Console.WriteLine($"Custom Sabers v{Version} loaded!");
             
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
@@ -67,11 +67,11 @@ namespace CustomSaber
             {
                 if (FirstFetch)
                 {
-                    /*
+                    
                     Console.WriteLine("Launching coroutine to grab original sabers!");
                     SharedCoroutineStarter.instance.StartCoroutine(PreloadDefaultSabers());
                     Console.WriteLine("Launched!");
-                    */
+                    
                     
                 }
             }

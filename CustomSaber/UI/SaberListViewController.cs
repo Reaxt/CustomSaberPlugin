@@ -10,6 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VRUI;
+using IPA;
 namespace CustomSaber
 {
     class SaberListViewController : VRUIViewController, TableView.IDataSource
@@ -28,7 +29,8 @@ namespace CustomSaber
         private Mesh _BladeB;
         private Mesh _GlowingB;
         private Mesh _NormalB;
-        private bool CustomColorsPresent = IllusionInjector.PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit");
+        private bool CustomColorsPresent = IPA.Loader.PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit" || x.Name == "Custom Colors")
+            || IPA.Loader.PluginManager.AllPlugins.Any(x => x.Metadata.Id == "Custom Colors");
 
         private MenuShockwave menuShockwave = Resources.FindObjectsOfTypeAll<MenuShockwave>().FirstOrDefault();
 
@@ -99,14 +101,14 @@ namespace CustomSaber
                         _sabersTableView.PageScrollDown();
                     });
 
-
-                    _versionNumber = Instantiate(Resources.FindObjectsOfTypeAll<TextMeshProUGUI>().First(x => (x.name == "Text")), rectTransform, false);
+                    _versionNumber = CustomUI.BeatSaber.BeatSaberUI.CreateText(rectTransform, "Text", new Vector2(-10f, -10f));
+                  //  _versionNumber = Instantiate(Resources.FindObjectsOfTypeAll<TextMeshProUGUI>().First(x => (x.name == "Text")), rectTransform, false);
 
                     (_versionNumber.transform as RectTransform).anchoredPosition = new Vector2(-10f, 10f);
                     (_versionNumber.transform as RectTransform).anchorMax = new Vector2(1f, 0f);
                     (_versionNumber.transform as RectTransform).anchorMin = new Vector2(1f, 0f);
 
-                    string versionNumber = (IllusionInjector.PluginManager.Plugins.Where(x => x.Name == "Saber Mod").First()).Version;
+                    string versionNumber = Plugin.PluginVersion;
                     _versionNumber.text = "v" + versionNumber;
                     _versionNumber.fontSize = 5;
                     _versionNumber.color = Color.white;

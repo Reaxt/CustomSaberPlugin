@@ -44,7 +44,8 @@ namespace CustomSaber
         private BeatmapObjectCallbackController _beatmapCallback;
         private GamePauseManager _gamePauseManager;
         private PlayerHeadAndObstacleInteraction _playerHeadAndObstacleInteraction;
-
+        internal static Saber leftBackup;
+        internal static Saber rightBackup;
         private bool _playerHeadWasInObstacle;
 
         public static void LoadAssets()
@@ -233,7 +234,6 @@ namespace CustomSaber
         {
             _leftTopLocation = Vector3.zero;
             _rightTopLocation = Vector3.zero;
-
             Console.WriteLine("Replacing sabers");
             if (CustomSaber == null)
             {
@@ -256,28 +256,24 @@ namespace CustomSaber
         private IEnumerator WaitForSabers(GameObject saberRoot)
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
-
             var sabers = Resources.FindObjectsOfTypeAll<Saber>();
-            foreach (var saber in sabers)
-            {
-                //  Console.WriteLine(saber.saberType + " " + saber.transform.GetChild(0) + saber.transform.GetChild(1) + saber.transform.GetChild(2) + saber.transform.GetChild(3));
-                foreach (MeshFilter t in saber.GetComponentsInChildren<MeshFilter>())
-                {
-                    t.sharedMesh = null;
-
-                }
-            }
                 foreach (var saber in sabers)
             {
-                //  Console.WriteLine(saber.saberType + " " + saber.transform.GetChild(0) + saber.transform.GetChild(1) + saber.transform.GetChild(2) + saber.transform.GetChild(3));
-             //   var handle = saber.transform.Find("SaberHandle");
-               // var blade = saber.transform.Find("SaberBlade");
-               // var top = saber.transform.Find("SaberGlowingEdges");
-
-
+                Console.WriteLine(saber.saberType + " ");//+ saber.transform.GetChild(0) + saber.transform.GetChild(1) + saber.transform.GetChild(2) + saber.transform.GetChild(3));
+                Console.WriteLine("Getting Handle");
+                var handle = saber.gameObject.transform.Find("SaberHandle");
+                Console.WriteLine("Getting Handle");
+                //  var handle = saber.gameObject.transform.Find("BasicSaberModel(Clone)").Find("BasicSaber").Find("SaberHandle");
+                //                var blade = saber.transform.Find("BasicSaberModel(Clone)").Find("BasicSaber").Find("SaberBlade");
+                Console.WriteLine("Getting Blade");
+                var blade = saber.gameObject.transform.Find("SaberBlade");
+                Console.WriteLine("Getting Top");
+                var top = saber.gameObject.transform.Find("Top");
+                Console.WriteLine(handle.gameObject.name);
+                Console.WriteLine(blade.gameObject.name);
+                Console.WriteLine(top.gameObject.name);
                 foreach (Transform t in saber.transform)
                 {
-
                     var filter = t.GetComponentInChildren<MeshFilter>();
                     if (filter) filter.sharedMesh = null;
 
@@ -288,10 +284,10 @@ namespace CustomSaber
                     }
                 }
 
-           //    blade.transform.localRotation = Quaternion.identity;
-            //    blade.transform.localScale = new Vector3(1, 1, 1);
-            //    blade.transform.localPosition = new Vector3(0, -0.01f, 0);
-             //   handle.gameObject.SetActive(false);
+                blade.transform.localRotation = Quaternion.identity;
+               blade.transform.localScale = new Vector3(1, 1, 1);
+                blade.transform.localPosition = new Vector3(0, -0.01f, 0);
+                handle.gameObject.SetActive(false);
 
                 CustomTrail[] trails;
                 Saber.SaberType[] typeForHands = new Saber.SaberType[] { Saber.SaberType.SaberB, Saber.SaberType.SaberA };
@@ -303,10 +299,10 @@ namespace CustomSaber
                 {
                     if (saberRoot == null) { }
                     else
-                        _rightSaber.transform.parent = saber.transform;
+                        _rightSaber.transform.parent = blade.transform;
                     _rightSaber.transform.position = saber.transform.position;
                     _rightSaber.transform.rotation = saber.transform.rotation;
-              //      _rightTop = top.gameObject;
+                    _rightTop = top.gameObject;
 
                     trails = _rightSaber.GetComponents<CustomTrail>();
                     foreach (CustomTrail trail in trails)
@@ -318,10 +314,10 @@ namespace CustomSaber
                 {
                     if (saberRoot == null) { }
                     else
-                        _leftSaber.transform.parent = saber.transform;
+                        _leftSaber.transform.parent = blade.transform;
                     _leftSaber.transform.position = saber.transform.position;
                     _leftSaber.transform.rotation = saber.transform.rotation;
-             //       _leftTop = top.gameObject;
+                    _leftTop = top.gameObject;
 
                     trails = _leftSaber.GetComponents<CustomTrail>();
                     foreach (CustomTrail trail in trails)
