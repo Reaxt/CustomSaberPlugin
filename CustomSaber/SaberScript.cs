@@ -344,6 +344,13 @@ namespace CustomSaber
                     if (filter) filter.gameObject.SetActive(_saberRoot == null);//.sharedMesh = null;
                 }
             }
+
+            SaberWeaponTrail[] trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
+            for (int i = 0; i < trails.Length; i++)
+            {
+                ReflectionUtil.SetPrivateField(trails[i], "_multiplierSaberColor", new Color(1f, 1f, 1f, 0.251f));
+            }
+
         }
 
         private void OnPauseMenuClosed()
