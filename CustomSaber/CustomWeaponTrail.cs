@@ -1,7 +1,5 @@
-﻿using System;
+﻿using Xft;
 using UnityEngine;
-using Xft;
-
 
 namespace CustomSaber
 {

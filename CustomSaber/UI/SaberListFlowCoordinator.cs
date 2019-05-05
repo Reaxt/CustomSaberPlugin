@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VRUI;
+﻿using VRUI;
 using CustomUI.BeatSaber;
-using UnityEngine;
 
 namespace CustomSaber
 {
@@ -16,12 +10,10 @@ namespace CustomSaber
         public SaberListViewController _saberListViewController;
         public MainFlowCoordinator mainFlowCoordinator;
 
-
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
             if (firstActivation)
             {
-
                 title = "Saber Select";
 
                 ui = CustomSaberUI._instance;

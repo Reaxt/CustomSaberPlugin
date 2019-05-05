@@ -1,13 +1,9 @@
-﻿using CustomUI.BeatSaber;
-using CustomUI.MenuButton;
-using CustomUI.Utilities;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using CustomUI.MenuButton;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using VRUI;
 
 namespace CustomSaber
 {
@@ -53,7 +49,6 @@ namespace CustomSaber
                 return;
             }
             new GameObject("CustomSaberUI").AddComponent<CustomSaberUI>();
-
         }
 
         private void Awake()
@@ -83,7 +78,7 @@ namespace CustomSaber
             {
                 if (_saberListFlowCoordinator == null)
                 {
-                    _saberListFlowCoordinator = new GameObject("SaberListFlowCoordinator").AddComponent<SaberListFlowCoordinator>(); 
+                    _saberListFlowCoordinator = new GameObject("SaberListFlowCoordinator").AddComponent<SaberListFlowCoordinator>();
                     _saberListFlowCoordinator.mainFlowCoordinator = _mainFlowCoordinator;
                     _saberListFlowCoordinator.OnContentCreated = (content) =>
                     {

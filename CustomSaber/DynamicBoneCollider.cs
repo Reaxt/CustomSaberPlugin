@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 // Token: 0x02000004 RID: 4
 [AddComponentMenu("Dynamic Bone/Dynamic Bone Collider")]

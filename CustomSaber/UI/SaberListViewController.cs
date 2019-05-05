@@ -1,16 +1,13 @@
-﻿using CustomUI.BeatSaber;
-using CustomUI.Utilities;
-using HMUI;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using CustomUI.BeatSaber;
+using HMUI;
 using TMPro;
+using VRUI;
 using UnityEngine;
 using UnityEngine.UI;
-using VRUI;
-using IPA;
+
 namespace CustomSaber
 {
     class SaberListViewController : VRUIViewController, TableView.IDataSource
@@ -166,6 +163,7 @@ namespace CustomSaber
         {
             _sabersTableView.ReloadData();
         }
+
         public float CellSize()
         {
             return 12f;
@@ -516,6 +514,5 @@ namespace CustomSaber
         {
             CustomColors.Plugin.ForceOverrideCustomSabers(loading);
         }
-
     }
 }

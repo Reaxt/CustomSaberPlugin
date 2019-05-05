@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using UnityEngine;
 using System.Collections;
 using BS_Utils.Gameplay;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.IO;
 using Object = UnityEngine.Object;
 
 namespace CustomSaber
@@ -405,13 +402,11 @@ namespace CustomSaber
             {
                 _leftEventManager.OnLevelEnded.Invoke();
                 _rightEventManager.OnLevelEnded.Invoke();
-
             }
         }
 
         private void NoteMissCallBack(BeatmapObjectSpawnController beatmapObjectSpawnController, NoteController noteController)
         {
-
             if (noteController.noteData.noteType != NoteType.Bomb)
             {
                 _leftEventManager.OnComboBreak.Invoke();

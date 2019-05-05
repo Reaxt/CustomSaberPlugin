@@ -30,8 +30,8 @@ namespace CustomSaber
             _init = true;
 
             Plugin.PluginVersion = GetPluginVersion("Custom Sabers");
-            Logger.log.Debug($"Custom Sabers v{Plugin.PluginVersion} loaded!");
-            
+            Logger.log.Notice($"Custom Sabers v{Plugin.PluginVersion} loaded!");
+
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
 
             var sabers = RetrieveCustomSabers();
@@ -52,19 +52,19 @@ namespace CustomSaber
         {
             SceneManager.activeSceneChanged -= OnActiveSceneChanged;
         }
-        
+
         bool FirstFetch = true;
         public void OnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex > 0)
-            {
-                if (FirstFetch)
-                {
-                    //Logger.log.Info("Launching coroutine to grab original sabers!");
-                    //SharedCoroutineStarter.instance.StartCoroutine(PreloadDefaultSabers());
-                    //Logger.log.Info("Launched!");
-                }
-            }
+            //if (scene.buildIndex > 0)
+            //{
+            //    if (FirstFetch)
+            //    {
+            //        //Logger.log.Info("Launching coroutine to grab original sabers!");
+            //        //SharedCoroutineStarter.instance.StartCoroutine(PreloadDefaultSabers());
+            //        //Logger.log.Info("Launched!");
+            //    }
+            //}
 
             if (scene.name == "GameCore")
             {
@@ -81,7 +81,7 @@ namespace CustomSaber
                 CustomSaberUI.OnLoad();
             }
         }
-        
+
         private IEnumerator PreloadDefaultSabers()
         {
             FirstFetch = false;
@@ -100,31 +100,53 @@ namespace CustomSaber
             foreach (Saber s in Resources.FindObjectsOfTypeAll<Saber>())
             {
                 Logger.log.Info($"Saber: {s.name}, GameObj: {s.gameObject.name}, {s.ToString()}");
-                if (s.name == "LeftSaber") LeftSaber = Saber.Instantiate(s);
-                else if (s.name == "RightSaber") RightSaber = Saber.Instantiate(s);
+                if (s.name == "LeftSaber")
+                {
+                    LeftSaber = Saber.Instantiate(s);
+                }
+                else if (s.name == "RightSaber")
+                {
+                    RightSaber = Saber.Instantiate(s);
+                }
             }
             Logger.log.Info("Finished! Got default sabers! Setting active state");
-            if (LeftSaber) { UnityEngine.Object.DontDestroyOnLoad(LeftSaber.gameObject); LeftSaber.gameObject.SetActive(false); LeftSaber.name = "___OriginalSaberPreviewB"; }
-            if (RightSaber) { UnityEngine.Object.DontDestroyOnLoad(RightSaber.gameObject); RightSaber.gameObject.SetActive(false); RightSaber.name = "___OriginalSaberPreviewA"; }
+
+            if (LeftSaber)
+            {
+                Object.DontDestroyOnLoad(LeftSaber.gameObject);
+                LeftSaber.gameObject.SetActive(false);
+                LeftSaber.name = "___OriginalSaberPreviewB";
+            }
+            if (RightSaber)
+            {
+                Object.DontDestroyOnLoad(RightSaber.gameObject);
+                RightSaber.gameObject.SetActive(false);
+                RightSaber.name = "___OriginalSaberPreviewA";
+            }
 
             Logger.log.Info("Unloading GameCore");
             SceneManager.UnloadSceneAsync("GameCore");
+
             Logger.log.Info("Unloading harmony patches");
             harmony.UnpatchAll("CustomSaberHarmonyInstance");
         }
 
         public static List<string> RetrieveCustomSabers()
         {
-            _saberPaths = (Directory.GetFiles(Path.Combine(Application.dataPath, "../CustomSabers/"),
-                "*.saber", SearchOption.AllDirectories).ToList());
+            _saberPaths = (Directory.GetFiles(Path.Combine(Application.dataPath, "../CustomSabers/"), "*.saber", SearchOption.AllDirectories).ToList());
             Logger.log.Info("Found " + _saberPaths.Count + " sabers");
+
             _saberPaths.Insert(0, "DefaultSabers");
             return _saberPaths;
         }
 
         public void OnUpdate()
         {
-            if (_currentSaber == null) return;
+            if (_currentSaber == null)
+            {
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 RetrieveCustomSabers();
@@ -207,8 +229,12 @@ namespace CustomSaber
         public string GetPluginVersion(string pluginNameOrId)
         {
             foreach (PluginLoader.PluginInfo p in PluginManager.AllPlugins)
+            {
                 if (p.Metadata.Id == pluginNameOrId || p.Metadata.Name == pluginNameOrId)
+                {
                     return p.Metadata.Version.ToString();
+                }
+            }
 
             return "Plugin Not Found";
         }

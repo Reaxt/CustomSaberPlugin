@@ -1,15 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
 using VRUI;
+using UnityEngine;
 
 namespace CustomSaber.UI
 {
     internal class CustomSaberDetailViewController : VRUIViewController
     {
-
         TextMeshProUGUI songNameText;
         TextMeshProUGUI authorNameText;
 
@@ -32,7 +29,7 @@ namespace CustomSaber.UI
 
                 authorNameText.rectTransform.sizeDelta = new Vector2(16f, 3f);
                 //authorNameText.alignment = TextAlignmentOptions.CaplineRight;
-                
+
                 if (_textComponents.Any(x => x.name == "BPMText"))
                 {
                     _textComponents.First(x => x.name == "BPMText").gameObject.SetActive(false);
@@ -41,7 +38,7 @@ namespace CustomSaber.UI
                 if (_textComponents.Any(x => x.name == "DurationText"))
                 {
                     _textComponents.First(x => x.name == "DurationText").gameObject.SetActive(false);
-                    _textComponents.First(x => x.name == "DurationValueText").gameObject.SetActive(false); 
+                    _textComponents.First(x => x.name == "DurationValueText").gameObject.SetActive(false);
                 }
                 if (_textComponents.Any(x => x.name == "ObstaclesCountText"))
                 {
