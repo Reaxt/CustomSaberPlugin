@@ -101,8 +101,8 @@ namespace CustomSaber
                         _sabersTableView.PageScrollDown();
                     });
 
-                    _versionNumber = CustomUI.BeatSaber.BeatSaberUI.CreateText(rectTransform, "Text", new Vector2(-10f, -10f));
-                  //  _versionNumber = Instantiate(Resources.FindObjectsOfTypeAll<TextMeshProUGUI>().First(x => (x.name == "Text")), rectTransform, false);
+                    _versionNumber = BeatSaberUI.CreateText(rectTransform, "Text", new Vector2(-10f, -10f));
+                    //_versionNumber = Instantiate(Resources.FindObjectsOfTypeAll<TextMeshProUGUI>().First(x => (x.name == "Text")), rectTransform, false);
 
                     (_versionNumber.transform as RectTransform).anchoredPosition = new Vector2(-10f, 10f);
                     (_versionNumber.transform as RectTransform).anchorMax = new Vector2(1f, 0f);
@@ -139,9 +139,9 @@ namespace CustomSaber
 
                 PreviewCurrent();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine("[CustomSaber] EXCEPTION IN DidActivate: " + e);
+                Logger.log.Error($"SaberListViewController.DidActivate() threw an exception: {ex.Message}\n{ex.StackTrace}");
             }
         }
 
@@ -183,7 +183,7 @@ namespace CustomSaber
         // ReSharper disable once InconsistentNaming
         public void LoadSabers(bool FirstRun)
         {
-            Console.WriteLine("Loading sabers!");
+            Logger.log.Info("Loading sabers!");
             if (FirstRun)
             {
                 foreach (string sab in Plugin.RetrieveCustomSabers())
@@ -221,9 +221,9 @@ namespace CustomSaber
                                 tempsab.GameObject = sabroot;
                             }
                         }
-                        catch (Exception e)
+                        catch (Exception ex)
                         {
-                            Console.WriteLine(e);
+                            Logger.log.Warn($"SaberListViewController.LoadSabers() threw an exception: {ex.Message}\n{ex.StackTrace}");
                             tempsab.Name = "This saber is broken, delete it.";
                             tempsab.Author = sab.Split('/').Last();//.Split('.').First();
                             tempsab.Path = sab;
@@ -256,12 +256,12 @@ namespace CustomSaber
                     }
                 }
             }
-            Console.WriteLine("Added all sabers");
+            Logger.log.Info("Added all sabers");
         }
 
         public void UnLoadSabers()
         {
-            Console.WriteLine("Unloading sabers!");
+            Logger.log.Info("Unloading sabers!");
             foreach (CustomSaber saber in _sabers)
             {
                 if(saber.Path != "DefaultSabers") { 
@@ -304,7 +304,7 @@ namespace CustomSaber
         {
             Plugin._currentSaberPath = _sabers[SaberIndex].Path;
             selected = SaberIndex;
-            Console.WriteLine($"Selected saber {_sabers[SaberIndex].Name} created by {_sabers[SaberIndex].Author}");
+            Logger.log.Info($"Selected saber {_sabers[SaberIndex].Name} created by {_sabers[SaberIndex].Author}");
 
             if (PreviewStatus)
             {
@@ -335,15 +335,14 @@ namespace CustomSaber
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine(e);
+                    Logger.log.Error($"SaberListViewController.GeneratePreview() threw an exception: {ex.Message}\n{ex.StackTrace}");
                 }
-
             }
             else
             {
-                Console.WriteLine("Failed to load preview. " + _sabers[SaberIndex].Name);
+                Logger.log.Warn("Failed to load preview. " + _sabers[SaberIndex].Name);
             }
             PreviewStatus = false;
         }
@@ -417,11 +416,13 @@ namespace CustomSaber
                     _saberPreviewAParent.transform.eulerAngles = new Vector3(0, -30, 0);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
+                Logger.log.Error($"SaberListViewController.GeneratePreviewOriginal() threw an exception: {ex.Message}\n{ex.StackTrace}");
             }
-            try {
+
+            try
+            {
                 if (_saberPreviewBParent)
                 {
                     _saberPreviewBParent.SetActive(true);
@@ -474,9 +475,9 @@ namespace CustomSaber
                     _saberPreviewBParent.transform.eulerAngles = new Vector3(0, -30, 0);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
+                Logger.log.Error($"SaberListViewController.GeneratePreviewOriginal() threw an exception: {ex.Message}\n{ex.StackTrace}");
             }
             PreviewStatus = false;
         }

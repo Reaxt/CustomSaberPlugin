@@ -32,19 +32,19 @@ namespace CustomSaber
 
         public void Init(Saber parentSaber)
         {
-            Console.WriteLine("Replacing Trail");
+            Logger.log.Info("Replacing Trail");
 
             saber = parentSaber;
 
             if (gameObject.name != "LeftSaber" && gameObject.name != "RightSaber")
             {
-                Console.WriteLine("Parent not LeftSaber or RightSaber");
+                Logger.log.Warn("Parent not LeftSaber or RightSaber");
                 Destroy(this);
             }
 
             if (saber == null)
             {
-                Console.WriteLine("Saber not found");
+                Logger.log.Warn("Saber not found");
                 Destroy(this);
             }
             SaberWeaponTrail[] trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
@@ -61,18 +61,17 @@ namespace CustomSaber
             {
                 try
                 {
-                    Console.WriteLine(ReflectionUtil.GetPrivateField<Color>(oldtrail, "_multiplierSaberColor").ToString());
-         //           ReflectionUtil.SetPrivateField(oldtrail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
+                    Logger.log.Info(ReflectionUtil.GetPrivateField<Color>(oldtrail, "_multiplierSaberColor").ToString());
+                    //ReflectionUtil.SetPrivateField(oldtrail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
                     oldColorManager = ReflectionUtil.GetPrivateField<ColorManager>(oldtrail, "_colorManager");
                     oldTrailRendererPrefab = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(oldtrail, "_trailRendererPrefab");
 
                     //  oldtrail.Start();
                     //    oldtrail.gameObject.SetActive(false);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine(e);
-                    Console.WriteLine(e.Message);
+                    Logger.log.Critical($"CustomTrail.Init() threw an exception: {ex.Message}\n{ex.StackTrace}");
                     throw;
                 }
 
@@ -81,7 +80,7 @@ namespace CustomSaber
             }
             else
             {
-                Console.WriteLine("Trail not found");
+                Logger.log.Info("Trail not found");
                 Destroy(this);
             }
         }

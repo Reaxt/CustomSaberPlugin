@@ -67,18 +67,17 @@ namespace CustomSaber
                 _mainFlowCoordinator = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
                 //_mainMenuRectTransform = _buttonInstance.transform.parent as RectTransform;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine("EXCEPTION ON AWAKE(TRY FIND BUTTONS): " + e);
+                Logger.log.Error($"CustomSaberUI.Awake() threw an exception while looking for buttons: {ex.Message}\n{ex.StackTrace}");
             }
 
             CreateCustomSaberButton();
-
         }
 
         private void CreateCustomSaberButton()
         {
-            Console.WriteLine("Adding custom saber button");
+            Logger.log.Info("Adding custom saber button");
 
             MenuButtonUI.AddButton("Saber Menu", delegate ()
             {

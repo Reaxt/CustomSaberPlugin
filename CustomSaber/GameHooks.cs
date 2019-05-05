@@ -18,7 +18,7 @@ namespace CustomSaber.Harmony_Patches
         {
             if (scene.name == "GameCore")
             {
-                Console.WriteLine($"Blocked scene {scene.name} from firing sceneLoaded event!");
+                Logger.log.Notice($"Blocked scene {scene.name} from firing sceneLoaded event!");
                 return false;
             }
             return true;
@@ -35,7 +35,7 @@ namespace CustomSaber.Harmony_Patches
    //     {
    //         if (newActiveScene.name == "GameCore")
    //         {
-   //             Console.WriteLine($"Blocked scene {newActiveScene.name} from firing activeSceneChanged event!");
+   //             Logger.log.Notice($"Blocked scene {newActiveScene.name} from firing activeSceneChanged event!");
    //             return false;
    //         }
    //         return true;

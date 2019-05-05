@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using System.Collections;
+using BS_Utils.Gameplay;
 using UnityEngine.SceneManagement;
 using System.IO;
 using Object = UnityEngine.Object;
@@ -52,7 +53,7 @@ namespace CustomSaber
         {
             if (CustomSaber == null)
             {
-                Console.WriteLine("SABER ASSET BUNDLE DOESNT EXIST");
+                Logger.log.Warn("SABER ASSET BUNDLE DOESNT EXIST");
             }
             if (Instance != null)
             {
@@ -90,9 +91,8 @@ namespace CustomSaber
             Restart();
         }
 
-        BS_Utils.Gameplay.LevelData GetGameSceneSetup()
+        LevelData GetGameSceneSetup()
         {
-
             return BS_Utils.Plugin.LevelData;
         }
 
@@ -124,46 +124,46 @@ namespace CustomSaber
                 _beatmapObjectSpawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
                 if (_beatmapObjectSpawnController == null)
                 {
-                    Console.WriteLine("SPAWN CONTROLLER NULL");
+                    Logger.log.Warn("Spawn Controller is 'NULL'");
                     //_beatmapObjectSpawnController = _saberRoot.AddComponent<BeatmapObjectSpawnController>();
                 }
                 _scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
                 if (_scoreController == null)
                 {
-                    Console.WriteLine("SCORE CONTROLLER NULL");
+                    Logger.log.Warn("Score Controller is 'NULL'");
                     //_scoreController = _saberRoot.AddComponent<ScoreController>();
                 }
                 _saberCollisionManager =
                     Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().FirstOrDefault();
                 if (_saberCollisionManager == null)
                 {
-                    Console.WriteLine("COLLISION MANAGER NULL");
+                    Logger.log.Warn("Collision Manager is 'NULL'");
                     //_saberCollisionManager = _saberRoot.AddComponent<ObstacleSaberSparkleEffectManager>();
                 }
                 _gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault();
                 if (_gameEnergyCounter == null)
                 {
-                    Console.WriteLine("energery counter null");
+                    Logger.log.Warn("Energy Counter is 'NULL'");
                     //_gameEnergyCounter = _saberRoot.AddComponent<GameEnergyCounter>();
                 }
                 _beatmapCallback = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
                 if (_beatmapCallback == null)
                 {
-                    Console.WriteLine("BEATMAP CALLBACK NULL");
+                    Logger.log.Warn("Beatmap Callback is 'NULL'");
                     //_beatmapCallback = _saberRoot.AddComponent<BeatmapObjectCallbackController>();
                 }
 
                 _gamePauseManager = Resources.FindObjectsOfTypeAll<GamePauseManager>().FirstOrDefault();
                 if (_gamePauseManager == null)
                 {
-                    Console.WriteLine("GamePauseManager Null");
+                    Logger.log.Warn("GamePauseManager is 'NULL'");
                     //_gamePauseManager = _saberRoot.AddComponent<GamePauseManager>();
                 }
 
                 _playerHeadAndObstacleInteraction = Resources.FindObjectsOfTypeAll<PlayerHeadAndObstacleInteraction>().FirstOrDefault();
                 if (_playerHeadAndObstacleInteraction == null)
                 {
-                    Console.WriteLine("PlayerHeadAndObstacleInteraction Null");
+                    Logger.log.Warn("PlayerHeadAndObstacleInteraction is 'NULL'");
                     //_playerHeadAndObstacleInteraction = _saberRoot.AddComponent<PlayerHeadAndObstacleInteraction>();
                 }
 
@@ -180,16 +180,15 @@ namespace CustomSaber
                 _beatmapCallback.beatmapEventDidTriggerEvent += LightEventCallBack;
                 //  ReflectionUtil.SetPrivateField(_gamePauseManager, "_gameDidResumeSignal", (Action)OnPauseMenuClosed); //For some reason _gameDidResumeSignal isn't public.
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
-                Console.WriteLine(e.Message);
+                Logger.log.Error($"SaberScript.AddEvents() threw an exception: {ex.Message}\n{ex.StackTrace}");
                 throw;
             }
 
             try
             {
-                BS_Utils.Gameplay.LevelData mgs = GetGameSceneSetup();
+                LevelData mgs = GetGameSceneSetup();
                 BeatmapData beatmapData = mgs.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData;
 
                 BeatmapLineData[] beatmapLinesData = beatmapData.beatmapLinesData;
@@ -216,10 +215,9 @@ namespace CustomSaber
                 }
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
-                Console.WriteLine(e.Message);
+                Logger.log.Error($"SaberScript.AddEvents() threw an exception: {ex.Message}\n{ex.StackTrace}");
                 throw;
             }
 
@@ -245,16 +243,16 @@ namespace CustomSaber
             _leftTopLocation = Vector3.zero;
             _rightTopLocation = Vector3.zero;
             _saberRoot = null;
-            //      Console.WriteLine(Plugin._currentSaberPath);
+            //Logger.log.Info(Plugin._currentSaberPath);
             if (Plugin._currentSaberPath == "DefaultSabers")
             {
                 StartCoroutine(WaitToCheckDefault());
                 return;
             }
-            Console.WriteLine("Replacing sabers");
+            Logger.log.Info("Replacing sabers");
             if (CustomSaber == null)
             {
-                Console.WriteLine("Assets Bundle is null");
+                Logger.log.Warn("Assets Bundle is null");
                 return;
             }
 
@@ -262,7 +260,7 @@ namespace CustomSaber
 
             if (saberRoot != null)
             {
-                Console.WriteLine(saberRoot.GetComponent<SaberDescriptor>().SaberName);
+                Logger.log.Info(saberRoot.GetComponent<SaberDescriptor>().SaberName);
                 _saberRoot = Instantiate(saberRoot);
                 _rightSaber = _saberRoot.transform.Find("RightSaber").gameObject;
                 _leftSaber = _saberRoot.transform.Find("LeftSaber").gameObject;
@@ -276,7 +274,7 @@ namespace CustomSaber
             var sabers = Resources.FindObjectsOfTypeAll<Saber>();
             Saber.SaberType[] typeForHands = new Saber.SaberType[] { Saber.SaberType.SaberB, Saber.SaberType.SaberA };
             var playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModelSO>().FirstOrDefault();
-            Console.WriteLine("DataModel");
+            Logger.log.Info("DataModel");
             if (playerDataModel && playerDataModel.currentLocalPlayer.playerSpecificSettings.swapColors) typeForHands = typeForHands.Reverse().ToArray();
 
             foreach (var saber in sabers)
@@ -288,7 +286,7 @@ namespace CustomSaber
                     var filter = t.GetComponentInChildren<MeshFilter>();
                     if (filter) filter.gameObject.SetActive(saberRoot == null);//.sharedMesh = null;
                 }
-                Console.WriteLine("Replacing " + saber.saberType);
+                Logger.log.Info("Replacing " + saber.saberType);
                 CustomTrail[] trails;
                 if (saber.saberType == typeForHands[0])
                 {
@@ -298,7 +296,7 @@ namespace CustomSaber
                     _rightSaber.transform.position = saber.transform.position;
                     _rightSaber.transform.rotation = saber.transform.rotation;
 
-                    //    Console.WriteLine("PreTrail");
+                    //Logger.log.Info("PreTrail");
                     trails = _rightSaber.GetComponents<CustomTrail>();
                     foreach (CustomTrail trail in trails)
                     {
@@ -313,19 +311,13 @@ namespace CustomSaber
                     _leftSaber.transform.position = saber.transform.position;
                     _leftSaber.transform.rotation = saber.transform.rotation;
 
-                    //    Console.WriteLine("PreTrail");
+                    //Logger.log.Info("PreTrail");
                     trails = _leftSaber.GetComponents<CustomTrail>();
                     foreach (CustomTrail trail in trails)
                     {
                         trail.Init(saber);
                     }
                 }
-
-
-
-
-
-
             }
         }
 
@@ -333,7 +325,7 @@ namespace CustomSaber
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
             var sabers = Resources.FindObjectsOfTypeAll<Saber>();
-            Console.WriteLine("Default Sabers. Not Replacing");
+            Logger.log.Info("Default Sabers. Not Replacing");
             foreach (var saber in sabers)
             {
                 saber.gameObject.SetActive(true);
