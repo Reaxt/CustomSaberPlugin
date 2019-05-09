@@ -23,6 +23,7 @@ namespace CustomSaber
         public static Saber RightSaber;
 
         private bool _init;
+        public bool FirstFetch = true;
 
         public void OnApplicationStart()
         {
@@ -31,8 +32,6 @@ namespace CustomSaber
 
             Plugin.PluginVersion = GetPluginVersion("Custom Sabers");
             Logger.log.Notice($"Custom Sabers v{Plugin.PluginVersion} loaded!");
-
-            SceneManager.activeSceneChanged += OnActiveSceneChanged;
 
             var sabers = RetrieveCustomSabers();
             if (sabers.Count == 0)
@@ -50,10 +49,8 @@ namespace CustomSaber
 
         public void OnApplicationQuit()
         {
-            SceneManager.activeSceneChanged -= OnActiveSceneChanged;
         }
 
-        bool FirstFetch = true;
         public void OnActiveSceneChanged(Scene arg0, Scene scene)
         {
             //if (scene.buildIndex > 0)
@@ -151,6 +148,7 @@ namespace CustomSaber
             {
                 RetrieveCustomSabers();
                 if (_saberPaths.Count == 1) return;
+
                 var oldIndex = _saberPaths.IndexOf(_currentSaberPath);
                 if (oldIndex >= _saberPaths.Count - 1)
                 {
@@ -166,6 +164,7 @@ namespace CustomSaber
             {
                 RetrieveCustomSabers();
                 if (_saberPaths.Count == 1) return;
+
                 var oldIndex = _saberPaths.IndexOf(_currentSaberPath);
                 if (oldIndex <= 0)
                 {
