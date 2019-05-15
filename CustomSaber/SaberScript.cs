@@ -112,13 +112,15 @@ namespace CustomSaber
             }
 
             if (_leftEventManager)
-                _leftEventManager.OnLevelStart.Invoke();
-            else
-                return;
+                if (_leftEventManager.OnLevelStart != null)
+                    _leftEventManager.OnLevelStart.Invoke();
+                else
+                    return;
             if (_rightEventManager)
-                _rightEventManager.OnLevelStart.Invoke();
-            else
-                return;
+                if (_rightEventManager.OnLevelStart != null)
+                    _rightEventManager.OnLevelStart.Invoke();
+                else
+                    return;
             try
             {
                 _beatmapObjectSpawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
@@ -166,23 +168,30 @@ namespace CustomSaber
                     Console.WriteLine("PlayerHeadAndObstacleInteraction Null");
                     //_playerHeadAndObstacleInteraction = _saberRoot.AddComponent<PlayerHeadAndObstacleInteraction>();
                 }
-
-                _beatmapObjectSpawnController.noteWasCutEvent += SliceCallBack;
-                _beatmapObjectSpawnController.noteWasMissedEvent += NoteMissCallBack;
-                _scoreController.multiplierDidChangeEvent += MultiplierCallBack;
-                _scoreController.comboDidChangeEvent += ComboChangeEvent;
-
-                _saberCollisionManager.sparkleEffectDidStartEvent += SaberStartCollide;
-                _saberCollisionManager.sparkleEffectDidEndEvent += SaberEndCollide;
-
-                _gameEnergyCounter.gameEnergyDidReach0Event += FailLevelCallBack;
-
-                _beatmapCallback.beatmapEventDidTriggerEvent += LightEventCallBack;
+                if (_beatmapObjectSpawnController)
+                {
+                    _beatmapObjectSpawnController.noteWasCutEvent += SliceCallBack;
+                    _beatmapObjectSpawnController.noteWasMissedEvent += NoteMissCallBack;
+                }
+                if (_beatmapObjectSpawnController)
+                {
+                    _scoreController.multiplierDidChangeEvent += MultiplierCallBack;
+                    _scoreController.comboDidChangeEvent += ComboChangeEvent;
+                }
+                if (_saberCollisionManager)
+                {
+                    _saberCollisionManager.sparkleEffectDidStartEvent += SaberStartCollide;
+                    _saberCollisionManager.sparkleEffectDidEndEvent += SaberEndCollide;
+                }
+                if (_gameEnergyCounter)
+                    _gameEnergyCounter.gameEnergyDidReach0Event += FailLevelCallBack;
+                if (_beatmapCallback)
+                    _beatmapCallback.beatmapEventDidTriggerEvent += LightEventCallBack;
                 //  ReflectionUtil.SetPrivateField(_gamePauseManager, "_gameDidResumeSignal", (Action)OnPauseMenuClosed); //For some reason _gameDidResumeSignal isn't public.
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("EVENTS" + e);
                 Console.WriteLine(e.Message);
                 throw;
             }
@@ -198,7 +207,7 @@ namespace CustomSaber
                 for (int i = 0; i < beatmapLinesData.Length; i++)
                 {
                     BeatmapObjectData[] beatmapObjectsData = beatmapLinesData[i].beatmapObjectsData;
-                    for (int j = beatmapObjectsData.Length - 1; j > 0; j--)
+                    for (int j = beatmapObjectsData.Length - 1; j >= 0; j--)
                     {
                         if (beatmapObjectsData[j].beatmapObjectType == BeatmapObjectType.Note)
                         {
@@ -218,7 +227,7 @@ namespace CustomSaber
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("BEATMAP" + e);
                 Console.WriteLine(e.Message);
                 throw;
             }

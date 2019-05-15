@@ -21,7 +21,7 @@ namespace CustomSaber
 
         public string Version
         {
-            get { return "2.8.5"; }
+            get { return "2.9.0"; }
         }
         public static string PluginVersion { get; private set; }
         private static List<string> _saberPaths;
