@@ -341,17 +341,29 @@ namespace CustomSaber
         private IEnumerator WaitToCheckDefault()
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
+            bool hideOneSaber = false;
+            Saber.SaberType hiddenSaberType = Saber.SaberType.SaberA;
+            if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.characteristicName.Contains("ONE_SABER"))
+            {
+                hideOneSaber = true;
+                hiddenSaberType = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.swapColors ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
+            }
             var sabers = Resources.FindObjectsOfTypeAll<Saber>();
             Console.WriteLine("Default Sabers. Not Replacing");
             foreach (var saber in sabers)
             {
-                saber.gameObject.SetActive(true);
-                foreach (MeshFilter t in saber.transform.GetComponentsInChildren<MeshFilter>())
-                {
-                    t.gameObject.SetActive(_saberRoot == null);
-                    var filter = t.GetComponentInChildren<MeshFilter>();
-                    if (filter) filter.gameObject.SetActive(_saberRoot == null);//.sharedMesh = null;
-                }
+                if (!hideOneSaber)
+                    saber.gameObject.SetActive(true);
+                else
+                    saber.gameObject.SetActive(saber.saberType != hiddenSaberType);
+                if (saber.saberType == hiddenSaberType)
+                    foreach (MeshFilter t in saber.transform.GetComponentsInChildren<MeshFilter>())
+                    {
+
+                        t.gameObject.SetActive(_saberRoot == null);
+                        var filter = t.GetComponentInChildren<MeshFilter>();
+                        if (filter) filter.gameObject.SetActive(_saberRoot == null);//.sharedMesh = null;
+                    }
             }
 
             SaberWeaponTrail[] trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
@@ -377,8 +389,8 @@ namespace CustomSaber
                     {
                         if (_leftEventManager != null && _rightEventManager != null)
                         {
-                            _leftEventManager.OnComboBreak.Invoke();
-                            _rightEventManager.OnComboBreak.Invoke();
+                            _leftEventManager.OnComboBreak?.Invoke();
+                            _rightEventManager.OnComboBreak?.Invoke();
                         }
                         _playerHeadWasInObstacle = true;
                     }
@@ -403,25 +415,25 @@ namespace CustomSaber
         {
             if (!noteCutInfo.allIsOK)
             {
-                _leftEventManager.OnComboBreak.Invoke();
-                _rightEventManager.OnComboBreak.Invoke();
+                _leftEventManager?.OnComboBreak?.Invoke();
+                _rightEventManager?.OnComboBreak?.Invoke();
             }
             else
             {
                 if (noteCutInfo.saberType == Saber.SaberType.SaberA)
                 {
-                    _leftEventManager.OnSlice.Invoke();
+                    _leftEventManager?.OnSlice?.Invoke();
                 }
                 else if (noteCutInfo.saberType == Saber.SaberType.SaberB)
                 {
-                    _rightEventManager.OnSlice.Invoke();
+                    _rightEventManager?.OnSlice?.Invoke();
                 }
             }
 
             if (noteController.noteData.id == LastNoteId)
             {
-                _leftEventManager.OnLevelEnded.Invoke();
-                _rightEventManager.OnLevelEnded.Invoke();
+                _leftEventManager?.OnLevelEnded?.Invoke();
+                _rightEventManager?.OnLevelEnded?.Invoke();
 
             }
         }
@@ -431,14 +443,14 @@ namespace CustomSaber
 
             if (noteController.noteData.noteType != NoteType.Bomb)
             {
-                _leftEventManager.OnComboBreak.Invoke();
-                _rightEventManager.OnComboBreak.Invoke();
+                _leftEventManager?.OnComboBreak?.Invoke();
+                _rightEventManager?.OnComboBreak?.Invoke();
             }
 
             if (noteController.noteData.id == LastNoteId)
             {
-                _leftEventManager.OnLevelEnded.Invoke();
-                _rightEventManager.OnLevelEnded.Invoke();
+                _leftEventManager?.OnLevelEnded?.Invoke();
+                _rightEventManager?.OnLevelEnded?.Invoke();
             }
         }
 
@@ -446,8 +458,8 @@ namespace CustomSaber
         {
             if (multiplier > 1 && progress < 0.1f)
             {
-                _leftEventManager.MultiplierUp.Invoke();
-                _rightEventManager.MultiplierUp.Invoke();
+                _leftEventManager?.MultiplierUp?.Invoke();
+                _rightEventManager?.MultiplierUp?.Invoke();
             }
         }
 
@@ -455,11 +467,11 @@ namespace CustomSaber
         {
             if (saber == Saber.SaberType.SaberA)
             {
-                _leftEventManager.SaberStartColliding.Invoke();
+                _leftEventManager?.SaberStartColliding?.Invoke();
             }
             else if (saber == Saber.SaberType.SaberB)
             {
-                _rightEventManager.SaberStartColliding.Invoke();
+                _rightEventManager?.SaberStartColliding?.Invoke();
             }
         }
 
@@ -467,18 +479,18 @@ namespace CustomSaber
         {
             if (saber == Saber.SaberType.SaberA)
             {
-                _leftEventManager.SaberStopColliding.Invoke();
+                _leftEventManager?.SaberStopColliding?.Invoke();
             }
             else if (saber == Saber.SaberType.SaberB)
             {
-                _rightEventManager.SaberStopColliding.Invoke();
+                _rightEventManager?.SaberStopColliding?.Invoke();
             }
         }
 
         private void FailLevelCallBack()
         {
-            _leftEventManager.OnLevelFail.Invoke();
-            _rightEventManager.OnLevelFail.Invoke();
+            _leftEventManager?.OnLevelFail?.Invoke();
+            _rightEventManager?.OnLevelFail?.Invoke();
         }
 
         private void LightEventCallBack(BeatmapEventData songEvent)
@@ -487,22 +499,23 @@ namespace CustomSaber
             {
                 if (songEvent.value > 0 && songEvent.value < 4)
                 {
-                    _leftEventManager.OnBlueLightOn.Invoke();
-                    _rightEventManager.OnBlueLightOn.Invoke();
+
+                    _leftEventManager?.OnBlueLightOn?.Invoke();
+                    _rightEventManager?.OnBlueLightOn?.Invoke();
                 }
 
                 if (songEvent.value > 4 && songEvent.value < 8)
                 {
-                    _leftEventManager.OnRedLightOn.Invoke();
-                    _rightEventManager.OnRedLightOn.Invoke();
+                    _leftEventManager?.OnRedLightOn?.Invoke();
+                    _rightEventManager?.OnRedLightOn?.Invoke();
                 }
             }
         }
 
         private void ComboChangeEvent(int combo)
         {
-            _leftEventManager.OnComboChanged.Invoke(combo);
-            _rightEventManager.OnComboChanged.Invoke(combo);
+            _leftEventManager?.OnComboChanged?.Invoke(combo);
+            _rightEventManager?.OnComboChanged?.Invoke(combo);
         }
     }
 }
