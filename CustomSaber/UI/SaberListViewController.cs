@@ -482,7 +482,7 @@ namespace CustomSaber
 
         public float RowHeight()
         {
-            return 10f;
+            return 8.5f;
         }
 
         public int NumberOfRows()
@@ -492,11 +492,11 @@ namespace CustomSaber
 
         public TableCell CellForIdx(int row)
         {
-            LevelListTableCell _tableCell = _sabersTableView.DequeueReusableCellForIdentifier("LevelListTableCell") as LevelListTableCell;
+            LevelListTableCell _tableCell = _sabersTableView.DequeueReusableCellForIdentifier("LevelCell") as LevelListTableCell;
             if (!_tableCell)
             {
                 _tableCell = Instantiate(_songListTableCellInstance);
-                _tableCell.reuseIdentifier = "LevelListTableCell";
+                _tableCell.reuseIdentifier = "LevelCell";
             }
 
             _tableCell.SetPrivateField("_beatmapCharacteristicAlphas", new float[0]);
@@ -505,7 +505,7 @@ namespace CustomSaber
             var saber = _sabers.ElementAtOrDefault(row);
             _tableCell.GetPrivateField<TextMeshProUGUI>("_songNameText").text = saber?.Name;
             _tableCell.GetPrivateField<TextMeshProUGUI>("_authorText").text = saber?.Author;
-            _tableCell.GetPrivateField<UnityEngine.UI.Image>("_coverImage").sprite = Sprite.Create(Texture2D.blackTexture, new Rect(), Vector2.zero);
+            _tableCell.GetPrivateField<UnityEngine.UI.RawImage>("_coverRawImage").texture = Texture2D.blackTexture;
 
             return _tableCell;
         }

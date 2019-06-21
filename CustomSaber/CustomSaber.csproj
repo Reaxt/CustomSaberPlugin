@@ -85,7 +85,6 @@
     <Compile Include="ReflectionUtil.cs" />
     <Compile Include="SaberDescriptor.cs" />
     <Compile Include="UI\SaberPreviewController.cs" />
-    <Compile Include="UI\CustomSaberDetailViewController.cs" />
     <Compile Include="UI\CustomSaberUI.cs" />
     <Compile Include="UI\GenericFlowCoordinator.cs" />
     <Compile Include="Plugin.cs" />
