@@ -2,6 +2,7 @@
 using System.Linq;
 using CustomUI.MenuButton;
 using TMPro;
+using LogLevel = IPA.Logging.Logger.Level;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -64,7 +65,7 @@ namespace CustomSaber
             }
             catch (Exception ex)
             {
-                Logger.log.Error($"CustomSaberUI.Awake() threw an exception while looking for buttons: {ex.Message}\n{ex.StackTrace}");
+                Logger.Log(ex);
             }
 
             CreateCustomSaberButton();
@@ -72,7 +73,7 @@ namespace CustomSaber
 
         private void CreateCustomSaberButton()
         {
-            Logger.log.Info("Adding custom saber button");
+            Logger.Log("Adding custom saber button", LogLevel.Debug);
 
             MenuButtonUI.AddButton("Saber Menu", delegate ()
             {

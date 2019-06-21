@@ -5,6 +5,7 @@ using CustomUI.BeatSaber;
 using HMUI;
 using TMPro;
 using VRUI;
+using LogLevel = IPA.Logging.Logger.Level;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -146,7 +147,7 @@ namespace CustomSaber
             }
             catch (Exception ex)
             {
-                Logger.log.Error($"SaberListViewController.DidActivate() threw an exception: {ex.Message}\n{ex.StackTrace}");
+                Logger.Log(ex);
             }
         }
 
@@ -190,7 +191,7 @@ namespace CustomSaber
         // ReSharper disable once InconsistentNaming
         public void LoadSabers(bool FirstRun)
         {
-            Logger.log.Info("Loading sabers!");
+            Logger.Log("Loading sabers!");
             if (FirstRun)
             {
                 foreach (string sab in Plugin.RetrieveCustomSabers())
@@ -230,7 +231,7 @@ namespace CustomSaber
                         }
                         catch (Exception ex)
                         {
-                            Logger.log.Warn($"SaberListViewController.LoadSabers() threw an exception: {ex.Message}\n{ex.StackTrace}");
+                            Logger.Log(ex, LogLevel.Warning);
                             tempsab.Name = "This saber is broken, delete it.";
                             tempsab.Author = sab.Split('/').Last();//.Split('.').First();
                             tempsab.Path = sab;
@@ -263,12 +264,12 @@ namespace CustomSaber
                     }
                 }
             }
-            Logger.log.Info("Added all sabers");
+            Logger.Log("Added all sabers", LogLevel.Debug);
         }
 
         public void UnLoadSabers()
         {
-            Logger.log.Info("Unloading sabers!");
+            Logger.Log("Unloading sabers!", LogLevel.Debug);
             foreach (CustomSaber saber in _sabers)
             {
                 if (saber.Path != "DefaultSabers")
@@ -314,7 +315,7 @@ namespace CustomSaber
         {
             Plugin._currentSaberPath = _sabers[SaberIndex].Path;
             selected = SaberIndex;
-            Logger.log.Info($"Selected saber {_sabers[SaberIndex].Name} created by {_sabers[SaberIndex].Author}");
+            Logger.Log($"Selected saber {_sabers[SaberIndex].Name} created by {_sabers[SaberIndex].Author}");
 
             if (PreviewStatus)
             {
@@ -350,12 +351,12 @@ namespace CustomSaber
                 }
                 catch (Exception ex)
                 {
-                    Logger.log.Error($"SaberListViewController.GeneratePreview() threw an exception: {ex.Message}\n{ex.StackTrace}");
+                    Logger.Log(ex);
                 }
             }
             else
             {
-                Logger.log.Warn("Failed to load preview. " + _sabers[SaberIndex].Name);
+                Logger.Log($"Failed to load preview. {_sabers[SaberIndex].Name}", LogLevel.Warning);
             }
             PreviewStatus = false;
         }
@@ -467,7 +468,7 @@ namespace CustomSaber
             }
             catch (Exception ex)
             {
-                Logger.log.Error($"SaberListViewController.GeneratePreviewOriginal() threw an exception: {ex.Message}\n{ex.StackTrace}");
+                Logger.Log(ex);
             }
 
             try
@@ -555,7 +556,7 @@ namespace CustomSaber
             }
             catch (Exception ex)
             {
-                Logger.log.Error($"SaberListViewController.GeneratePreviewOriginal() threw an exception: {ex.Message}\n{ex.StackTrace}");
+                Logger.Log(ex);
             }
             PreviewStatus = false;
         }

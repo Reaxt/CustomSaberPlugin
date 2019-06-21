@@ -1,5 +1,6 @@
 ﻿using System;
 using Harmony;
+using LogLevel = IPA.Logging.Logger.Level;
 using UnityEngine.SceneManagement;
 
 namespace CustomSaber.Harmony_Patches
@@ -12,7 +13,7 @@ namespace CustomSaber.Harmony_Patches
     //    {
     //        if (scene.name == "GameCore")
     //        {
-    //            Logger.log.Notice($"Blocked scene {scene.name} from firing sceneLoaded event!");
+    //            Logger.Log($"Blocked scene {scene.name} from firing sceneLoaded event!", LogLevel.Notice);
     //            return false;
     //        }
     //        return true;
@@ -27,7 +28,7 @@ namespace CustomSaber.Harmony_Patches
     //    {
     //        if (newActiveScene.name == "GameCore")
     //        {
-    //            Logger.log.Notice($"Blocked scene {newActiveScene.name} from firing activeSceneChanged event!");
+    //            Logger.Log($"Blocked scene {newActiveScene.name} from firing activeSceneChanged event!", LogLevel.Notice);
     //            return false;
     //        }
     //        return true;

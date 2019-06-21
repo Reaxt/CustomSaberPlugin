@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using LogLevel = IPA.Logging.Logger.Level;
 using UnityEngine;
 
 namespace CustomSaber
@@ -28,19 +29,19 @@ namespace CustomSaber
 
         public void Init(Saber parentSaber)
         {
-            Logger.log.Info("Replacing Trail");
+            Logger.Log("Replacing Trail", LogLevel.Debug);
 
             saber = parentSaber;
 
             if (gameObject.name != "LeftSaber" && gameObject.name != "RightSaber")
             {
-                Logger.log.Warn("Parent not LeftSaber or RightSaber");
+                Logger.Log("Parent not LeftSaber or RightSaber", LogLevel.Warning);
                 Destroy(this);
             }
 
             if (saber == null)
             {
-                Logger.log.Warn("Saber not found");
+                Logger.Log("Saber not found", LogLevel.Warning);
                 Destroy(this);
             }
 
@@ -59,7 +60,7 @@ namespace CustomSaber
             {
                 try
                 {
-                    Logger.log.Info(ReflectionUtil.GetPrivateField<Color>(oldtrail, "_multiplierSaberColor").ToString());
+                    Logger.Log(ReflectionUtil.GetPrivateField<Color>(oldtrail, "_multiplierSaberColor").ToString(), LogLevel.Debug);
                     //ReflectionUtil.SetPrivateField(oldtrail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
                     oldColorManager = ReflectionUtil.GetPrivateField<ColorManager>(oldtrail, "_colorManager");
                     oldTrailRendererPrefab = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(oldtrail, "_trailRendererPrefab");
@@ -69,7 +70,7 @@ namespace CustomSaber
                 }
                 catch (Exception ex)
                 {
-                    Logger.log.Critical($"CustomTrail.Init() threw an exception: {ex.Message}\n{ex.StackTrace}");
+                    Logger.Log(ex, LogLevel.Critical);
                     throw;
                 }
 
@@ -78,7 +79,7 @@ namespace CustomSaber
             }
             else
             {
-                Logger.log.Info("Trail not found");
+                Logger.Log("Trail not found", LogLevel.Debug);
                 Destroy(this);
             }
         }

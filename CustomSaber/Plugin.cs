@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using IPA;
 using IPA.Loader;
 using IPALogger = IPA.Logging.Logger;
+using LogLevel = IPA.Logging.Logger.Level;
 using Harmony;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,6 +16,7 @@ namespace CustomSaber
     public class Plugin : IBeatSaberPlugin
     {
         public static string PluginVersion { get; private set; } = "Unknown version";
+        public static string PluginName => "Custom Sabers";
 
         private static List<string> _saberPaths;
         private static AssetBundle _currentSaber;
@@ -25,6 +27,12 @@ namespace CustomSaber
         private bool _init;
         public bool FirstFetch = true;
 
+        public void Init(IPALogger logger)
+        {
+            Logger.log = logger;
+            Logger.Log("Logger prepared", LogLevel.Debug);
+        }
+
         public void OnApplicationStart()
         {
             if (_init)
@@ -33,13 +41,12 @@ namespace CustomSaber
             }
             _init = true;
 
-            Plugin.PluginVersion = GetPluginVersion("Custom Sabers");
-            Logger.log.Notice($"Custom Sabers v{Plugin.PluginVersion} loaded!");
+            Logger.Log($"Custom Sabers v{Plugin.PluginVersion} has started", LogLevel.Info);
 
             List<string> sabers = RetrieveCustomSabers();
             if (sabers.Count == 0)
             {
-                Logger.log.Info("No custom sabers found.");
+                Logger.Log("No custom sabers found.");
                 return;
             }
 
@@ -60,9 +67,9 @@ namespace CustomSaber
             //{
             //    if (FirstFetch)
             //    {
-            //        //Logger.log.Info("Launching coroutine to grab original sabers!");
+            //        //Logger.Log("Launching coroutine to grab original sabers!", LogLevel.Debug);
             //        //SharedCoroutineStarter.instance.StartCoroutine(PreloadDefaultSabers());
-            //        //Logger.log.Info("Launched!");
+            //        //Logger.Log("Launched!", LogLevel.Debug);
             //    }
             //}
 
@@ -86,20 +93,20 @@ namespace CustomSaber
         {
             FirstFetch = false;
 
-            Logger.log.Info("Preloading default sabers!");
+            Logger.Log("Preloading default sabers!", LogLevel.Debug);
             HarmonyInstance harmony = HarmonyInstance.Create("CustomSaberHarmonyInstance");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
-            Logger.log.Info("Loading GameCore scene");
+            Logger.Log("Loading GameCore scene", LogLevel.Debug);
             SceneManager.LoadSceneAsync("GameCore", LoadSceneMode.Additive);
-            Logger.log.Info("Loaded!");
+            Logger.Log("Loaded!", LogLevel.Debug);
 
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Count() > 1);
-            Logger.log.Info("Got sabers!");
+            Logger.Log("Got sabers!", LogLevel.Debug);
 
             foreach (Saber s in Resources.FindObjectsOfTypeAll<Saber>())
             {
-                Logger.log.Info($"Saber: {s.name}, GameObj: {s.gameObject.name}, {s.ToString()}");
+                Logger.Log($"Saber: {s.name}, GameObj: {s.gameObject.name}, {s.ToString()}", LogLevel.Debug);
                 if (s.name == "LeftSaber")
                 {
                     LeftSaber = Saber.Instantiate(s);
@@ -109,7 +116,7 @@ namespace CustomSaber
                     RightSaber = Saber.Instantiate(s);
                 }
             }
-            Logger.log.Info("Finished! Got default sabers! Setting active state");
+            Logger.Log("Finished! Got default sabers! Setting active state", LogLevel.Debug);
 
             if (LeftSaber)
             {
@@ -125,17 +132,17 @@ namespace CustomSaber
                 RightSaber.name = "___OriginalSaberPreviewA";
             }
 
-            Logger.log.Info("Unloading GameCore");
+            Logger.Log("Unloading GameCore", LogLevel.Debug);
             SceneManager.UnloadSceneAsync("GameCore");
 
-            Logger.log.Info("Unloading harmony patches");
+            Logger.Log("Unloading harmony patches", LogLevel.Debug);
             harmony.UnpatchAll("CustomSaberHarmonyInstance");
         }
 
         public static List<string> RetrieveCustomSabers()
         {
             _saberPaths = (Directory.GetFiles(Path.Combine(Application.dataPath, "../CustomSabers/"), "*.saber", SearchOption.AllDirectories).ToList());
-            Logger.log.Info("Found " + _saberPaths.Count + " sabers");
+            Logger.Log($"Found {_saberPaths.Count} sabers");
 
             _saberPaths.Insert(0, "DefaultSabers");
             return _saberPaths;
@@ -210,20 +217,20 @@ namespace CustomSaber
                 _currentSaberPath = path;
 
                 _currentSaber = AssetBundle.LoadFromFile(_currentSaberPath);
-                Logger.log.Info(_currentSaber.GetAllAssetNames()[0]);
                 if (_currentSaber == null)
                 {
-                    Logger.log.Warn("Something went wrong while getting the asset bundle");
+                    Logger.Log("Something went wrong while getting the asset bundle", LogLevel.Warning);
                 }
                 else
                 {
-                    Logger.log.Info("Successfully obtained the asset bundle!");
+                    Logger.Log(_currentSaber.GetAllAssetNames()[0], LogLevel.Debug);
+                    Logger.Log("Successfully obtained the asset bundle!");
                     SaberScript.CustomSaber = _currentSaber;
                 }
             }
 
             PlayerPrefs.SetString("lastSaber", _currentSaberPath);
-            Logger.log.Info($"Loaded saber {path}");
+            Logger.Log($"Loaded saber {path}");
         }
 
         public void OnFixedUpdate()
@@ -236,12 +243,6 @@ namespace CustomSaber
 
         public void OnSceneUnloaded(Scene scene)
         {
-        }
-
-        public void Init(IPALogger logger)
-        {
-            Logger.log = logger;
-            Logger.log.Debug("Logger prepared");
         }
 
         /// <param name="pluginNameOrId">The name or id defined in the manifest.json</param>
