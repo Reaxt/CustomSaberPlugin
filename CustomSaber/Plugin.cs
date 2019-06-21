@@ -27,13 +27,16 @@ namespace CustomSaber
 
         public void OnApplicationStart()
         {
-            if (_init) return;
+            if (_init)
+            {
+                return;
+            }
             _init = true;
 
             Plugin.PluginVersion = GetPluginVersion("Custom Sabers");
             Logger.log.Notice($"Custom Sabers v{Plugin.PluginVersion} loaded!");
 
-            var sabers = RetrieveCustomSabers();
+            List<string> sabers = RetrieveCustomSabers();
             if (sabers.Count == 0)
             {
                 Logger.log.Info("No custom sabers found.");
@@ -51,7 +54,7 @@ namespace CustomSaber
         {
         }
 
-        public void OnActiveSceneChanged(Scene arg0, Scene scene)
+        public void OnActiveSceneChanged(Scene from, Scene to)
         {
             //if (scene.buildIndex > 0)
             //{
@@ -63,13 +66,13 @@ namespace CustomSaber
             //    }
             //}
 
-            if (scene.name == "GameCore")
+            if (to.name == "GameCore")
             {
                 LoadNewSaber(_currentSaberPath);
                 SaberScript.LoadAssets();
             }
 
-            if (scene.name == "MenuCore")
+            if (to.name == "MenuCore")
             {
                 if (_currentSaber != null)
                 {
@@ -84,7 +87,7 @@ namespace CustomSaber
             FirstFetch = false;
 
             Logger.log.Info("Preloading default sabers!");
-            var harmony = HarmonyInstance.Create("CustomSaberHarmonyInstance");
+            HarmonyInstance harmony = HarmonyInstance.Create("CustomSaberHarmonyInstance");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             Logger.log.Info("Loading GameCore scene");
@@ -114,6 +117,7 @@ namespace CustomSaber
                 LeftSaber.gameObject.SetActive(false);
                 LeftSaber.name = "___OriginalSaberPreviewB";
             }
+
             if (RightSaber)
             {
                 Object.DontDestroyOnLoad(RightSaber.gameObject);
@@ -147,33 +151,49 @@ namespace CustomSaber
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 RetrieveCustomSabers();
-                if (_saberPaths.Count == 1) return;
+                if (_saberPaths.Count == 1)
+                {
+                    return;
+                }
 
-                var oldIndex = _saberPaths.IndexOf(_currentSaberPath);
+                int oldIndex = _saberPaths.IndexOf(_currentSaberPath);
                 if (oldIndex >= _saberPaths.Count - 1)
                 {
                     oldIndex = -1;
                 }
 
-                var newSaber = _saberPaths[oldIndex + 1];
+                string newSaber = _saberPaths[oldIndex + 1];
                 LoadNewSaber(newSaber);
-                if (SceneManager.GetActiveScene().buildIndex != 4) return;
+
+                if (SceneManager.GetActiveScene().buildIndex != 4)
+                {
+                    return;
+                }
+
                 SaberScript.LoadAssets();
             }
             else if (Input.GetKeyDown(KeyCode.Space) && Input.GetKey(KeyCode.LeftAlt))
             {
                 RetrieveCustomSabers();
-                if (_saberPaths.Count == 1) return;
+                if (_saberPaths.Count == 1)
+                {
+                    return;
+                }
 
-                var oldIndex = _saberPaths.IndexOf(_currentSaberPath);
+                int oldIndex = _saberPaths.IndexOf(_currentSaberPath);
                 if (oldIndex <= 0)
                 {
                     oldIndex = _saberPaths.Count - 1;
                 }
 
-                var newSaber = _saberPaths[oldIndex - 1];
+                string newSaber = _saberPaths[oldIndex - 1];
                 LoadNewSaber(newSaber);
-                if (SceneManager.GetActiveScene().buildIndex != 4) return;
+
+                if (SceneManager.GetActiveScene().buildIndex != 4)
+                {
+                    return;
+                }
+
                 SaberScript.LoadAssets();
             }
         }

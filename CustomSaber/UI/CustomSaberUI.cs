@@ -36,11 +36,10 @@ namespace CustomSaber
         //private RectTransform _mainMenuRectTransform;
         //private MainMenuViewController _mainMenuViewController;
         private MainFlowCoordinator _mainFlowCoordinator;
-
+        public SaberListFlowCoordinator _saberListFlowCoordinator;
         public static CustomSaberUI _instance;
 
         public class SaberListFlowCoordinator : GenericFlowCoordinator<SaberListViewController, SaberPreviewController> { };
-        public SaberListFlowCoordinator _saberListFlowCoordinator;
 
         internal static void OnLoad()
         {
@@ -48,6 +47,7 @@ namespace CustomSaber
             {
                 return;
             }
+
             new GameObject("CustomSaberUI").AddComponent<CustomSaberUI>();
         }
 
@@ -90,7 +90,6 @@ namespace CustomSaber
                     };
                     //_mainFlowCoordinator
                 }
-
                 ReflectionUtil.InvokePrivateMethod(_mainFlowCoordinator, "PresentFlowCoordinator", new object[] { _saberListFlowCoordinator, null, false, false });
             });
         }

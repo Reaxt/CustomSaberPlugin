@@ -52,6 +52,7 @@ namespace CustomSaber
             {
                 Logger.log.Warn("SABER ASSET BUNDLE DOESNT EXIST");
             }
+
             if (Instance != null)
             {
                 Destroy(Instance._leftSaber);
@@ -60,9 +61,8 @@ namespace CustomSaber
                 Destroy(Instance.gameObject);
             }
 
-            var loader = new GameObject("Saber Loader");
+            GameObject loader = new GameObject("Saber Loader");
             Instance = loader.AddComponent<SaberScript>();
-
         }
 
         public void Restart()
@@ -99,25 +99,44 @@ namespace CustomSaber
             {
                 _leftEventManager = _leftSaber.GetComponent<EventManager>();
                 if (_leftEventManager == null)
+                {
                     _leftEventManager = _leftSaber.AddComponent<EventManager>();
+                }
             }
+
             if (_rightSaber)
             {
                 _rightEventManager = _rightSaber.GetComponent<EventManager>();
                 if (_rightEventManager == null)
+                {
                     _rightEventManager = _rightSaber.AddComponent<EventManager>();
+                }
             }
 
             if (_leftEventManager)
+            {
                 if (_leftEventManager.OnLevelStart != null)
+                {
                     _leftEventManager.OnLevelStart.Invoke();
+                }
                 else
+                {
                     return;
+                }
+            }
+
             if (_rightEventManager)
+            {
                 if (_rightEventManager.OnLevelStart != null)
+                {
                     _rightEventManager.OnLevelStart.Invoke();
+                }
                 else
+                {
                     return;
+                }
+            }
+
             try
             {
                 _beatmapObjectSpawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
@@ -126,25 +145,28 @@ namespace CustomSaber
                     Logger.log.Warn("Spawn Controller is 'NULL'");
                     //_beatmapObjectSpawnController = _saberRoot.AddComponent<BeatmapObjectSpawnController>();
                 }
+
                 _scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
                 if (_scoreController == null)
                 {
                     Logger.log.Warn("Score Controller is 'NULL'");
                     //_scoreController = _saberRoot.AddComponent<ScoreController>();
                 }
-                _saberCollisionManager =
-                    Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().FirstOrDefault();
+
+                _saberCollisionManager = Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().FirstOrDefault();
                 if (_saberCollisionManager == null)
                 {
                     Logger.log.Warn("Collision Manager is 'NULL'");
                     //_saberCollisionManager = _saberRoot.AddComponent<ObstacleSaberSparkleEffectManager>();
                 }
+
                 _gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault();
                 if (_gameEnergyCounter == null)
                 {
                     Logger.log.Warn("Energy Counter is 'NULL'");
                     //_gameEnergyCounter = _saberRoot.AddComponent<GameEnergyCounter>();
                 }
+
                 _beatmapCallback = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
                 if (_beatmapCallback == null)
                 {
@@ -165,26 +187,36 @@ namespace CustomSaber
                     Logger.log.Warn("PlayerHeadAndObstacleInteraction is 'NULL'");
                     //_playerHeadAndObstacleInteraction = _saberRoot.AddComponent<PlayerHeadAndObstacleInteraction>();
                 }
+
                 if (_beatmapObjectSpawnController)
                 {
                     _beatmapObjectSpawnController.noteWasCutEvent += SliceCallBack;
                     _beatmapObjectSpawnController.noteWasMissedEvent += NoteMissCallBack;
                 }
-                if (_beatmapObjectSpawnController)
+
+                if (_scoreController)
                 {
                     _scoreController.multiplierDidChangeEvent += MultiplierCallBack;
                     _scoreController.comboDidChangeEvent += ComboChangeEvent;
                 }
+
                 if (_saberCollisionManager)
                 {
                     _saberCollisionManager.sparkleEffectDidStartEvent += SaberStartCollide;
                     _saberCollisionManager.sparkleEffectDidEndEvent += SaberEndCollide;
                 }
+
                 if (_gameEnergyCounter)
+                {
                     _gameEnergyCounter.gameEnergyDidReach0Event += FailLevelCallBack;
+                }
+
                 if (_beatmapCallback)
+                {
                     _beatmapCallback.beatmapEventDidTriggerEvent += LightEventCallBack;
-                //  ReflectionUtil.SetPrivateField(_gamePauseManager, "_gameDidResumeSignal", (Action)OnPauseMenuClosed); //For some reason _gameDidResumeSignal isn't public.
+                }
+
+                //ReflectionUtil.SetPrivateField(_gamePauseManager, "_gameDidResumeSignal", (Action)OnPauseMenuClosed); //For some reason _gameDidResumeSignal isn't public.
             }
             catch (Exception ex)
             {
@@ -219,19 +251,21 @@ namespace CustomSaber
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
                 Logger.log.Error($"SaberScript.AddEvents() threw an exception: {ex.Message}\n{ex.StackTrace}");
                 throw;
             }
-
         }
 
         private void OnDestroy()
         {
-            if (_scoreController == null) return;
+            if (_scoreController == null)
+            {
+                return;
+            }
+
             _beatmapObjectSpawnController.noteWasCutEvent -= SliceCallBack;
             _beatmapObjectSpawnController.noteWasMissedEvent -= NoteMissCallBack;
             _scoreController.multiplierDidChangeEvent -= MultiplierCallBack;
@@ -249,12 +283,14 @@ namespace CustomSaber
             _leftTopLocation = Vector3.zero;
             _rightTopLocation = Vector3.zero;
             _saberRoot = null;
+
             //Logger.log.Info(Plugin._currentSaberPath);
             if (Plugin._currentSaberPath == "DefaultSabers")
             {
                 StartCoroutine(WaitToCheckDefault());
                 return;
             }
+
             Logger.log.Info("Replacing sabers");
             if (CustomSaber == null)
             {
@@ -271,34 +307,46 @@ namespace CustomSaber
                 _rightSaber = _saberRoot.transform.Find("RightSaber").gameObject;
                 _leftSaber = _saberRoot.transform.Find("LeftSaber").gameObject;
             }
+
             StartCoroutine(WaitForSabers(saberRoot));
         }
 
         private IEnumerator WaitForSabers(GameObject saberRoot)
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
-            var sabers = Resources.FindObjectsOfTypeAll<Saber>();
-            Saber.SaberType[] typeForHands = new Saber.SaberType[] { Saber.SaberType.SaberB, Saber.SaberType.SaberA };
-            var playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModelSO>().FirstOrDefault();
-            Logger.log.Info("DataModel");
-            if (playerDataModel && playerDataModel.currentLocalPlayer.playerSpecificSettings.swapColors) typeForHands = typeForHands.Reverse().ToArray();
 
-            foreach (var saber in sabers)
+            Saber[] sabers = Resources.FindObjectsOfTypeAll<Saber>();
+            Saber.SaberType[] typeForHands = new Saber.SaberType[] { Saber.SaberType.SaberB, Saber.SaberType.SaberA };
+            PlayerDataModelSO playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModelSO>().FirstOrDefault();
+
+            Logger.log.Info("DataModel");
+            if (playerDataModel && playerDataModel.currentLocalPlayer.playerSpecificSettings.swapColors)
+            {
+                typeForHands = typeForHands.Reverse().ToArray();
+            }
+
+            foreach (Saber saber in sabers)
             {
                 //Disappear default saber
                 foreach (MeshFilter t in saber.transform.GetComponentsInChildren<MeshFilter>())
                 {
                     t.gameObject.SetActive(saberRoot == null);
-                    var filter = t.GetComponentInChildren<MeshFilter>();
-                    if (filter) filter.gameObject.SetActive(saberRoot == null);//.sharedMesh = null;
+                    MeshFilter filter = t.GetComponentInChildren<MeshFilter>();
+                    if (filter)
+                    {
+                        filter.gameObject.SetActive(saberRoot == null);//.sharedMesh = null;
+                    }
                 }
+
                 Logger.log.Info("Replacing " + saber.saberType);
                 CustomTrail[] trails;
                 if (saber.saberType == typeForHands[0])
                 {
-                    if (saberRoot == null) { }
-                    else
+                    if (saberRoot != null)
+                    {
                         _rightSaber.transform.parent = saber.transform;
+                    }
+
                     _rightSaber.transform.position = saber.transform.position;
                     _rightSaber.transform.rotation = saber.transform.rotation;
 
@@ -311,9 +359,11 @@ namespace CustomSaber
                 }
                 else if (saber.saberType == typeForHands[1])
                 {
-                    if (saberRoot == null) { }
-                    else
+                    if (saberRoot != null)
+                    {
                         _leftSaber.transform.parent = saber.transform;
+                    }
+
                     _leftSaber.transform.position = saber.transform.position;
                     _leftSaber.transform.rotation = saber.transform.rotation;
 
@@ -330,6 +380,7 @@ namespace CustomSaber
         private IEnumerator WaitToCheckDefault()
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
+
             bool hideOneSaber = false;
             Saber.SaberType hiddenSaberType = Saber.SaberType.SaberA;
             if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.characteristicName.Contains("ONE_SABER"))
@@ -337,22 +388,33 @@ namespace CustomSaber
                 hideOneSaber = true;
                 hiddenSaberType = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.swapColors ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
             }
-            var sabers = Resources.FindObjectsOfTypeAll<Saber>();
+
+            Saber[] sabers = Resources.FindObjectsOfTypeAll<Saber>();
             Logger.log.Info("Default Sabers. Not Replacing");
-            foreach (var saber in sabers)
+
+            foreach (Saber saber in sabers)
             {
                 if (!hideOneSaber)
+                {
                     saber.gameObject.SetActive(true);
+                }
                 else
+                {
                     saber.gameObject.SetActive(saber.saberType != hiddenSaberType);
+                }
+
                 if (saber.saberType == hiddenSaberType)
+                {
                     foreach (MeshFilter t in saber.transform.GetComponentsInChildren<MeshFilter>())
                     {
-
                         t.gameObject.SetActive(_saberRoot == null);
-                        var filter = t.GetComponentInChildren<MeshFilter>();
-                        if (filter) filter.gameObject.SetActive(_saberRoot == null);//.sharedMesh = null;
+                        MeshFilter filter = t.GetComponentInChildren<MeshFilter>();
+                        if (filter)
+                        {
+                            filter.gameObject.SetActive(_saberRoot == null);//.sharedMesh = null;
+                        }
                     }
+                }
             }
 
             SaberWeaponTrail[] trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
@@ -360,7 +422,6 @@ namespace CustomSaber
             {
                 ReflectionUtil.SetPrivateField(trails[i], "_multiplierSaberColor", new Color(1f, 1f, 1f, 0.251f));
             }
-
         }
 
         private void OnPauseMenuClosed()
@@ -390,14 +451,14 @@ namespace CustomSaber
                 }
             }
 
-            /*Vector3 LeftVelocity = LeftTop.transform.position - LeftTopLocation;
-            Vector3 RightVelocity = RightTop.transform.position - RightTopLocation;
+            //Vector3 LeftVelocity = LeftTop.transform.position - LeftTopLocation;
+            //Vector3 RightVelocity = RightTop.transform.position - RightTopLocation;
 
-            Shader.SetGlobalColor("LeftSaberVelocity", new Color(LeftVelocity.x, LeftVelocity.y, LeftVelocity.z, 0.0f));
-            Shader.SetGlobalColor("RightSaberVelocity", new Color(RightVelocity.x, RightVelocity.y, RightVelocity.z, 0.0f));
+            //Shader.SetGlobalColor("LeftSaberVelocity", new Color(LeftVelocity.x, LeftVelocity.y, LeftVelocity.z, 0.0f));
+            //Shader.SetGlobalColor("RightSaberVelocity", new Color(RightVelocity.x, RightVelocity.y, RightVelocity.z, 0.0f));
 
-            LeftTopLocation = LeftTop.transform.position;
-            RightTopLocation = RightTop.transform.position;*/
+            //LeftTopLocation = LeftTop.transform.position;
+            //RightTopLocation = RightTop.transform.position;
         }
 
         private void SliceCallBack(BeatmapObjectSpawnController beatmapObjectSpawnController, NoteController noteController, NoteCutInfo noteCutInfo)
@@ -486,7 +547,6 @@ namespace CustomSaber
             {
                 if (songEvent.value > 0 && songEvent.value < 4)
                 {
-
                     _leftEventManager?.OnBlueLightOn?.Invoke();
                     _rightEventManager?.OnBlueLightOn?.Invoke();
                 }

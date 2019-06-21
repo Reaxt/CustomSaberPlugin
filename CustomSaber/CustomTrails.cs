@@ -43,12 +43,14 @@ namespace CustomSaber
                 Logger.log.Warn("Saber not found");
                 Destroy(this);
             }
+
             SaberWeaponTrail[] trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
             for (int i = 0; i < trails.Length; i++)
             {
                 SaberWeaponTrail trail = trails[i];
                 ReflectionUtil.SetPrivateField(trail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
             }
+
             SaberWeaponTrail oldtrail = Resources.FindObjectsOfTypeAll<GameCoreInstaller>()
                 .FirstOrDefault()?.GetPrivateField<BasicSaberModelController>("_basicSaberModelControllerPrefab")
                 ?.GetPrivateField<SaberWeaponTrail>("_saberWeaponTrail");
@@ -62,8 +64,8 @@ namespace CustomSaber
                     oldColorManager = ReflectionUtil.GetPrivateField<ColorManager>(oldtrail, "_colorManager");
                     oldTrailRendererPrefab = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(oldtrail, "_trailRendererPrefab");
 
-                    //  oldtrail.Start();
-                    //    oldtrail.gameObject.SetActive(false);
+                    //oldtrail.Start();
+                    //oldtrail.gameObject.SetActive(false);
                 }
                 catch (Exception ex)
                 {
