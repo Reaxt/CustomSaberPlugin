@@ -15,8 +15,8 @@ namespace CustomSaber
 {
     public class Plugin : IBeatSaberPlugin
     {
-        public static string PluginVersion { get; private set; } = "Unknown version";
         public static string PluginName => "Custom Sabers";
+        public static string PluginVersion { get; private set; } = "0"; // Default. Actual version is retrieved from the manifest
 
         private static List<string> _saberPaths;
         private static AssetBundle _currentSaber;
@@ -27,10 +27,18 @@ namespace CustomSaber
         private bool _init;
         public bool FirstFetch = true;
 
-        public void Init(IPALogger logger)
+        public void Init(IPALogger logger, PluginLoader.PluginMetadata metadata)
         {
-            Logger.log = logger;
-            Logger.Log("Logger prepared", LogLevel.Debug);
+            if (logger != null)
+            {
+                Logger.log = logger;
+                Logger.Log("Logger prepared", LogLevel.Debug);
+            }
+
+            if (metadata != null)
+            {
+                Plugin.PluginVersion = metadata.Version.ToString();
+            }
         }
 
         public void OnApplicationStart()
@@ -41,7 +49,7 @@ namespace CustomSaber
             }
             _init = true;
 
-            Logger.Log($"Custom Sabers v{Plugin.PluginVersion} has started", LogLevel.Info);
+            Logger.Log($"Custom Sabers v{Plugin.PluginVersion} has started", LogLevel.Notice);
 
             List<string> sabers = RetrieveCustomSabers();
             if (sabers.Count == 0)
@@ -57,9 +65,7 @@ namespace CustomSaber
             }
         }
 
-        public void OnApplicationQuit()
-        {
-        }
+        public void OnApplicationQuit() { }
 
         public void OnActiveSceneChanged(Scene from, Scene to)
         {
@@ -233,30 +239,8 @@ namespace CustomSaber
             Logger.Log($"Loaded saber {path}");
         }
 
-        public void OnFixedUpdate()
-        {
-        }
-
-        public void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
-        {
-        }
-
-        public void OnSceneUnloaded(Scene scene)
-        {
-        }
-
-        /// <param name="pluginNameOrId">The name or id defined in the manifest.json</param>
-        public string GetPluginVersion(string pluginNameOrId)
-        {
-            foreach (PluginLoader.PluginInfo p in PluginManager.AllPlugins)
-            {
-                if (p.Metadata.Id == pluginNameOrId || p.Metadata.Name == pluginNameOrId)
-                {
-                    return p.Metadata.Version.ToString();
-                }
-            }
-
-            return "Plugin Not Found";
-        }
+        public void OnFixedUpdate() { }
+        public void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode) { }
+        public void OnSceneUnloaded(Scene scene) { }
     }
 }
