@@ -395,29 +395,21 @@ namespace CustomSaber
 
                     foreach (Transform t in _saberPreviewA.transform)
                     {
-                        MeshFilter filter = t.GetComponentInChildren<MeshFilter>();
                         foreach (Transform t2 in t)
                         {
-                            filter = t2.GetComponentInChildren<MeshFilter>();
-                            if (filter.name == "Blade")
+                            MeshFilter filter = t2.GetComponentInChildren<MeshFilter>();
+
+                            if (filter.sharedMesh == null)
                             {
-                                if (filter.sharedMesh == null)
+                                if (filter.name == "Blade")
                                 {
                                     filter.sharedMesh = _BladeA;
                                 }
-                            }
-
-                            if (filter.name == "Normal")
-                            {
-                                if (filter.sharedMesh == null)
+                                else if (filter.name == "Normal")
                                 {
                                     filter.sharedMesh = _NormalA;
                                 }
-                            }
-
-                            if (filter.name == "Glowing")
-                            {
-                                if (filter.sharedMesh == null)
+                                else if (filter.name == "Glowing")
                                 {
                                     filter.sharedMesh = _GlowingA;
                                 }
@@ -427,7 +419,7 @@ namespace CustomSaber
                 }
                 else
                 {
-                    _saberPreviewAParent = new GameObject("Saber Prewview A Parent");
+                    _saberPreviewAParent = new GameObject("Saber Preview A Parent");
                     if (_saberPreviewAParent)
                     {
                         DontDestroyOnLoad(_saberPreviewAParent.gameObject);
@@ -439,10 +431,9 @@ namespace CustomSaber
 
                     foreach (Transform t in _saberPreviewA.transform)
                     {
-                        MeshFilter filter = t.GetComponentInChildren<MeshFilter>();
                         foreach (Transform t2 in t)
                         {
-                            filter = t2.GetComponentInChildren<MeshFilter>();
+                            MeshFilter filter = t2.GetComponentInChildren<MeshFilter>();
                             if (filter.name == "Blade")
                             {
                                 _BladeA = filter.mesh;
@@ -483,29 +474,21 @@ namespace CustomSaber
 
                     foreach (Transform t in _saberPreviewB.transform)
                     {
-                        MeshFilter filter = t.GetComponentInChildren<MeshFilter>();
                         foreach (Transform t2 in t)
                         {
-                            filter = t2.GetComponentInChildren<MeshFilter>();
-                            if (filter.name == "Blade")
+                            MeshFilter filter = t2.GetComponentInChildren<MeshFilter>();
+
+                            if (filter.sharedMesh == null)
                             {
-                                if (filter.sharedMesh == null)
+                                if (filter.name == "Blade")
                                 {
                                     filter.sharedMesh = _BladeB;
                                 }
-                            }
-
-                            if (filter.name == "Normal")
-                            {
-                                if (filter.sharedMesh == null)
+                                else if (filter.name == "Normal")
                                 {
                                     filter.sharedMesh = _NormalB;
                                 }
-                            }
-
-                            if (filter.name == "Glowing")
-                            {
-                                if (filter.sharedMesh == null)
+                                else if (filter.name == "Glowing")
                                 {
                                     filter.sharedMesh = _GlowingB;
                                 }
@@ -527,10 +510,9 @@ namespace CustomSaber
 
                     foreach (Transform t in _saberPreviewB.transform)
                     {
-                        MeshFilter filter = t.GetComponentInChildren<MeshFilter>();
                         foreach (Transform t2 in t)
                         {
-                            filter = t2.GetComponentInChildren<MeshFilter>();
+                            MeshFilter filter = t2.GetComponentInChildren<MeshFilter>();
                             if (filter.name == "Blade")
                             {
                                 _BladeB = filter.mesh;
