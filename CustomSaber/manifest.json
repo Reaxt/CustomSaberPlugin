@@ -2,14 +2,14 @@
   "$schema": "https://raw.githubusercontent.com/nike4613/ModSaber-MetadataFileSchema/master/Schema.json",
   "author": "Various Modders",
   "description": [
-    "#![CustomSaber.Properties.description.md]",
+    "#![CustomSaber.Resources.description.md]",
     "Default description"
   ],
   "gameVersion": "1.1.0",
   "id": "CustomSaber",
   "name": "Custom Sabers",
   "version": "2.10.0",
-  "icon": "CustomSaber.Properties.icon.png",
+  "icon": "CustomSaber.Resources.icon.png",
   "dependsOn": {
     "BSIPA": "^3.12.15",
     "Harmony": "^1.2.0",
