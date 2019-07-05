@@ -1,13 +1,11 @@
 ﻿using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using IPA;
 using IPA.Loader;
 using IPALogger = IPA.Logging.Logger;
 using LogLevel = IPA.Logging.Logger.Level;
-using Harmony;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -99,9 +97,9 @@ namespace CustomSaber
         {
             FirstFetch = false;
 
-            Logger.Log("Preloading default sabers!", LogLevel.Debug);
-            HarmonyInstance harmony = HarmonyInstance.Create("CustomSaberHarmonyInstance");
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            //Logger.Log("Preloading default sabers!", LogLevel.Debug);
+            //HarmonyInstance harmony = HarmonyInstance.Create("CustomSaberHarmonyInstance");
+            //harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             Logger.Log("Loading GameCore scene", LogLevel.Debug);
             SceneManager.LoadSceneAsync("GameCore", LoadSceneMode.Additive);
@@ -141,8 +139,8 @@ namespace CustomSaber
             Logger.Log("Unloading GameCore", LogLevel.Debug);
             SceneManager.UnloadSceneAsync("GameCore");
 
-            Logger.Log("Unloading harmony patches", LogLevel.Debug);
-            harmony.UnpatchAll("CustomSaberHarmonyInstance");
+            //Logger.Log("Unloading harmony patches", LogLevel.Debug);
+            //harmony.UnpatchAll("CustomSaberHarmonyInstance");
         }
 
         public static List<string> RetrieveCustomSabers()
