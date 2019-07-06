@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using LogLevel = IPA.Logging.Logger.Level;
 using UnityEngine;
-using Xft;
 
 namespace CustomSaber
 {
@@ -16,12 +14,11 @@ namespace CustomSaber
 
     public class CustomTrail : MonoBehaviour
     {
-
         public Transform PointStart;
         public Transform PointEnd;
         public Material TrailMaterial;
         public ColorType colorType = ColorType.CustomColor;
-        public Color TrailColor = new Color(1.0f,1.0f,1.0f,1.0f);
+        public Color TrailColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         public Color MultiplierColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         public int Length = 20;
 
@@ -32,27 +29,29 @@ namespace CustomSaber
 
         public void Init(Saber parentSaber)
         {
-            Console.WriteLine("Replacing Trail");
+            Logger.Log("Replacing Trail", LogLevel.Debug);
 
             saber = parentSaber;
 
             if (gameObject.name != "LeftSaber" && gameObject.name != "RightSaber")
             {
-                Console.WriteLine("Parent not LeftSaber or RightSaber");
+                Logger.Log("Parent not LeftSaber or RightSaber", LogLevel.Warning);
                 Destroy(this);
             }
 
             if (saber == null)
             {
-                Console.WriteLine("Saber not found");
+                Logger.Log("Saber not found", LogLevel.Warning);
                 Destroy(this);
             }
+
             SaberWeaponTrail[] trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
             for (int i = 0; i < trails.Length; i++)
             {
                 SaberWeaponTrail trail = trails[i];
                 ReflectionUtil.SetPrivateField(trail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
             }
+
             SaberWeaponTrail oldtrail = Resources.FindObjectsOfTypeAll<GameCoreInstaller>()
                 .FirstOrDefault()?.GetPrivateField<BasicSaberModelController>("_basicSaberModelControllerPrefab")
                 ?.GetPrivateField<SaberWeaponTrail>("_saberWeaponTrail");
@@ -61,18 +60,17 @@ namespace CustomSaber
             {
                 try
                 {
-                    Console.WriteLine(ReflectionUtil.GetPrivateField<Color>(oldtrail, "_multiplierSaberColor").ToString());
-         //           ReflectionUtil.SetPrivateField(oldtrail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
+                    Logger.Log(ReflectionUtil.GetPrivateField<Color>(oldtrail, "_multiplierSaberColor").ToString(), LogLevel.Debug);
+                    //ReflectionUtil.SetPrivateField(oldtrail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
                     oldColorManager = ReflectionUtil.GetPrivateField<ColorManager>(oldtrail, "_colorManager");
                     oldTrailRendererPrefab = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(oldtrail, "_trailRendererPrefab");
 
-                    //  oldtrail.Start();
-                    //    oldtrail.gameObject.SetActive(false);
+                    //oldtrail.Start();
+                    //oldtrail.gameObject.SetActive(false);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine(e);
-                    Console.WriteLine(e.Message);
+                    Logger.Log(ex, LogLevel.Critical);
                     throw;
                 }
 
@@ -81,7 +79,7 @@ namespace CustomSaber
             }
             else
             {
-                Console.WriteLine("Trail not found");
+                Logger.Log("Trail not found", LogLevel.Debug);
                 Destroy(this);
             }
         }

@@ -1,13 +1,10 @@
-﻿using CustomUI.BeatSaber;
-using CustomUI.MenuButton;
-using CustomUI.Utilities;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using CustomUI.MenuButton;
 using TMPro;
+using LogLevel = IPA.Logging.Logger.Level;
 using UnityEngine;
 using UnityEngine.UI;
-using VRUI;
 
 namespace CustomSaber
 {
@@ -40,11 +37,10 @@ namespace CustomSaber
         //private RectTransform _mainMenuRectTransform;
         //private MainMenuViewController _mainMenuViewController;
         private MainFlowCoordinator _mainFlowCoordinator;
-
+        public SaberListFlowCoordinator _saberListFlowCoordinator;
         public static CustomSaberUI _instance;
 
         public class SaberListFlowCoordinator : GenericFlowCoordinator<SaberListViewController, SaberPreviewController> { };
-        public SaberListFlowCoordinator _saberListFlowCoordinator;
 
         internal static void OnLoad()
         {
@@ -52,8 +48,8 @@ namespace CustomSaber
             {
                 return;
             }
-            new GameObject("CustomSaberUI").AddComponent<CustomSaberUI>();
 
+            new GameObject("CustomSaberUI").AddComponent<CustomSaberUI>();
         }
 
         private void Awake()
@@ -67,24 +63,23 @@ namespace CustomSaber
                 _mainFlowCoordinator = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
                 //_mainMenuRectTransform = _buttonInstance.transform.parent as RectTransform;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine("EXCEPTION ON AWAKE(TRY FIND BUTTONS): " + e);
+                Logger.Log(ex);
             }
 
             CreateCustomSaberButton();
-
         }
 
         private void CreateCustomSaberButton()
         {
-            Console.WriteLine("Adding custom saber button");
+            Logger.Log("Adding custom saber button", LogLevel.Debug);
 
             MenuButtonUI.AddButton("Saber Menu", delegate ()
             {
                 if (_saberListFlowCoordinator == null)
                 {
-                    _saberListFlowCoordinator = new GameObject("SaberListFlowCoordinator").AddComponent<SaberListFlowCoordinator>(); 
+                    _saberListFlowCoordinator = new GameObject("SaberListFlowCoordinator").AddComponent<SaberListFlowCoordinator>();
                     _saberListFlowCoordinator.mainFlowCoordinator = _mainFlowCoordinator;
                     _saberListFlowCoordinator.OnContentCreated = (content) =>
                     {
@@ -96,7 +91,6 @@ namespace CustomSaber
                     };
                     //_mainFlowCoordinator
                 }
-
                 ReflectionUtil.InvokePrivateMethod(_mainFlowCoordinator, "PresentFlowCoordinator", new object[] { _saberListFlowCoordinator, null, false, false });
             });
         }
