@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomSaber", "CustomSaber.csproj", "{FEF74B0A-6772-4659-A782-334F1491D103}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomSaber-Editor", "..\CustomSaber-Editor\CustomSaber-Editor.csproj", "{272257A9-D168-40E8-985D-A642A6DB60D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{FEF74B0A-6772-4659-A782-334F1491D103}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEF74B0A-6772-4659-A782-334F1491D103}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEF74B0A-6772-4659-A782-334F1491D103}.Release|Any CPU.Build.0 = Release|Any CPU
+		{272257A9-D168-40E8-985D-A642A6DB60D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{272257A9-D168-40E8-985D-A642A6DB60D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{272257A9-D168-40E8-985D-A642A6DB60D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{272257A9-D168-40E8-985D-A642A6DB60D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

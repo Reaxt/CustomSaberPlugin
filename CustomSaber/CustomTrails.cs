@@ -27,6 +27,7 @@ namespace CustomSaber
         private XWeaponTrailRenderer oldTrailRendererPrefab;
         private Saber saber;
 
+#if PLUGIN
         public void Init(Saber parentSaber)
         {
             Logger.Log("Replacing Trail", LogLevel.Debug);
@@ -100,5 +101,6 @@ namespace CustomSaber
             TrailColor = newColor;
             trail.SetColor(newColor);
         }
+#endif
     }
 }
