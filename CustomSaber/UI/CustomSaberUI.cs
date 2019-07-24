@@ -29,6 +29,7 @@ namespace CustomSaber
         public string Name { get; set; }
         public string Path { get; set; }
         public string Author { get; set; }
+        public Sprite CoverImage { get; set; }
         // TODO: prop for Image
     }
 

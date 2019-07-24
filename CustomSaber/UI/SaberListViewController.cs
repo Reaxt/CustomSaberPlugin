@@ -8,6 +8,7 @@ using VRUI;
 using LogLevel = IPA.Logging.Logger.Level;
 using UnityEngine;
 using UnityEngine.UI;
+using CustomUI.Utilities;
 
 namespace CustomSaber
 {
@@ -47,6 +48,9 @@ namespace CustomSaber
         private bool menuShockwaveOriginalState;
 
         public Action backButtonPressed;
+
+        private Sprite _defaultImage;
+        private Sprite _defaultImageError;
 
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
@@ -192,6 +196,10 @@ namespace CustomSaber
         public void LoadSabers(bool FirstRun)
         {
             Logger.Log("Loading sabers!");
+
+            _defaultImage = UIUtilities.LoadSpriteFromResources("CustomSaber.Resources.fa-magic.png");
+            _defaultImageError = UIUtilities.LoadSpriteFromResources("CustomSaber.Resources.fa-magic-error.png");
+
             if (FirstRun)
             {
                 foreach (string sab in Plugin.RetrieveCustomSabers())
@@ -201,6 +209,7 @@ namespace CustomSaber
                     {
                         tempsab.Name = "Default Sabers";
                         tempsab.Author = "Beat Games";
+                        tempsab.CoverImage = _defaultImage;
                         tempsab.Path = "DefaultSabers";
                         tempsab.AssetBundle = null;
                         tempsab.GameObject = null;
@@ -216,6 +225,7 @@ namespace CustomSaber
                             {
                                 tempsab.Name = sab.Split('/').Last().Split('.').First();
                                 tempsab.Author = "THIS SHOULD NEVER HAPPEN";
+                                tempsab.CoverImage = _defaultImageError;
                                 tempsab.Path = sab;
                                 tempsab.AssetBundle = null;
                                 tempsab.GameObject = null;
@@ -224,6 +234,7 @@ namespace CustomSaber
                             {
                                 tempsab.Name = tempdesciptor.SaberName;
                                 tempsab.Author = tempdesciptor.AuthorName;
+                                tempsab.CoverImage = (tempdesciptor.CoverImage) ? tempdesciptor.CoverImage : _defaultImage;
                                 tempsab.Path = sab;
                                 tempsab.AssetBundle = tempbundle;
                                 tempsab.GameObject = sabroot;
@@ -234,6 +245,7 @@ namespace CustomSaber
                             Logger.Log(ex, LogLevel.Warning);
                             tempsab.Name = "This saber is broken, delete it.";
                             tempsab.Author = sab.Split('/').Last();//.Split('.').First();
+                            tempsab.CoverImage = _defaultImageError;
                             tempsab.Path = sab;
                             tempsab.AssetBundle = null;
                             tempsab.GameObject = null;
@@ -568,7 +580,7 @@ namespace CustomSaber
             CustomSaber saber = _sabers.ElementAtOrDefault(row);
             _tableCell.GetPrivateField<TextMeshProUGUI>("_songNameText").text = saber?.Name;
             _tableCell.GetPrivateField<TextMeshProUGUI>("_authorText").text = saber?.Author;
-            _tableCell.GetPrivateField<UnityEngine.UI.RawImage>("_coverRawImage").texture = Texture2D.blackTexture;
+            _tableCell.GetPrivateField<UnityEngine.UI.RawImage>("_coverRawImage").texture = saber?.CoverImage?.texture;
 
             return _tableCell;
         }
