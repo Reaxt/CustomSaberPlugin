@@ -104,6 +104,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\fa-magic-error.png" />
+    <EmbeddedResource Include="Resources\fa-magic.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)$(TargetName).dll" "Z:\SteamLibrary\steamapps\common\Beat Saber\Plugins"</PostBuildEvent>
