@@ -61,7 +61,6 @@ namespace CustomSaber
             {
                 _currentSaberName = SaberLoader.AllSabers[0].Name;
             }
-            Logger.Log($"_currentSaberName = {_currentSaberName}");
         }
 
         public void OnApplicationQuit() { }
@@ -80,7 +79,6 @@ namespace CustomSaber
 
             if (to.name == "GameCore")
             {
-                Logger.Log($"Current saber name is {_currentSaberName}");
                 LoadNewSaber(_currentSaberName);
                 SaberScript.LoadAssets();
             }
@@ -155,7 +153,6 @@ namespace CustomSaber
 
         public static void LoadNewSaber(string name)
         {
-            Logger.Log(name);
             if (name != "DefaultSabers")
             {
                 SaberScript.CustomSaber = SaberLoader.GetSaberAssetBundle(name);

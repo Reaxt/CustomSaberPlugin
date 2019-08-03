@@ -96,7 +96,6 @@ namespace CustomSaber
         private void _sabersTableView_DidSelectRowEvent(TableView sender, int row)
         {
             Plugin._currentSaberName = SaberLoader.AllSabers[row].Name;
-            Logger.Log($"Set Saber name to {Plugin._currentSaberName}");
             selected = row;
             if (row == 0)
             {
