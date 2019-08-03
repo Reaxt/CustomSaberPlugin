@@ -1,7 +1,8 @@
-﻿using System;
+﻿using IPA.Utilities;
+using System;
 using System.Linq;
-using LogLevel = IPA.Logging.Logger.Level;
 using UnityEngine;
+using LogLevel = IPA.Logging.Logger.Level;
 
 namespace CustomSaber
 {

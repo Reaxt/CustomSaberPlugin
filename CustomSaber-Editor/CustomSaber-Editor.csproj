@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CustomSaber_Editor</RootNamespace>
-    <AssemblyName>CustomSaber-Editor</AssemblyName>
+    <AssemblyName>CustomSaber</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PathMap>$(SolutionDir)=C:\</PathMap>
@@ -83,11 +83,17 @@
     <Compile Include="..\CustomSaber\CustomWeaponTrail.cs">
       <Link>CustomWeaponTrail.cs</Link>
     </Compile>
-    <Compile Include="..\CustomSaber\DynamicBone.cs">
-      <Link>DynamicBone.cs</Link>
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBone.cs">
+      <Link>Dynamic Bones\DynamicBone.cs</Link>
     </Compile>
-    <Compile Include="..\CustomSaber\DynamicBoneCollider.cs">
-      <Link>DynamicBoneCollider.cs</Link>
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBoneCollider.cs">
+      <Link>Dynamic Bones\DynamicBoneCollider.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBoneColliderBase.cs">
+      <Link>Dynamic Bones\DynamicBoneColliderBase.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBonePlaneCollider.cs">
+      <Link>Dynamic Bones\DynamicBonePlaneCollider.cs</Link>
     </Compile>
     <Compile Include="..\CustomSaber\EventFilterBehaviour.cs">
       <Link>EventFilterBehaviour.cs</Link>

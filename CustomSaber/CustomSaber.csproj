@@ -77,16 +77,17 @@
   <ItemGroup>
     <Compile Include="CustomTrails.cs" />
     <Compile Include="CustomWeaponTrail.cs" />
-    <Compile Include="GameHooks.cs" />
+    <Compile Include="Dynamic Bones\DynamicBone.cs" />
+    <Compile Include="Dynamic Bones\DynamicBoneCollider.cs" />
+    <Compile Include="Dynamic Bones\DynamicBoneColliderBase.cs" />
+    <Compile Include="Dynamic Bones\DynamicBonePlaneCollider.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="ReflectionUtil.cs" />
     <Compile Include="SaberDescriptor.cs" />
+    <Compile Include="SaberLoader.cs" />
     <Compile Include="UI\SaberPreviewController.cs" />
     <Compile Include="UI\CustomSaberUI.cs" />
     <Compile Include="UI\GenericFlowCoordinator.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="DynamicBone.cs" />
-    <Compile Include="DynamicBoneCollider.cs" />
     <Compile Include="EventFilterBehaviour.cs" />
     <Compile Include="EventManager.cs" />
     <Compile Include="EventFilters.cs" />
@@ -107,6 +108,23 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\fa-magic-error.png" />
     <EmbeddedResource Include="Resources\fa-magic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DefaultSabers\default.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DefaultSabers\kyle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DefaultSabers\caeden.png" />
+    <EmbeddedResource Include="Resources\DefaultSabers\danike.png" />
+    <EmbeddedResource Include="Resources\DefaultSabers\klouder.png" />
+    <EmbeddedResource Include="Resources\DefaultSabers\lolpants.png" />
+    <EmbeddedResource Include="Resources\DefaultSabers\ninja-simple-150.png" />
+    <EmbeddedResource Include="Resources\DefaultSabers\sobble.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DefaultSabers\meg-sabers.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

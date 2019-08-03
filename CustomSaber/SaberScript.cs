@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using BS_Utils.Gameplay;
+using IPA.Utilities;
+using System;
 using System.Collections;
-using BS_Utils.Gameplay;
-using LogLevel = IPA.Logging.Logger.Level;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Object = UnityEngine.Object;
+using LogLevel = IPA.Logging.Logger.Level;
 
 namespace CustomSaber
 {
@@ -62,7 +62,7 @@ namespace CustomSaber
                 Destroy(Instance.gameObject);
             }
 
-            GameObject loader = new GameObject("Saber Loader");
+            var loader = new GameObject("Saber Loader");
             Instance = loader.AddComponent<SaberScript>();
         }
 
@@ -78,10 +78,7 @@ namespace CustomSaber
             AddEvents();
         }
 
-        private void SceneManagerOnSceneLoaded(Scene newScene, LoadSceneMode mode)
-        {
-            Restart();
-        }
+        private void SceneManagerOnSceneLoaded(Scene newScene, LoadSceneMode mode) => Restart();
 
         private void Start()
         {
@@ -89,10 +86,7 @@ namespace CustomSaber
             Restart();
         }
 
-        LevelData GetGameSceneSetup()
-        {
-            return BS_Utils.Plugin.LevelData;
-        }
+        LevelData GetGameSceneSetup() => BS_Utils.Plugin.LevelData;
 
         private void AddEvents()
         {
@@ -227,16 +221,16 @@ namespace CustomSaber
 
             try
             {
-                LevelData mgs = GetGameSceneSetup();
-                BeatmapData beatmapData = mgs.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData;
+                var mgs = GetGameSceneSetup();
+                var beatmapData = mgs.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData;
 
-                BeatmapLineData[] beatmapLinesData = beatmapData.beatmapLinesData;
-                float LastTime = 0.0f;
+                var beatmapLinesData = beatmapData.beatmapLinesData;
+                var LastTime = 0.0f;
 
-                for (int i = 0; i < beatmapLinesData.Length; i++)
+                for (var i = 0; i < beatmapLinesData.Length; i++)
                 {
-                    BeatmapObjectData[] beatmapObjectsData = beatmapLinesData[i].beatmapObjectsData;
-                    for (int j = beatmapObjectsData.Length - 1; j >= 0; j--)
+                    var beatmapObjectsData = beatmapLinesData[i].beatmapObjectsData;
+                    for (var j = beatmapObjectsData.Length - 1; j >= 0; j--)
                     {
                         if (beatmapObjectsData[j].beatmapObjectType == BeatmapObjectType.Note)
                         {
@@ -286,7 +280,7 @@ namespace CustomSaber
             _saberRoot = null;
 
             //Logger.Log(Plugin._currentSaberPath, LogLevel.Debug);
-            if (Plugin._currentSaberPath == "DefaultSabers")
+            if (Plugin._currentSaberName == "DefaultSabers")
             {
                 StartCoroutine(WaitToCheckDefault());
                 return;
@@ -299,7 +293,7 @@ namespace CustomSaber
                 return;
             }
 
-            GameObject saberRoot = CustomSaber.LoadAsset<GameObject>("_customsaber");
+            var saberRoot = CustomSaber.LoadAsset<GameObject>("_customsaber");
 
             if (saberRoot != null)
             {
@@ -316,9 +310,9 @@ namespace CustomSaber
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
 
-            Saber[] sabers = Resources.FindObjectsOfTypeAll<Saber>();
-            Saber.SaberType[] typeForHands = new Saber.SaberType[] { Saber.SaberType.SaberB, Saber.SaberType.SaberA };
-            PlayerDataModelSO playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModelSO>().FirstOrDefault();
+            var sabers = Resources.FindObjectsOfTypeAll<Saber>();
+            var typeForHands = new Saber.SaberType[] { Saber.SaberType.SaberB, Saber.SaberType.SaberA };
+            var playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModelSO>().FirstOrDefault();
 
             Logger.Log("DataModel", LogLevel.Debug);
             if (playerDataModel && playerDataModel.currentLocalPlayer.playerSpecificSettings.swapColors)
@@ -326,13 +320,13 @@ namespace CustomSaber
                 typeForHands = typeForHands.Reverse().ToArray();
             }
 
-            foreach (Saber saber in sabers)
+            foreach (var saber in sabers)
             {
                 //Disappear default saber
-                foreach (MeshFilter t in saber.transform.GetComponentsInChildren<MeshFilter>())
+                foreach (var t in saber.transform.GetComponentsInChildren<MeshFilter>())
                 {
                     t.gameObject.SetActive(saberRoot == null);
-                    MeshFilter filter = t.GetComponentInChildren<MeshFilter>();
+                    var filter = t.GetComponentInChildren<MeshFilter>();
                     if (filter)
                     {
                         filter.gameObject.SetActive(saberRoot == null);//.sharedMesh = null;
@@ -353,7 +347,7 @@ namespace CustomSaber
 
                     //Logger.Log("PreTrail", LogLevel.Debug);
                     trails = _rightSaber.GetComponents<CustomTrail>();
-                    foreach (CustomTrail trail in trails)
+                    foreach (var trail in trails)
                     {
                         trail.Init(saber);
                     }
@@ -370,7 +364,7 @@ namespace CustomSaber
 
                     //Logger.Log("PreTrail", LogLevel.Debug);
                     trails = _leftSaber.GetComponents<CustomTrail>();
-                    foreach (CustomTrail trail in trails)
+                    foreach (var trail in trails)
                     {
                         trail.Init(saber);
                     }
@@ -382,18 +376,18 @@ namespace CustomSaber
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
 
-            bool hideOneSaber = false;
-            Saber.SaberType hiddenSaberType = Saber.SaberType.SaberA;
+            var hideOneSaber = false;
+            var hiddenSaberType = Saber.SaberType.SaberA;
             if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.characteristicName.Contains("ONE_SABER"))
             {
                 hideOneSaber = true;
                 hiddenSaberType = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.swapColors ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
             }
 
-            Saber[] sabers = Resources.FindObjectsOfTypeAll<Saber>();
+            var sabers = Resources.FindObjectsOfTypeAll<Saber>();
             Logger.Log("Default Sabers. Not Replacing", LogLevel.Debug);
 
-            foreach (Saber saber in sabers)
+            foreach (var saber in sabers)
             {
                 if (!hideOneSaber)
                 {
@@ -406,10 +400,10 @@ namespace CustomSaber
 
                 if (saber.saberType == hiddenSaberType)
                 {
-                    foreach (MeshFilter t in saber.transform.GetComponentsInChildren<MeshFilter>())
+                    foreach (var t in saber.transform.GetComponentsInChildren<MeshFilter>())
                     {
                         t.gameObject.SetActive(_saberRoot == null);
-                        MeshFilter filter = t.GetComponentInChildren<MeshFilter>();
+                        var filter = t.GetComponentInChildren<MeshFilter>();
                         if (filter)
                         {
                             filter.gameObject.SetActive(_saberRoot == null);//.sharedMesh = null;
@@ -418,17 +412,14 @@ namespace CustomSaber
                 }
             }
 
-            SaberWeaponTrail[] trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
-            for (int i = 0; i < trails.Length; i++)
+            var trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
+            for (var i = 0; i < trails.Length; i++)
             {
                 ReflectionUtil.SetPrivateField(trails[i], "_multiplierSaberColor", new Color(1f, 1f, 1f, 0.251f));
             }
         }
 
-        private void OnPauseMenuClosed()
-        {
-            StartCoroutine(WaitForSabers(_saberRoot));
-        }
+        private void OnPauseMenuClosed() => StartCoroutine(WaitForSabers(_saberRoot));
 
         private void Update()
         {

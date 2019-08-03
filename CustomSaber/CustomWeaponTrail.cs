@@ -1,5 +1,6 @@
-﻿using Xft;
+﻿using IPA.Utilities;
 using UnityEngine;
+using Xft;
 
 namespace CustomSaber
 {

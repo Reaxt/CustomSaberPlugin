@@ -5,10 +5,10 @@
     "#![CustomSaber.Resources.description.md]",
     "Default description"
   ],
-  "gameVersion": "1.1.0",
+  "gameVersion": "1.2.0",
   "id": "Custom Sabers",
   "name": "Custom Sabers",
-  "version": "2.10.0",
+  "version": "3.0.0",
   "icon": "CustomSaber.Resources.icon.png",
   "dependsOn": {
     "BSIPA": "^3.12.15",

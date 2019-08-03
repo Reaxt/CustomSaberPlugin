@@ -5,6 +5,7 @@ using TMPro;
 using LogLevel = IPA.Logging.Logger.Level;
 using UnityEngine;
 using UnityEngine.UI;
+using IPA.Utilities;
 
 namespace CustomSaber
 {
