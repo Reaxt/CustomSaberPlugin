@@ -315,10 +315,6 @@ namespace CustomSaber
             var playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModelSO>().FirstOrDefault();
 
             Logger.Log("DataModel", LogLevel.Debug);
-            if (playerDataModel && playerDataModel.currentLocalPlayer.playerSpecificSettings.swapColors)
-            {
-                typeForHands = typeForHands.Reverse().ToArray();
-            }
 
             foreach (var saber in sabers)
             {
@@ -378,10 +374,10 @@ namespace CustomSaber
 
             var hideOneSaber = false;
             var hiddenSaberType = Saber.SaberType.SaberA;
-            if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.characteristicName.Contains("ONE_SABER"))
+            if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.characteristicNameLocalizationKey.Contains("ONE_SABER"))
             {
                 hideOneSaber = true;
-                hiddenSaberType = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.swapColors ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
+                hiddenSaberType = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.leftHanded ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
             }
 
             var sabers = Resources.FindObjectsOfTypeAll<Saber>();
