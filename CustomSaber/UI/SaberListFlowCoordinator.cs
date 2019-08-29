@@ -1,5 +1,6 @@
-﻿using VRUI;
-using CustomUI.BeatSaber;
+﻿using CustomUI.BeatSaber;
+using IPA.Utilities;
+using VRUI;
 
 namespace CustomSaber
 {
@@ -27,10 +28,7 @@ namespace CustomSaber
             }
         }
 
-        void Dismiss()
-        {
-            ReflectionUtil.InvokePrivateMethod((mainFlowCoordinator as FlowCoordinator), "DismissFlowCoordinator", new object[] { this, null, false });
-        }
+        void Dismiss() => ReflectionUtil.InvokePrivateMethod((mainFlowCoordinator as FlowCoordinator), "DismissFlowCoordinator", new object[] { this, null, false });
 
         protected override void DidDeactivate(DeactivationType type)
         {
