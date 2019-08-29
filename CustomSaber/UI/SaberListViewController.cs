@@ -71,7 +71,7 @@ namespace CustomSaber
             _versionNumber.color = Color.white;
 
             _customListTableView.didSelectCellWithIdxEvent += _sabersTableView_DidSelectRowEvent;
-            _customListTableView.ScrollToCellWithIdx(SaberLoader.FindSaberByName(Plugin._currentSaberName), TableView.ScrollPositionType.Beginning, false);
+            _customListTableView.ScrollToCellWithIdx(SaberLoader.FindSaberByName(Plugin._currentSaberName), TableViewScroller.ScrollPositionType.Beginning, false);
             _customListTableView.SelectCellWithIdx(SaberLoader.FindSaberByName(Plugin._currentSaberName), false);
         }
 
@@ -107,9 +107,9 @@ namespace CustomSaber
             }
         }
 
-        public override TableCell CellForIdx(int idx)
+        public override TableCell CellForIdx(TableView tableView, int row)
         {
-            var saber = SaberLoader.AllSabers[idx];
+            var saber = SaberLoader.AllSabers[row];
             var _tableCell = GetTableCell(false);
             _tableCell.GetPrivateField<TextMeshProUGUI>("_songNameText").text = saber.Name;
             _tableCell.GetPrivateField<TextMeshProUGUI>("_authorText").text = saber.Author;
