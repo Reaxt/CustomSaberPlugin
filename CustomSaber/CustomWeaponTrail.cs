@@ -1,5 +1,6 @@
-﻿using Xft;
+﻿using IPA.Utilities;
 using UnityEngine;
+using Xft;
 
 namespace CustomSaber
 {
@@ -43,6 +44,7 @@ namespace CustomSaber
             _saberType = colorType;
         }
 
+#if PLUGIN
         public override void Start()
         {
             base.Start();
@@ -60,5 +62,6 @@ namespace CustomSaber
             _customMaterial = newMaterial;
             ReflectionUtil.GetPrivateField<MeshRenderer>(_trailRenderer, "_meshRenderer").material = _customMaterial;
         }
+#endif
     }
 }
