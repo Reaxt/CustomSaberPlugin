@@ -55,9 +55,9 @@ namespace CustomSaber
                             var tempbundle = AssetBundle.LoadFromFile(sab);
                             AssetBundles.Add(tempbundle);
                             var sabroot = tempbundle.LoadAsset<GameObject>("_CustomSaber");
-                            var tempdesciptor = sabroot.GetComponent<SaberDescriptor>();
-                            Logger.Log($"Loading {tempdesciptor?.SaberName}");
-                            if (tempdesciptor == null)
+                            var tempDescriptor = sabroot.GetComponent<SaberDescriptor>();
+                            Logger.Log($"Loading {tempDescriptor?.SaberName}");
+                            if (tempDescriptor == null)
                             {
                                 Logger.Log($"SaberDescriptor not found for {sab}", Logger.LogLevel.Warning);
                                 tempsab.Name = sab.Split('/').Last().Split('.').First();
@@ -69,14 +69,14 @@ namespace CustomSaber
                             }
                             else
                             {
-                                tempsab.Name = tempdesciptor.SaberName;
-                                tempsab.Author = tempdesciptor.AuthorName;
-                                if (tempdesciptor.CoverImage)
+                                tempsab.Name = tempDescriptor.SaberName;
+                                tempsab.Author = tempDescriptor.AuthorName;
+                                if (tempDescriptor.CoverImage)
                                 {
-                                    tempdesciptor.CoverImage.texture.wrapMode = TextureWrapMode.Clamp;
+                                    tempDescriptor.CoverImage.texture.wrapMode = TextureWrapMode.Clamp;
                                 }
 
-                                tempsab.CoverImage = (tempdesciptor.CoverImage) ? tempdesciptor.CoverImage : _defaultImage;
+                                tempsab.CoverImage = (tempDescriptor.CoverImage) ? tempDescriptor.CoverImage : _defaultImage;
                                 tempsab.Path = sab;
                                 tempsab.AssetBundle = tempbundle;
                                 tempsab.GameObject = sabroot;
