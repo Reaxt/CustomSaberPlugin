@@ -319,6 +319,7 @@ namespace CustomSaber
             foreach (var saber in sabers)
             {
                 //Disappear default saber
+                saber.GetComponentInChildren<BasicSaberModelController>()?.gameObject?.SetActive(false);
                 foreach (var t in saber.transform.GetComponentsInChildren<MeshFilter>())
                 {
                     t.gameObject.SetActive(saberRoot == null);
@@ -347,6 +348,7 @@ namespace CustomSaber
                     {
                         trail.Init(saber);
                     }
+                    ApplyColorsToSaber(_rightSaber, Plugin.colorManager.ColorForSaberType(Saber.SaberType.SaberB));
                 }
                 else if (saber.saberType == typeForHands[1])
                 {
@@ -364,10 +366,34 @@ namespace CustomSaber
                     {
                         trail.Init(saber);
                     }
+                    ApplyColorsToSaber(_leftSaber, Plugin.colorManager.ColorForSaberType(Saber.SaberType.SaberA));
                 }
             }
         }
 
+        public void ApplyColorsToSaber(GameObject saber, Color color)
+        {
+            foreach (var renderer in saber.GetComponentsInChildren<Renderer>())
+            {
+                if (renderer != null)
+                {
+                    foreach (var renderMaterial in renderer.sharedMaterials)
+                    {
+                        if (renderMaterial == null)
+                        {
+                            continue;
+                        }
+
+                        if (renderMaterial.HasProperty("_Glow") && renderMaterial.GetFloat("_Glow") > 0 ||
+                            renderMaterial.HasProperty("_Bloom") && renderMaterial.GetFloat("_Bloom") > 0)
+                        {
+                            renderMaterial.SetColor("_Color", color);
+                        }
+                    }
+                }
+
+            }
+        }
         private IEnumerator WaitToCheckDefault()
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
@@ -406,6 +432,7 @@ namespace CustomSaber
                         }
                     }
                 }
+
             }
 
             var trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();

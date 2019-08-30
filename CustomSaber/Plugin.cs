@@ -18,6 +18,7 @@ namespace CustomSaber
 
         private static List<string> _saberPaths;
         public static string _currentSaberName;
+        public static ColorManager colorManager;
         public static Saber LeftSaber;
         public static Saber RightSaber;
 
@@ -79,6 +80,7 @@ namespace CustomSaber
 
             if (to.name == "GameCore")
             {
+                colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().FirstOrDefault();
                 LoadNewSaber(_currentSaberName);
                 SaberScript.LoadAssets();
             }

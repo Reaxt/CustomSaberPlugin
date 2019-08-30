@@ -24,7 +24,7 @@ namespace CustomSaber
         public int Length = 20;
 
         private CustomWeaponTrail trail;
-        private ColorManager oldColorManager;
+  //      private ColorManager oldColorManager;
         private XWeaponTrailRenderer oldTrailRendererPrefab;
         private Saber saber;
 
@@ -64,7 +64,7 @@ namespace CustomSaber
                 {
                     Logger.Log(ReflectionUtil.GetPrivateField<Color>(oldtrail, "_multiplierSaberColor").ToString(), LogLevel.Debug);
                     //ReflectionUtil.SetPrivateField(oldtrail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
-                    oldColorManager = ReflectionUtil.GetPrivateField<ColorManager>(oldtrail, "_colorManager");
+            //        oldColorManager = ReflectionUtil.GetPrivateField<ColorManager>(oldtrail, "_colorManager");
                     oldTrailRendererPrefab = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(oldtrail, "_trailRendererPrefab");
 
                     //oldtrail.Start();
@@ -77,7 +77,7 @@ namespace CustomSaber
                 }
 
                 trail = gameObject.AddComponent<CustomWeaponTrail>();
-                trail.init(oldTrailRendererPrefab, oldColorManager, PointStart, PointEnd, TrailMaterial, TrailColor, Length, MultiplierColor, colorType);
+                trail.init(oldTrailRendererPrefab, Plugin.colorManager, PointStart, PointEnd, TrailMaterial, TrailColor, Length, MultiplierColor, colorType);
             }
             else
             {
