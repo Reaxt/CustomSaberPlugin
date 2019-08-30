@@ -7,7 +7,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using IPALogger = IPA.Logging.Logger;
-using LogLevel = IPA.Logging.Logger.Level;
 
 namespace CustomSaber
 {
@@ -28,8 +27,8 @@ namespace CustomSaber
         {
             if (logger != null)
             {
-                Logger.log = logger;
-                Logger.Log("Logger prepared", LogLevel.Debug);
+                Logger.logger = logger;
+                Logger.Log("Logger prepared");
             }
 
             if (metadata != null)
@@ -46,7 +45,7 @@ namespace CustomSaber
             }
             _init = true;
 
-            Logger.Log($"Custom Sabers v{Plugin.PluginVersion} has started", LogLevel.Notice);
+            Logger.Log($"Custom Sabers v{Plugin.PluginVersion} has started", Logger.LogLevel.Notice);
 
             SaberLoader.LoadSabers();
 
@@ -98,16 +97,16 @@ namespace CustomSaber
             //HarmonyInstance harmony = HarmonyInstance.Create("CustomSaberHarmonyInstance");
             //harmony.PatchAll(Assembly.GetExecutingAssembly());
 
-            Logger.Log("Loading GameCore scene", LogLevel.Debug);
+            Logger.Log("Loading GameCore scene");
             SceneManager.LoadSceneAsync("GameCore", LoadSceneMode.Additive);
-            Logger.Log("Loaded!", LogLevel.Debug);
+            Logger.Log("Loaded!");
 
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Count() > 1);
-            Logger.Log("Got sabers!", LogLevel.Debug);
+            Logger.Log("Got sabers!");
 
             foreach (var s in Resources.FindObjectsOfTypeAll<Saber>())
             {
-                Logger.Log($"Saber: {s.name}, GameObj: {s.gameObject.name}, {s.ToString()}", LogLevel.Debug);
+                Logger.Log($"Saber: {s.name}, GameObj: {s.gameObject.name}, {s.ToString()}");
                 if (s.name == "LeftSaber")
                 {
                     LeftSaber = Saber.Instantiate(s);
@@ -117,7 +116,7 @@ namespace CustomSaber
                     RightSaber = Saber.Instantiate(s);
                 }
             }
-            Logger.Log("Finished! Got default sabers! Setting active state", LogLevel.Debug);
+            Logger.Log("Finished! Got default sabers! Setting active state");
 
             if (LeftSaber)
             {
@@ -133,7 +132,7 @@ namespace CustomSaber
                 RightSaber.name = "___OriginalSaberPreviewA";
             }
 
-            Logger.Log("Unloading GameCore", LogLevel.Debug);
+            Logger.Log("Unloading GameCore");
             SceneManager.UnloadSceneAsync("GameCore");
 
             //Logger.Log("Unloading harmony patches", LogLevel.Debug);

@@ -92,12 +92,12 @@ namespace CustomSaber
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(ex);
+                    Logger.Log($"{ex.Message}\n{ex.StackTrace}", Logger.LogLevel.Error);
                 }
             }
             else
             {
-                Logger.Log($"Failed to load preview. {SaberLoader.AllSabers[SaberIndex].Name}", LogLevel.Warning);
+                Logger.Log($"Failed to load preview. {SaberLoader.AllSabers[SaberIndex].Name}", Logger.LogLevel.Warning);
             }
             PreviewStatus = false;
         }
