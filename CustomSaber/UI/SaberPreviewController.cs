@@ -20,8 +20,6 @@ namespace CustomSaber
         public GameObject _saberPreviewBParent;
 
         private bool PreviewStatus;
-        private bool CustomColorsPresent = IPA.Loader.PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit" || x.Name == "Custom Colors")
-            || IPA.Loader.PluginManager.AllPlugins.Any(x => x.Metadata.Id == "Custom Colors");
 
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
@@ -84,10 +82,6 @@ namespace CustomSaber
                         _saberPreview.transform.Find("RightSaber").transform.localPosition = new Vector3(0, 0, 0);
                         _saberPreview.transform.Find("RightSaber").transform.Translate(0, 0.5f, 0);
 
-                        if (CustomColorsPresent)
-                        {
-                            CallCustomColors(true);
-                        }
                     }
                 }
                 catch (Exception ex)
@@ -117,6 +111,5 @@ namespace CustomSaber
             }
         }
 
-        internal void CallCustomColors(bool loading) => CustomColors.Plugin.ForceOverrideCustomSabers(loading);
     }
 }

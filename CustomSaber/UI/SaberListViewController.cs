@@ -11,8 +11,6 @@ namespace CustomSaber
     {
         private int selected = 0;
 
-        private bool CustomColorsPresent = IPA.Loader.PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit" || x.Name == "Custom Colors")
-            || IPA.Loader.PluginManager.AllPlugins.Any(x => x.Metadata.Id == "Custom Colors");
 
         private MenuShockwave menuShockwave = Resources.FindObjectsOfTypeAll<MenuShockwave>().FirstOrDefault();
 
@@ -39,10 +37,6 @@ namespace CustomSaber
                         menuShockwave.enabled = menuShockwaveOriginalState;
                     }
 
-                    if (CustomColorsPresent)
-                    {
-                        SaberPreviewController.Instance.CallCustomColors(false);
-                    }
                 });
             }
 
