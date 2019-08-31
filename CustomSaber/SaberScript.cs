@@ -278,7 +278,14 @@ namespace CustomSaber
             _leftTopLocation = Vector3.zero;
             _rightTopLocation = Vector3.zero;
             _saberRoot = null;
-
+            //Reset Trails
+            SaberWeaponTrail[] trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
+            for (int i = 0; i < trails.Length; i++)
+            {
+                SaberWeaponTrail trail = trails[i];
+                ReflectionUtil.SetPrivateField(trail, "_multiplierSaberColor", new Color(1f, 1f, 1f, 0.251f));
+                ReflectionUtil.SetPrivateField(trail as Xft.XWeaponTrail, "_whiteSteps", 4);
+            }
             //Logger.Log(Plugin._currentSaberPath, LogLevel.Debug);
             if (Plugin._currentSaberName == "DefaultSabers")
             {
@@ -319,7 +326,6 @@ namespace CustomSaber
             foreach (var saber in sabers)
             {
                 //Disappear default saber
-                saber.GetComponentInChildren<BasicSaberModelController>()?.gameObject?.SetActive(false);
                 foreach (var t in saber.transform.GetComponentsInChildren<MeshFilter>())
                 {
                     t.gameObject.SetActive(saberRoot == null);
@@ -433,12 +439,6 @@ namespace CustomSaber
                     }
                 }
 
-            }
-
-            var trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
-            for (var i = 0; i < trails.Length; i++)
-            {
-                ReflectionUtil.SetPrivateField(trails[i], "_multiplierSaberColor", new Color(1f, 1f, 1f, 0.251f));
             }
         }
 
