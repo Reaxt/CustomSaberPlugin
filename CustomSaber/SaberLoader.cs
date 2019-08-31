@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using LogLevel = IPA.Logging.Logger.Level;
 
 namespace CustomSaber
 {
@@ -28,11 +27,6 @@ namespace CustomSaber
             _defaultImageError.texture.wrapMode = TextureWrapMode.Clamp;
             var defaultSabersImageFolder = "CustomSaber.Resources.DefaultSabers";
             var defaultSabersImagePaths = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(file => file.StartsWith(defaultSabersImageFolder)).ToList();
-            Logger.Log(defaultSabersImagePaths.Count.ToString());
-            foreach (var s in defaultSabersImagePaths)
-            {
-                Logger.Log(s);
-            }
 
             var r = new System.Random();
             _defaultSabersImage = UIUtilities.LoadSpriteFromResources(defaultSabersImagePaths.ElementAt(r.Next(defaultSabersImagePaths.Count)));
@@ -61,10 +55,11 @@ namespace CustomSaber
                             var tempbundle = AssetBundle.LoadFromFile(sab);
                             AssetBundles.Add(tempbundle);
                             var sabroot = tempbundle.LoadAsset<GameObject>("_CustomSaber");
-                            Logger.Log(sabroot.name);
-                            var tempdesciptor = sabroot.GetComponent<SaberDescriptor>();
-                            if (tempdesciptor == null)
+                            var tempDescriptor = sabroot.GetComponent<SaberDescriptor>();
+                            Logger.Log($"Loading {tempDescriptor?.SaberName}");
+                            if (tempDescriptor == null)
                             {
+                                Logger.Log($"SaberDescriptor not found for {sab}", Logger.LogLevel.Warning);
                                 tempsab.Name = sab.Split('/').Last().Split('.').First();
                                 tempsab.Author = "THIS SHOULD NEVER HAPPEN";
                                 tempsab.CoverImage = _defaultImageError;
@@ -74,14 +69,14 @@ namespace CustomSaber
                             }
                             else
                             {
-                                tempsab.Name = tempdesciptor.SaberName;
-                                tempsab.Author = tempdesciptor.AuthorName;
-                                if (tempdesciptor.CoverImage)
+                                tempsab.Name = tempDescriptor.SaberName;
+                                tempsab.Author = tempDescriptor.AuthorName;
+                                if (tempDescriptor.CoverImage)
                                 {
-                                    tempdesciptor.CoverImage.texture.wrapMode = TextureWrapMode.Clamp;
+                                    tempDescriptor.CoverImage.texture.wrapMode = TextureWrapMode.Clamp;
                                 }
 
-                                tempsab.CoverImage = (tempdesciptor.CoverImage) ? tempdesciptor.CoverImage : _defaultImage;
+                                tempsab.CoverImage = (tempDescriptor.CoverImage) ? tempDescriptor.CoverImage : _defaultImage;
                                 tempsab.Path = sab;
                                 tempsab.AssetBundle = tempbundle;
                                 tempsab.GameObject = sabroot;
@@ -89,7 +84,8 @@ namespace CustomSaber
                         }
                         catch (Exception ex)
                         {
-                            Logger.Log(ex, LogLevel.Warning);
+                            Logger.Log($"Saber {sab} failed to load.");
+                            Logger.Log($"{ex.Message}\n{ex.StackTrace}" , Logger.LogLevel.Warning);
                             tempsab.Name = "This saber is broken, delete it.";
                             tempsab.Author = sab.Split('/').Last();//.Split('.').First();
                             tempsab.CoverImage = _defaultImageError;
@@ -123,12 +119,12 @@ namespace CustomSaber
                     }
                 }
             }
-            Logger.Log("Added all sabers", LogLevel.Debug);
+            Logger.Log($"Added {AllSabers.Count - 1} sabers");
         }
 
         public static void UnLoadSabers()
         {
-            Logger.Log("Unloading sabers!", LogLevel.Debug);
+            Logger.Log("Unloading sabers!");
             foreach (var saber in SaberLoader.AllSabers)
             {
                 if (saber.Path != "DefaultSabers")

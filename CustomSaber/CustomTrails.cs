@@ -2,7 +2,9 @@
 using System;
 using System.Linq;
 using UnityEngine;
-using LogLevel = IPA.Logging.Logger.Level;
+#if PLUGIN
+using LogLevel = CustomSaber.Logger.LogLevel;
+#endif
 
 namespace CustomSaber
 {
@@ -72,7 +74,7 @@ namespace CustomSaber
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(ex, LogLevel.Critical);
+                    Logger.Log($"{ex.Message}\n{ex.StackTrace}", LogLevel.Error);
                     throw;
                 }
 

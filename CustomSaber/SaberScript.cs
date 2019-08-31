@@ -5,7 +5,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using LogLevel = IPA.Logging.Logger.Level;
+using LogLevel = CustomSaber.Logger.LogLevel;
 
 namespace CustomSaber
 {
@@ -215,7 +215,7 @@ namespace CustomSaber
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                Logger.Log($"{ex.Message}\n{ex.StackTrace}", LogLevel.Error);
                 throw;
             }
 
@@ -249,7 +249,7 @@ namespace CustomSaber
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                Logger.Log($"{ex.Message}\n{ex.StackTrace}", LogLevel.Error);
                 throw;
             }
         }

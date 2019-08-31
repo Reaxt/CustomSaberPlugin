@@ -2,7 +2,7 @@
 using System.Linq;
 using CustomUI.MenuButton;
 using TMPro;
-using LogLevel = IPA.Logging.Logger.Level;
+using LogLevel = CustomSaber.Logger.LogLevel;
 using UnityEngine;
 using UnityEngine.UI;
 using IPA.Utilities;
@@ -67,7 +67,7 @@ namespace CustomSaber
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                Logger.Log($"{ex.Message}\n{ex.StackTrace}", LogLevel.Error);
             }
 
             CreateCustomSaberButton();
