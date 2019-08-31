@@ -54,6 +54,7 @@ namespace CustomSaber
             {
                 SaberWeaponTrail trail = trails[i];
                 ReflectionUtil.SetPrivateField(trail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
+                ReflectionUtil.SetPrivateField(trail as Xft.XWeaponTrail, "_whiteSteps", 0);
             }
 
             SaberWeaponTrail oldtrail = Resources.FindObjectsOfTypeAll<GameCoreInstaller>()
