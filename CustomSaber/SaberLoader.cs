@@ -139,7 +139,7 @@ namespace CustomSaber
         public static int FindSaberByName(string name)
         {
             var index = AllSabers.FindIndex(saber => saber.Name == name);
-            return (index >= 0) ? index : 0;
+            return (index >= 0) ? index : -1;
         }
 
         public static AssetBundle GetSaberAssetBundle(string name)

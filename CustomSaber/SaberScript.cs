@@ -49,7 +49,7 @@ namespace CustomSaber
 
         public static void LoadAssets()
         {
-            if (CustomSaber == null)
+            if (CustomSaber == null && Plugin._currentSaberName != "Default Sabers")
             {
                 Logger.Log("SABER ASSET BUNDLE DOESNT EXIST", LogLevel.Warning);
             }
@@ -287,7 +287,7 @@ namespace CustomSaber
                 ReflectionUtil.SetPrivateField(trail as Xft.XWeaponTrail, "_whiteSteps", 4);
             }
             //Logger.Log(Plugin._currentSaberPath, LogLevel.Debug);
-            if (Plugin._currentSaberName == "DefaultSabers")
+            if (Plugin._currentSaberName == "Default Sabers")
             {
                 StartCoroutine(WaitToCheckDefault());
                 return;
