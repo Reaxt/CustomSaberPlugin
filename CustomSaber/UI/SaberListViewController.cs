@@ -35,17 +35,13 @@ namespace CustomSaber
 
         }
 
-        protected override void DidActivate(bool firstActivation, ActivationType type)
-        {
-            base.DidActivate(firstActivation, type);
-            SetupSaberList();
-        }
-
         protected override void DidDeactivate(DeactivationType deactivationType)
         {
             base.DidDeactivate(deactivationType);
             DestroyPreview();
         }
+
+        [UIAction("#post-parse")]
         internal void SetupSaberList()
         {
             customListTableData.data.Clear();
