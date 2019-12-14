@@ -8,22 +8,27 @@ namespace CustomSaber
 {
     public static class Logger
     {
-        internal static IPALogger log { private get; set; }
+        public static IPA.Logging.Logger logger;
+        public enum LogLevel { Debug, Warning, Notice, Error, Critical };
 
-        public static void Log(string message, LogLevel severity = LogLevel.Info)
+        public static void Log(string m) => Log(m, LogLevel.Debug);
+
+        public static void Log(string m, LogLevel l) => Log(m, l, null);
+
+        public static void Log(string m, LogLevel l, string suggestedAction)
         {
-            string caller = new StackTrace()?.GetFrame(1)?.GetMethod()?.ReflectedType?.FullName ?? Assembly.GetCallingAssembly().GetName().Name;
-
-            if (log != null) log.Log(severity, $"{caller} - {message}");
-            else Console.WriteLine($"[{Plugin.PluginName}] {severity.ToString().ToUpper()} {caller} - {message}");
-        }
-
-        public static void Log(Exception error, LogLevel severity = LogLevel.Error)
-        {
-            string caller = new StackTrace()?.GetFrame(1)?.GetMethod()?.ReflectedType?.FullName ?? Assembly.GetCallingAssembly().GetName().Name;
-
-            if (log != null) log.Log(severity, error);
-            else Console.WriteLine($"[{Plugin.PluginName}] {severity.ToString().ToUpper()} {caller} - {error.Message}\n{error.StackTrace}");
+            var level = IPA.Logging.Logger.Level.Debug;
+            switch (l)
+            {
+                case LogLevel.Debug: level = IPA.Logging.Logger.Level.Debug; break;
+                case LogLevel.Notice: level = IPA.Logging.Logger.Level.Notice; break;
+                case LogLevel.Warning: level = IPA.Logging.Logger.Level.Warning; break;
+                case LogLevel.Error: level = IPA.Logging.Logger.Level.Error; break;
+                case LogLevel.Critical: level = IPA.Logging.Logger.Level.Critical; break;
+            }
+            logger.Log(level, m);
+            if (suggestedAction != null)
+                logger.Log(level, $"Suggested Action: {suggestedAction}");
         }
     }
 }

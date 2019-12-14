@@ -18,13 +18,7 @@ namespace CustomSaber
 
         public override void __Activate(ActivationType activationType)
         {
-            for (var i = 0; i < SaberLoader.AllSabers.Count; i++)
-            {
-                if (SaberLoader.AllSabers[i].Path == Plugin._currentSaberName)
-                {
-                    selected = i;
-                }
-            }
+            selected = SaberLoader.FindSaberByName(Plugin._currentSaberName);
 
             base.__Activate(activationType);
             _customListTableView.SelectCellWithIdx(selected);
@@ -65,8 +59,8 @@ namespace CustomSaber
             _versionNumber.color = Color.white;
 
             _customListTableView.didSelectCellWithIdxEvent += _sabersTableView_DidSelectRowEvent;
-            _customListTableView.ScrollToCellWithIdx(SaberLoader.FindSaberByName(Plugin._currentSaberName), TableViewScroller.ScrollPositionType.Beginning, false);
-            _customListTableView.SelectCellWithIdx(SaberLoader.FindSaberByName(Plugin._currentSaberName), false);
+            _customListTableView.ScrollToCellWithIdx(selected, TableViewScroller.ScrollPositionType.Beginning, false);
+            _customListTableView.SelectCellWithIdx(selected, false);
         }
 
         protected override void DidDeactivate(DeactivationType type) => base.DidDeactivate(type);
