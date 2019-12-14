@@ -9,7 +9,6 @@ namespace CustomSaber
     class SaberPreviewView : BeatSaberMarkupLanguage.ViewControllers.BSMLResourceViewController
     {
         public override string ResourceName => "CustomSaber.UI.saberPreview.bsml";
-        internal static SaberPreviewView Instance;
     }
 
     /*
