@@ -41,7 +41,7 @@ namespace CustomSaber
         private ObstacleSaberSparkleEffectManager _saberCollisionManager;
         private GameEnergyCounter _gameEnergyCounter;
         private BeatmapObjectCallbackController _beatmapCallback;
-        private GamePauseManager _gamePauseManager;
+        private PauseController _gamePauseManager;
         private PlayerHeadAndObstacleInteraction _playerHeadAndObstacleInteraction;
         internal static GameObject leftBackup;
         internal static GameObject rightBackup;
@@ -169,7 +169,7 @@ namespace CustomSaber
                     //_beatmapCallback = _saberRoot.AddComponent<BeatmapObjectCallbackController>();
                 }
 
-                _gamePauseManager = Resources.FindObjectsOfTypeAll<GamePauseManager>().FirstOrDefault();
+                _gamePauseManager = Resources.FindObjectsOfTypeAll<PauseController>().FirstOrDefault();
                 if (_gamePauseManager == null)
                 {
                     Logger.Log("GamePauseManager is 'NULL'", LogLevel.Warning);
@@ -379,6 +379,7 @@ namespace CustomSaber
 
         public void ApplyColorsToSaber(GameObject saber, Color color)
         {
+      //      Logger.logger.Info("Applying Color: " + color + " to saber: " + saber.name);
             foreach (var renderer in saber.GetComponentsInChildren<Renderer>())
             {
                 if (renderer != null)
@@ -476,7 +477,7 @@ namespace CustomSaber
             //RightTopLocation = RightTop.transform.position;
         }
 
-        private void SliceCallBack(BeatmapObjectSpawnController beatmapObjectSpawnController, NoteController noteController, NoteCutInfo noteCutInfo)
+        private void SliceCallBack(BeatmapObjectSpawnController beatmapObjectSpawnController, INoteController noteController, NoteCutInfo noteCutInfo)
         {
             if (!noteCutInfo.allIsOK)
             {
@@ -502,7 +503,7 @@ namespace CustomSaber
             }
         }
 
-        private void NoteMissCallBack(BeatmapObjectSpawnController beatmapObjectSpawnController, NoteController noteController)
+        private void NoteMissCallBack(BeatmapObjectSpawnController beatmapObjectSpawnController, INoteController noteController)
         {
             if (noteController.noteData.noteType != NoteType.Bomb)
             {

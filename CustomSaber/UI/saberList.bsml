@@ -1,0 +1,5 @@
+﻿<vertical>
+  <page-button event-click='saberList#PageUp' direction='Up'></page-button>
+  <list id='saberList' expand-cell='true' select-cell='saberSelect'></list>
+  <page-button event-click='saberList#PageDown' direction='Down'></page-button>
+</vertical>

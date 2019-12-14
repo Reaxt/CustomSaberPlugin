@@ -61,6 +61,7 @@ namespace CustomSaber
             {
                 _currentSaberName = SaberLoader.AllSabers[0].Name;
             }
+            CustomSaberUI.OnLoad();
         }
 
         public void OnApplicationQuit() { }
@@ -82,12 +83,6 @@ namespace CustomSaber
                 colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().FirstOrDefault();
                 LoadNewSaber(_currentSaberName);
                 SaberScript.LoadAssets();
-            }
-
-            if (to.name == "MenuCore")
-            {
-
-                CustomSaberUI.OnLoad();
             }
         }
 

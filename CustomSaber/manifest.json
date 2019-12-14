@@ -5,15 +5,15 @@
     "#![CustomSaber.Resources.description.md]",
     "Default description"
   ],
-  "gameVersion": "1.3.0",
+  "gameVersion": "1.6.0",
   "id": "Custom Sabers",
   "name": "Custom Sabers",
-  "version": "3.2.2",
+  "version": "3.5.0",
   "icon": "CustomSaber.Resources.icon.png",
   "dependsOn": {
     "BSIPA": "^3.12.23",
     "BS Utils": "^1.3.6",
-    "CustomUI": "^1.5.11"
+    "BeatSaberMarkupLanguage": "^1.1.0",
   },
   "features": [],
   "links": {

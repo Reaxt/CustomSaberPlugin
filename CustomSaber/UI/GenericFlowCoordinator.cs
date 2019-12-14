@@ -1,11 +1,10 @@
 ﻿using System;
-using VRUI;
-using CustomUI.BeatSaber;
+using HMUI;
 using IPA.Utilities;
 
 namespace CustomSaber
 {
-    class GenericFlowCoordinator<TCONT, TRIGHT> : FlowCoordinator where TCONT : VRUIViewController where TRIGHT : VRUIViewController
+    class GenericFlowCoordinator<TCONT, TRIGHT> : FlowCoordinator where TCONT : ViewController where TRIGHT : ViewController
     {
         private TCONT _contentViewController;
         public TRIGHT _rightViewController;
@@ -20,8 +19,8 @@ namespace CustomSaber
             if (firstActivation)
             {
                 ui = CustomSaberUI._instance;
-                _contentViewController = BeatSaberUI.CreateViewController<TCONT>();
-                _rightViewController = BeatSaberUI.CreateViewController<TRIGHT>();
+        //        _contentViewController = BeatSaberUI.CreateViewController<TCONT>();
+        //        _rightViewController = BeatSaberUI.CreateViewController<TRIGHT>();
                 title = OnContentCreated(_contentViewController);
             }
             if (activationType == FlowCoordinator.ActivationType.AddedToHierarchy)

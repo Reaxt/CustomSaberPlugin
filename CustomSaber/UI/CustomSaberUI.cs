@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
-using CustomUI.MenuButton;
 using TMPro;
 using LogLevel = CustomSaber.Logger.LogLevel;
 using UnityEngine;
 using UnityEngine.UI;
 using IPA.Utilities;
-
+using BeatSaberMarkupLanguage.MenuButtons;
+using BS_Utils.Utilities;
 namespace CustomSaber
 {
     class SaberSelection
@@ -38,11 +38,21 @@ namespace CustomSaber
     {
         //private RectTransform _mainMenuRectTransform;
         //private MainMenuViewController _mainMenuViewController;
+        internal SaberUIFlowCoordinator _saberFlowCoordinator;
         private MainFlowCoordinator _mainFlowCoordinator;
-        public SaberListFlowCoordinator _saberListFlowCoordinator;
+        internal MainFlowCoordinator MainFlowCoordinator
+        {
+            get
+            {
+                if (_mainFlowCoordinator == null)
+                    _mainFlowCoordinator = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().FirstOrDefault();
+                return _mainFlowCoordinator;
+            }
+        }
+        //  public SaberListFlowCoordinator _saberListFlowCoordinator;
         public static CustomSaberUI _instance;
 
-        public class SaberListFlowCoordinator : GenericFlowCoordinator<SaberListViewController, SaberPreviewController> { };
+     //   public class SaberListFlowCoordinator : GenericFlowCoordinator<SaberListViewController, SaberPreviewController> { };
 
         internal static void OnLoad()
         {
@@ -62,39 +72,34 @@ namespace CustomSaber
                 //_buttonInstance = Resources.FindObjectsOfTypeAll<Button>().First(x => (x.name == "QuitButton"));
                 //_backButtonInstance = Resources.FindObjectsOfTypeAll<Button>().First(x => (x.name == "BackArrowButton"));
                 //_mainMenuViewController = Resources.FindObjectsOfTypeAll<MainMenuViewController>().First();
-                _mainFlowCoordinator = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
                 //_mainMenuRectTransform = _buttonInstance.transform.parent as RectTransform;
             }
             catch (Exception ex)
             {
                 Logger.Log($"{ex.Message}\n{ex.StackTrace}", LogLevel.Error);
             }
-
+            GameObject.DontDestroyOnLoad(this);
             CreateCustomSaberButton();
         }
 
         private void CreateCustomSaberButton()
         {
             Logger.Log("Adding custom saber button", LogLevel.Debug);
+            MenuButtons.instance.RegisterButton(new MenuButton("Custom Sabers", "Change Custom Sabers Here!", SaberMenuButtonPressed, true));
 
-            MenuButtonUI.AddButton("Saber Menu", delegate ()
-            {
-                if (_saberListFlowCoordinator == null)
-                {
-                    _saberListFlowCoordinator = new GameObject("SaberListFlowCoordinator").AddComponent<SaberListFlowCoordinator>();
-                    _saberListFlowCoordinator.mainFlowCoordinator = _mainFlowCoordinator;
-                    _saberListFlowCoordinator.OnContentCreated = (content) =>
-                    {
-                        content.backButtonPressed = () =>
-                        {
-                            _mainFlowCoordinator.InvokePrivateMethod("DismissFlowCoordinator", new object[] { _saberListFlowCoordinator, null, false });
-                        };
-                        return "Saber Select";
-                    };
-                    //_mainFlowCoordinator
-                }
-                ReflectionUtil.InvokePrivateMethod(_mainFlowCoordinator, "PresentFlowCoordinator", new object[] { _saberListFlowCoordinator, null, false, false });
-            });
+        }
+
+        internal void ShowSaberFlow()
+        {
+            if (_saberFlowCoordinator == null)
+                _saberFlowCoordinator = BeatSaberMarkupLanguage.BeatSaberUI.CreateFlowCoordinator<SaberUIFlowCoordinator>();
+            MainFlowCoordinator.InvokeMethod("PresentFlowCoordinator", _saberFlowCoordinator, null, false, false);
+        }
+
+        private void SaberMenuButtonPressed()
+        {
+          //  Logger.logger.Info("Saber Menu Button Pressed");
+            ShowSaberFlow();
         }
     }
 }
