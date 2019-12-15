@@ -7,7 +7,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using IPALogger = IPA.Logging.Logger;
-
 namespace CustomSaber
 {
     public class Plugin : IBeatSaberPlugin
@@ -80,7 +79,7 @@ namespace CustomSaber
 
             if (to.name == "GameCore")
             {
-                colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().FirstOrDefault();
+                colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().LastOrDefault();
                 LoadNewSaber(_currentSaberName);
                 SaberScript.LoadAssets();
             }
