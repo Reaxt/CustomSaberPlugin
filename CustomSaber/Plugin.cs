@@ -138,6 +138,9 @@ namespace CustomSaber
 
         public static List<string> RetrieveCustomSabers()
         {
+            if (!Directory.Exists(Path.Combine(Application.dataPath, "../CustomSabers/")))
+                Directory.CreateDirectory(Path.Combine(Application.dataPath, "../CustomSabers/"));
+
             _saberPaths = (Directory.GetFiles(Path.Combine(Application.dataPath, "../CustomSabers/"), "*.saber", SearchOption.AllDirectories).ToList());
             Logger.Log($"Found {_saberPaths.Count} sabers");
 
