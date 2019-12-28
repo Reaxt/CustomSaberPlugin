@@ -1,11 +1,14 @@
-﻿using IPA.Utilities;
+﻿#if PLUGIN
+using CustomSaber.Utilities;
+using IPA.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-#if PLUGIN
-using LogLevel = CustomSaber.Logger.LogLevel;
+using Xft;
 #endif
+using UnityEngine;
 
+// Class has to be in this namespace due to compatibility
 namespace CustomSaber
 {
     public enum ColorType
@@ -25,66 +28,56 @@ namespace CustomSaber
         public Color MultiplierColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         public int Length = 20;
 
-        private CustomWeaponTrail trail;
-  //      private ColorManager oldColorManager;
-        private XWeaponTrailRenderer oldTrailRendererPrefab;
-        private Saber saber;
-
 #if PLUGIN
-        public void Init(Saber parentSaber)
-        {
-            Logger.Log("Replacing Trail", LogLevel.Debug);
+        private CustomWeaponTrail trail;
+        private XWeaponTrailRenderer oldTrailRendererPrefab;
 
-            saber = parentSaber;
+        public void Init(Saber saber, ColorManager colorManager)
+        {
+            Logger.log.Debug($"Replacing Trail for '{saber?.saberType}'");
 
             if (gameObject.name != "LeftSaber" && gameObject.name != "RightSaber")
             {
-                Logger.Log("Parent not LeftSaber or RightSaber", LogLevel.Warning);
+                Logger.log.Warn("Parent not LeftSaber or RightSaber");
                 Destroy(this);
             }
 
-            if (saber == null)
+            if (!saber)
             {
-                Logger.Log("Saber not found", LogLevel.Warning);
+                Logger.log.Warn("Saber not found");
                 Destroy(this);
             }
 
-            SaberWeaponTrail[] trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
-            for (int i = 0; i < trails.Length; i++)
+            IEnumerable<SaberWeaponTrail> trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
+            foreach (SaberWeaponTrail trail in trails)
             {
-                SaberWeaponTrail trail = trails[i];
                 ReflectionUtil.SetPrivateField(trail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
-                ReflectionUtil.SetPrivateField(trail as Xft.XWeaponTrail, "_whiteSteps", 0);
+                ReflectionUtil.SetPrivateField(trail as XWeaponTrail, "_whiteSteps", 0);
             }
 
-            SaberWeaponTrail oldtrail = Resources.FindObjectsOfTypeAll<GameCoreSceneSetup>()
-                .FirstOrDefault()?.GetPrivateField<BasicSaberModelController>("_basicSaberModelControllerPrefab")
+            SaberWeaponTrail oldtrail = Resources.FindObjectsOfTypeAll<GameCoreSceneSetup>().FirstOrDefault()
+                ?.GetPrivateField<BasicSaberModelController>("_basicSaberModelControllerPrefab")
                 ?.GetPrivateField<SaberWeaponTrail>("_saberWeaponTrail");
 
-            if (oldtrail != null)
+            if (oldtrail)
             {
                 try
                 {
-                    Logger.Log(ReflectionUtil.GetPrivateField<Color>(oldtrail, "_multiplierSaberColor").ToString(), LogLevel.Debug);
-                    //ReflectionUtil.SetPrivateField(oldtrail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
-            //        oldColorManager = ReflectionUtil.GetPrivateField<ColorManager>(oldtrail, "_colorManager");
+                    //Logger.log.Debug(ReflectionUtil.GetPrivateField<Color>(oldtrail, "_multiplierSaberColor").ToString());
                     oldTrailRendererPrefab = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(oldtrail, "_trailRendererPrefab");
-
-                    //oldtrail.Start();
-                    //oldtrail.gameObject.SetActive(false);
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log($"{ex.Message}\n{ex.StackTrace}", LogLevel.Error);
+                    Logger.log.Error(ex);
                     throw;
                 }
 
                 trail = gameObject.AddComponent<CustomWeaponTrail>();
-                trail.init(oldTrailRendererPrefab, Plugin.colorManager, PointStart, PointEnd, TrailMaterial, TrailColor, Length, MultiplierColor, colorType);
+                trail.Init(oldTrailRendererPrefab, colorManager, PointStart, PointEnd, TrailMaterial, TrailColor, Length, MultiplierColor, colorType);
             }
             else
             {
-                Logger.Log("Trail not found", LogLevel.Debug);
+                Logger.log.Debug($"Trail not found for '{saber?.saberType}'");
                 Destroy(this);
             }
         }

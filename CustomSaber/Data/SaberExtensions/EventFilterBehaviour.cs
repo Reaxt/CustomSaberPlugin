@@ -1,22 +1,23 @@
 ﻿using UnityEngine;
 
+// Class has to be in this namespace due to compatibility
 namespace CustomSaber
 {
     [RequireComponent(typeof(EventManager))]
     public class EventFilterBehaviour : MonoBehaviour
     {
+        private EventManager eventManager;
         protected EventManager EventManager
         {
             get
             {
-                if (_eventManager == null)
+                if (eventManager == null)
                 {
-                    _eventManager = GetComponent<EventManager>();
+                    eventManager = GetComponent<EventManager>();
                 }
-                return _eventManager;
+
+                return eventManager;
             }
         }
-
-        private EventManager _eventManager;
     }
 }

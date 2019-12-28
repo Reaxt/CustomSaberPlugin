@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+// Class has to be in this namespace due to compatibility
 namespace CustomSaber
 {
     public class EventManager : MonoBehaviour
@@ -17,11 +18,9 @@ namespace CustomSaber
         public UnityEvent OnBlueLightOn;
         public UnityEvent OnRedLightOn;
 
-        [Serializable]
-        public class ComboChangedEvent : UnityEvent<int>
-        {
-        }
-
         public ComboChangedEvent OnComboChanged = new ComboChangedEvent();
+
+        [Serializable]
+        public class ComboChangedEvent : UnityEvent<int> { }
     }
 }
