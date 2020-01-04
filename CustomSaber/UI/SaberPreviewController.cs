@@ -1,5 +1,4 @@
-﻿using CustomUI.BeatSaber;
-using System;
+﻿using System;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -7,6 +6,12 @@ using LogLevel = IPA.Logging.Logger.Level;
 
 namespace CustomSaber
 {
+    class SaberPreviewView : BeatSaberMarkupLanguage.ViewControllers.BSMLResourceViewController
+    {
+        public override string ResourceName => "CustomSaber.UI.saberPreview.bsml";
+    }
+
+    /*
     public class SaberPreviewController : CustomListViewController
     {
         public static SaberPreviewController Instance;
@@ -112,4 +117,5 @@ namespace CustomSaber
         }
 
     }
+    */
 }

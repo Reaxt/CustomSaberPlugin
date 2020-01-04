@@ -1,12 +1,137 @@
-﻿using CustomUI.BeatSaber;
-using HMUI;
+﻿using HMUI;
 using IPA.Utilities;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-
+using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Components;
+using System;
 namespace CustomSaber
 {
+    class SaberListView : BeatSaberMarkupLanguage.ViewControllers.BSMLResourceViewController
+    {
+        public override string ResourceName => "CustomSaber.UI.saberList.bsml";
+        [UIComponent("saberList")]
+        public CustomListTableData customListTableData;
+        int selectedSaber = 0;
+
+        public GameObject _saberPreview;
+        private GameObject PreviewSaber;
+        private GameObject _previewParent;
+        public GameObject _saberPreviewA;
+        public GameObject _saberPreviewB;
+        public GameObject _saberPreviewAParent;
+        public GameObject _saberPreviewBParent;
+        private bool PreviewStatus;
+
+
+        [UIAction("saberSelect")]
+        internal void SelectSaber(TableView tableView, int row)
+        {
+            Plugin._currentSaberName = SaberLoader.AllSabers[row].Name;
+            selectedSaber = row;
+            PreviewCurrent();
+
+        }
+
+        protected override void DidDeactivate(DeactivationType deactivationType)
+        {
+            base.DidDeactivate(deactivationType);
+            DestroyPreview();
+        }
+
+        [UIAction("#post-parse")]
+        internal void SetupSaberList()
+        {
+            customListTableData.data.Clear();
+            foreach (CustomSaber saber in SaberLoader.AllSabers)
+            {
+                customListTableData.data.Add(new CustomListTableData.CustomCellInfo(saber.Name, saber.Author, saber.CoverImage.texture));
+            }
+            customListTableData.tableView.ReloadData();
+            selectedSaber = SaberLoader.FindSaberByName(Plugin._currentSaberName);
+
+            customListTableData.tableView.ScrollToCellWithIdx(selectedSaber, HMUI.TableViewScroller.ScrollPositionType.Beginning, false);
+            customListTableData.tableView.SelectCellWithIdx(selectedSaber); //(0, HMUI.TableViewScroller.ScrollPositionType.Beginning, false);
+            PreviewCurrent();
+
+        }
+
+        public void GeneratePreview(int SaberIndex)
+        {
+            var selected = SaberIndex;
+            Logger.Log($"Selected saber {SaberLoader.AllSabers[SaberIndex].Name} created by {SaberLoader.AllSabers[SaberIndex].Author}");
+
+            if (PreviewStatus)
+            {
+                return;
+            }
+
+            PreviewStatus = true;
+            DestroyPreview();
+
+            if (SaberLoader.AllSabers[SaberIndex] != null)
+            {
+                try
+                {
+                    PreviewSaber = SaberLoader.AllSabers[SaberIndex].GameObject;
+
+                    _previewParent = new GameObject();
+                    _previewParent.transform.Translate(2.2f, 1.3f, 0.75f);
+                    _previewParent.transform.Rotate(0, -30, 0);
+
+                    if (PreviewSaber)
+                    {
+                        _saberPreview = Instantiate(PreviewSaber, _previewParent.transform);
+                        _saberPreview.name = "Saber Preview";
+                        _saberPreview.transform.Find("LeftSaber").transform.localPosition = new Vector3(0, 0, 0);
+                        _saberPreview.transform.Find("RightSaber").transform.localPosition = new Vector3(0, 0, 0);
+                        _saberPreview.transform.Find("RightSaber").transform.Translate(0, 0.5f, 0);
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"{ex.Message}\n{ex.StackTrace}", Logger.LogLevel.Error);
+                }
+            }
+            else
+            {
+                Logger.Log($"Failed to load preview. {SaberLoader.AllSabers[SaberIndex].Name}", Logger.LogLevel.Warning);
+            }
+            PreviewStatus = false;
+        }
+
+        public void DestroyPreview()
+        {
+            if (_saberPreview)
+            {
+                _saberPreview.name = "";
+                Destroy(_saberPreview);
+            }
+
+            PreviewSaber = null;
+            if (_previewParent)
+            {
+                Destroy(_previewParent);
+            }
+        }
+
+        private void PreviewCurrent()
+        {
+            if (selectedSaber != 0)
+            {
+                GeneratePreview(selectedSaber);
+            }
+            else
+            {
+                DestroyPreview();
+            }
+        }
+    }
+
+    /*
     class SaberListViewController : CustomListViewController
     {
         private int selected = 0;
@@ -106,4 +231,5 @@ namespace CustomSaber
             return _tableCell;
         }
     }
+    */
 }

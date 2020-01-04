@@ -7,7 +7,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using IPALogger = IPA.Logging.Logger;
-
 namespace CustomSaber
 {
     public class Plugin : IBeatSaberPlugin
@@ -61,6 +60,7 @@ namespace CustomSaber
             {
                 _currentSaberName = SaberLoader.AllSabers[0].Name;
             }
+            CustomSaberUI.OnLoad();
         }
 
         public void OnApplicationQuit() { }
@@ -79,15 +79,9 @@ namespace CustomSaber
 
             if (to.name == "GameCore")
             {
-                colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().FirstOrDefault();
+                colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().LastOrDefault();
                 LoadNewSaber(_currentSaberName);
                 SaberScript.LoadAssets();
-            }
-
-            if (to.name == "MenuCore")
-            {
-
-                CustomSaberUI.OnLoad();
             }
         }
 
@@ -143,6 +137,9 @@ namespace CustomSaber
 
         public static List<string> RetrieveCustomSabers()
         {
+            if (!Directory.Exists(Path.Combine(Application.dataPath, "../CustomSabers/")))
+                Directory.CreateDirectory(Path.Combine(Application.dataPath, "../CustomSabers/"));
+
             _saberPaths = (Directory.GetFiles(Path.Combine(Application.dataPath, "../CustomSabers/"), "*.saber", SearchOption.AllDirectories).ToList());
             Logger.Log($"Found {_saberPaths.Count} sabers");
 

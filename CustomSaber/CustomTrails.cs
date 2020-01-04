@@ -57,7 +57,7 @@ namespace CustomSaber
                 ReflectionUtil.SetPrivateField(trail as Xft.XWeaponTrail, "_whiteSteps", 0);
             }
 
-            SaberWeaponTrail oldtrail = Resources.FindObjectsOfTypeAll<GameCoreInstaller>()
+            SaberWeaponTrail oldtrail = Resources.FindObjectsOfTypeAll<GameCoreSceneSetup>()
                 .FirstOrDefault()?.GetPrivateField<BasicSaberModelController>("_basicSaberModelControllerPrefab")
                 ?.GetPrivateField<SaberWeaponTrail>("_saberWeaponTrail");
 
