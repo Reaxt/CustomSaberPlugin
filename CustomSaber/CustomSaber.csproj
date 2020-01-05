@@ -11,7 +11,6 @@
     <AssemblyName>CustomSaber</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,7 +26,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;PLUGIN</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -35,113 +34,108 @@
   <ItemGroup>
     <Reference Include="Accessibility" />
     <Reference Include="BSML">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BSML.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="BS_Utils, Version=1.3.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BS_Utils.dll</HintPath>
+    <Reference Include="BS_Utils">
+      <HintPath>$(BeatSaberDir)\Plugins\BS_Utils.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HMLib">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\HMLib.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMLib.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HMUI">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\HMUI.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="IPA.Loader">
-      <HintPath>Z:\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IPA.Loader.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\IPA.Loader.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="MainAssembly">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\MainAssembly.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\MainAssembly.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="SemVer.1.2.0.0, Version=1.2.0.0, Culture=neutral, PublicKeyToken=a89bb7dc6f7a145c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Z:\SteamLibrary\steamapps\common\Beat Saber\Libs\SemVer.1.2.0.0.dll</HintPath>
+    <Reference Include="SemVer.1.2.0.0">
+      <HintPath>$(BeatSaberDir)\Libs\SemVer.1.2.0.0.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>Z:\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>Z:\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>Z:\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>Z:\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>Z:\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Zenject">
-      <HintPath>Z:\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Zenject.dll</HintPath>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Zenject.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomTrails.cs" />
-    <Compile Include="CustomWeaponTrail.cs" />
+    <Compile Include="Data\CustomSaberData.cs" />
+    <Compile Include="Data\SaberExtensions\ComboReachedEvent.cs" />
+    <Compile Include="Data\SaberExtensions\CustomTrails.cs" />
+    <Compile Include="Utilities\CustomWeaponTrail.cs" />
+    <Compile Include="Data\SaberExtensions\EventFilterBehaviour.cs" />
+    <Compile Include="Data\SaberExtensions\EventManager.cs" />
+    <Compile Include="Data\SaberExtensions\EveryNthComboFilter.cs" />
+    <Compile Include="Data\SaberExtensions\SaberDescriptor.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="SaberDescriptor.cs" />
-    <Compile Include="SaberLoader.cs" />
-    <Compile Include="UI\SaberPreviewController.cs" />
-    <Compile Include="UI\CustomSaberUI.cs" />
-    <Compile Include="UI\GenericFlowCoordinator.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="EventFilterBehaviour.cs" />
-    <Compile Include="EventManager.cs" />
-    <Compile Include="EventFilters.cs" />
-    <Compile Include="SaberScript.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\SaberListFlowCoordinator.cs" />
-    <Compile Include="UI\SaberListViewController.cs" />
+    <Compile Include="Settings\Configuration.cs" />
+    <Compile Include="Settings\UI\CustomSaberFlowCoordinator.cs" />
+    <Compile Include="Settings\UI\SaberListViewController.cs" />
+    <Compile Include="Settings\UI\SaberPreviewController.cs" />
+    <Compile Include="Settings\UI\SettingsUI.cs" />
+    <Compile Include="Settings\Utilities\PluginConfig.cs" />
+    <Compile Include="Utilities\DefaultSaberGrabber.cs" />
+    <Compile Include="Utilities\SaberAssetLoader.cs" />
+    <Compile Include="Utilities\SaberScript.cs" />
+    <Compile Include="Utilities\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\description.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\fa-magic-error.png" />
-    <EmbeddedResource Include="Resources\fa-magic.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\DefaultSabers\default.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\DefaultSabers\kyle.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\DefaultSabers\caeden.png" />
     <EmbeddedResource Include="Resources\DefaultSabers\danike.png" />
+    <EmbeddedResource Include="Resources\DefaultSabers\default.png" />
     <EmbeddedResource Include="Resources\DefaultSabers\klouder.png" />
+    <EmbeddedResource Include="Resources\DefaultSabers\kyle.png" />
     <EmbeddedResource Include="Resources\DefaultSabers\lolpants.png" />
+    <EmbeddedResource Include="Resources\DefaultSabers\meg-sabers.png" />
     <EmbeddedResource Include="Resources\DefaultSabers\ninja-simple-150.png" />
     <EmbeddedResource Include="Resources\DefaultSabers\sobble.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\DefaultSabers\meg-sabers.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dynamic Bones\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\saberList.bsml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\saberPreview.bsml" />
+    <EmbeddedResource Include="Resources\fa-magic.png" />
+    <EmbeddedResource Include="Resources\fa-magic-error.png" />
+    <EmbeddedResource Include="Resources\icon.png" />
+    <EmbeddedResource Include="Settings\UI\Views\saberList.bsml" />
+    <EmbeddedResource Include="Settings\UI\Views\saberPreview.bsml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetFileName)" "C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "$(BeatSaberDir)\Plugins"</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>

@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomSaber", "CustomSaber\CustomSaber.csproj", "{FEF74B0A-6772-4659-A782-334F1491D103}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomSaber-Editor", "CustomSaber-Editor\CustomSaber-Editor.csproj", "{272257A9-D168-40E8-985D-A642A6DB60D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{81F59A18-EDEE-49B4-AF5D-12E7CA17ECD2}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FEF74B0A-6772-4659-A782-334F1491D103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEF74B0A-6772-4659-A782-334F1491D103}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEF74B0A-6772-4659-A782-334F1491D103}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEF74B0A-6772-4659-A782-334F1491D103}.Release|Any CPU.Build.0 = Release|Any CPU
+		{272257A9-D168-40E8-985D-A642A6DB60D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{272257A9-D168-40E8-985D-A642A6DB60D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{272257A9-D168-40E8-985D-A642A6DB60D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{272257A9-D168-40E8-985D-A642A6DB60D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {261724DC-51FC-4D86-A98E-678E11F8EF53}
+	EndGlobalSection
+EndGlobal
