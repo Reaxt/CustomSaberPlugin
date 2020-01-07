@@ -21,7 +21,7 @@ namespace CustomSaber.Utilities
                 Directory.CreateDirectory(Plugin.PluginAssetPath);
 
                 IEnumerable<string> saberFilter = new List<string> { "*.saber" };
-                CustomSaberFiles = Utils.GetFileNames(Plugin.PluginAssetPath, saberFilter, SearchOption.TopDirectoryOnly);
+                CustomSaberFiles = Utils.GetFileNames(Plugin.PluginAssetPath, saberFilter, SearchOption.AllDirectories, true);
                 Logger.log.Debug($"{CustomSaberFiles.Count()} saber(s) found.");
 
                 CustomSabers = LoadCustomSabers(CustomSaberFiles);
@@ -55,7 +55,10 @@ namespace CustomSaber.Utilities
                 try
                 {
                     CustomSaberData newSaber = new CustomSaberData(customSaberFile);
-                    customSabers.Add(newSaber);
+                    if (newSaber.AssetBundle != null)
+                    {
+                        customSabers.Add(newSaber);
+                    }
                 }
                 catch (Exception ex)
                 {
