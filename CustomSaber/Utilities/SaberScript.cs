@@ -22,7 +22,7 @@ namespace CustomSaber.Utilities
         private bool playerHeadWasInObstacle;
         private ColorManager colorManager;
 
-        // Events
+        // EventManagers
         private EventManager leftEventManager;
         private EventManager rightEventManager;
 
@@ -32,7 +32,6 @@ namespace CustomSaber.Utilities
         private ObstacleSaberSparkleEffectManager saberCollisionManager;
         private GameEnergyCounter gameEnergyCounter;
         private BeatmapObjectCallbackController beatmapCallback;
-        private PauseController gamePauseManager;
         private PlayerHeadAndObstacleInteraction playerHeadAndObstacleInteraction;
 
         public static SaberScript instance;
@@ -79,8 +78,6 @@ namespace CustomSaber.Utilities
             Restart();
         }
 
-        private LevelData GetGameSceneSetup() => BS_Utils.Plugin.LevelData;
-
         private void AddEvents()
         {
             leftEventManager = leftSaber?.GetComponent<EventManager>();
@@ -89,29 +86,20 @@ namespace CustomSaber.Utilities
                 leftEventManager = leftSaber.AddComponent<EventManager>();
             }
 
-            if (leftEventManager?.OnLevelStart != null)
-            {
-                leftEventManager.OnLevelStart.Invoke();
-            }
-            else
-            {
-                return;
-            }
-
             rightEventManager = rightSaber?.GetComponent<EventManager>();
             if (!rightEventManager)
             {
                 rightEventManager = rightSaber.AddComponent<EventManager>();
             }
 
-            if (rightEventManager?.OnLevelStart != null)
-            {
-                rightEventManager.OnLevelStart.Invoke();
-            }
-            else
+            if (leftEventManager?.OnLevelStart == null
+                || rightEventManager?.OnLevelStart == null)
             {
                 return;
             }
+
+            leftEventManager.OnLevelStart.Invoke();
+            rightEventManager.OnLevelStart.Invoke();
 
             try
             {
@@ -124,7 +112,6 @@ namespace CustomSaber.Utilities
                 else
                 {
                     Logger.log.Warn($"Failed to locate a suitable '{nameof(BeatmapObjectSpawnController)}'.");
-                    //beatmapObjectSpawnController = sabers.AddComponent<BeatmapObjectSpawnController>();
                 }
 
                 scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
@@ -136,7 +123,6 @@ namespace CustomSaber.Utilities
                 else
                 {
                     Logger.log.Warn($"Failed to locate a suitable '{nameof(ScoreController)}'.");
-                    //scoreController = sabers.AddComponent<ScoreController>();
                 }
 
                 saberCollisionManager = Resources.FindObjectsOfTypeAll<ObstacleSaberSparkleEffectManager>().FirstOrDefault();
@@ -148,7 +134,6 @@ namespace CustomSaber.Utilities
                 else
                 {
                     Logger.log.Warn($"Failed to locate a suitable '{nameof(ObstacleSaberSparkleEffectManager)}'.");
-                    //saberCollisionManager = sabers.AddComponent<ObstacleSaberSparkleEffectManager>();
                 }
 
                 gameEnergyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault();
@@ -159,7 +144,6 @@ namespace CustomSaber.Utilities
                 else
                 {
                     Logger.log.Warn($"Failed to locate a suitable '{nameof(GameEnergyCounter)}'.");
-                    //gameEnergyCounter = sabers.AddComponent<GameEnergyCounter>();
                 }
 
                 beatmapCallback = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
@@ -170,24 +154,13 @@ namespace CustomSaber.Utilities
                 else
                 {
                     Logger.log.Warn($"Failed to locate a suitable '{nameof(BeatmapObjectCallbackController)}'.");
-                    //beatmapCallback = sabers.AddComponent<BeatmapObjectCallbackController>();
-                }
-
-                gamePauseManager = Resources.FindObjectsOfTypeAll<PauseController>().FirstOrDefault();
-                if (!gamePauseManager)
-                {
-                    Logger.log.Warn($"Failed to locate a suitable '{nameof(PauseController)}'.");
-                    //gamePauseManager = sabers.AddComponent<PauseController>();
                 }
 
                 playerHeadAndObstacleInteraction = Resources.FindObjectsOfTypeAll<PlayerHeadAndObstacleInteraction>().FirstOrDefault();
                 if (!playerHeadAndObstacleInteraction)
                 {
                     Logger.log.Warn($"Failed to locate a suitable '{nameof(PlayerHeadAndObstacleInteraction)}'.");
-                    //playerHeadAndObstacleInteraction = sabers.AddComponent<PlayerHeadAndObstacleInteraction>();
                 }
-
-                //ReflectionUtil.SetPrivateField(_gamePauseManager, "_gameDidResumeSignal", (Action)OnPauseMenuClosed); //For some reason _gameDidResumeSignal isn't public.
             }
             catch (Exception ex)
             {
@@ -198,7 +171,7 @@ namespace CustomSaber.Utilities
             try
             {
                 float LastTime = 0.0f;
-                LevelData levelData = GetGameSceneSetup();
+                LevelData levelData = BS_Utils.Plugin.LevelData;
                 BeatmapData beatmapData = levelData.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData;
 
                 IEnumerable<BeatmapLineData> beatmapLinesData = beatmapData.beatmapLinesData;
@@ -233,19 +206,31 @@ namespace CustomSaber.Utilities
 
         private void OnDestroy()
         {
-            if (scoreController)
+            if (beatmapObjectSpawnController)
             {
                 beatmapObjectSpawnController.noteWasCutEvent -= SliceCallBack;
                 beatmapObjectSpawnController.noteWasMissedEvent -= NoteMissCallBack;
+            }
 
+            if (scoreController)
+            {
                 scoreController.multiplierDidChangeEvent -= MultiplierCallBack;
                 scoreController.comboDidChangeEvent -= ComboChangeEvent;
+            }
 
+            if (saberCollisionManager)
+            {
                 saberCollisionManager.sparkleEffectDidStartEvent -= SaberStartCollide;
                 saberCollisionManager.sparkleEffectDidEndEvent -= SaberEndCollide;
+            }
 
+            if (gameEnergyCounter)
+            {
                 gameEnergyCounter.gameEnergyDidReach0Event -= FailLevelCallBack;
+            }
 
+            if (beatmapCallback)
+            {
                 beatmapCallback.beatmapEventDidTriggerEvent -= LightEventCallBack;
             }
         }
@@ -260,8 +245,8 @@ namespace CustomSaber.Utilities
 
             colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().LastOrDefault();
 
-            //Reset Trails
-            IEnumerable<SaberWeaponTrail> trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
+            // Reset Trails
+            IEnumerable<SaberWeaponTrail> trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>();
             foreach (SaberWeaponTrail trail in trails)
             {
                 ReflectionUtil.SetPrivateField(trail, "_multiplierSaberColor", new Color(1f, 1f, 1f, 0.251f));
@@ -292,8 +277,6 @@ namespace CustomSaber.Utilities
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
 
-            PlayerDataModelSO playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModelSO>().FirstOrDefault();
-
             IEnumerable<Saber> defaultSabers = Resources.FindObjectsOfTypeAll<Saber>();
             foreach (Saber defaultSaber in defaultSabers)
             {
@@ -304,40 +287,25 @@ namespace CustomSaber.Utilities
                     meshFilter.gameObject.SetActive(!saberRoot);
 
                     MeshFilter filter = meshFilter.GetComponentInChildren<MeshFilter>();
-                    if (filter)
-                    {
-                        filter.gameObject.SetActive(!saberRoot);
-                    }
+                    filter?.gameObject.SetActive(!saberRoot);
                 }
 
                 Logger.log.Debug($"Attaching custom saber to '{defaultSaber.saberType}'");
-                if (defaultSaber.saberType == Saber.SaberType.SaberA)
+                GameObject saber = GetCustomSaberByType(defaultSaber.saberType);
+                if (saber)
                 {
-                    PrepareSaber(saberRoot, defaultSaber, leftSaber);
-                    ApplyColorsToSaber(leftSaber, colorManager.ColorForSaberType(defaultSaber.saberType));
+                    saber.transform.parent = defaultSaber.transform;
+                    saber.transform.position = defaultSaber.transform.position;
+                    saber.transform.rotation = defaultSaber.transform.rotation;
+
+                    IEnumerable<CustomTrail> trails = saber.GetComponents<CustomTrail>();
+                    foreach (CustomTrail trail in trails)
+                    {
+                        trail.Init(defaultSaber, colorManager);
+                    }
+
+                    ApplyColorsToSaber(saber, colorManager.ColorForSaberType(defaultSaber.saberType));
                 }
-                else if (defaultSaber.saberType == Saber.SaberType.SaberB)
-                {
-                    PrepareSaber(saberRoot, defaultSaber, rightSaber);
-                    ApplyColorsToSaber(rightSaber, colorManager.ColorForSaberType(defaultSaber.saberType));
-                }
-            }
-        }
-
-        private void PrepareSaber(GameObject saberRoot, Saber saber, GameObject customSaber)
-        {
-            if (saberRoot)
-            {
-                customSaber.transform.parent = saber.transform;
-            }
-
-            customSaber.transform.position = saber.transform.position;
-            customSaber.transform.rotation = saber.transform.rotation;
-
-            IEnumerable<CustomTrail> trails = customSaber.GetComponents<CustomTrail>();
-            foreach (CustomTrail trail in trails)
-            {
-                trail.Init(saber, colorManager);
             }
         }
 
@@ -356,12 +324,8 @@ namespace CustomSaber.Utilities
                             continue;
                         }
 
-                        if (renderMaterial.HasProperty("_CustomColors"))
-                        {
-                            if (renderMaterial.GetFloat("_CustomColors") > 0)
-                                renderMaterial.SetColor("_Color", color);
-                        }
-                        else if (renderMaterial.HasProperty("_Glow") && renderMaterial.GetFloat("_Glow") > 0 || renderMaterial.HasProperty("_Bloom") && renderMaterial.GetFloat("_Bloom") > 0)
+                        if (renderMaterial.HasProperty("_Glow") && renderMaterial.GetFloat("_Glow") > 0
+                            || renderMaterial.HasProperty("_Bloom") && renderMaterial.GetFloat("_Bloom") > 0)
                         {
                             renderMaterial.SetColor("_Color", color);
                         }
@@ -386,14 +350,8 @@ namespace CustomSaber.Utilities
             IEnumerable<Saber> defaultSabers = Resources.FindObjectsOfTypeAll<Saber>();
             foreach (Saber defaultSaber in defaultSabers)
             {
-                if (!hideOneSaber)
-                {
-                    defaultSaber.gameObject.SetActive(true);
-                }
-                else
-                {
-                    defaultSaber.gameObject.SetActive(defaultSaber.saberType != hiddenSaberType);
-                }
+                bool activeState = !hideOneSaber ? true : defaultSaber.saberType != hiddenSaberType;
+                defaultSaber.gameObject.SetActive(activeState);
 
                 if (defaultSaber.saberType == hiddenSaberType)
                 {
@@ -403,13 +361,9 @@ namespace CustomSaber.Utilities
                         meshFilter.gameObject.SetActive(!sabers);
 
                         MeshFilter filter = meshFilter.GetComponentInChildren<MeshFilter>();
-                        if (filter)
-                        {
-                            filter.gameObject.SetActive(!sabers);
-                        }
+                        filter?.gameObject.SetActive(!sabers);
                     }
                 }
-
             }
         }
 
@@ -423,20 +377,43 @@ namespace CustomSaber.Utilities
                 {
                     if (!playerHeadWasInObstacle)
                     {
-                        if (leftEventManager != null && rightEventManager != null)
-                        {
-                            leftEventManager.OnComboBreak?.Invoke();
-                            rightEventManager.OnComboBreak?.Invoke();
-                        }
+                        leftEventManager?.OnComboBreak?.Invoke();
+                        rightEventManager?.OnComboBreak?.Invoke();
+                    }
 
-                        playerHeadWasInObstacle = true;
-                    }
-                    else
-                    {
-                        playerHeadWasInObstacle = false;
-                    }
+                    playerHeadWasInObstacle = !playerHeadWasInObstacle;
                 }
             }
+        }
+
+        private GameObject GetCustomSaberByType(Saber.SaberType saberType)
+        {
+            GameObject saber = null;
+            if (saberType == Saber.SaberType.SaberA)
+            {
+                saber = leftSaber;
+            }
+            else if (saberType == Saber.SaberType.SaberB)
+            {
+                saber = rightSaber;
+            }
+
+            return saber;
+        }
+
+        private EventManager GetEventManagerByType(Saber.SaberType saberType)
+        {
+            EventManager eventManager = null;
+            if (saberType == Saber.SaberType.SaberA)
+            {
+                eventManager = leftEventManager;
+            }
+            else if (saberType == Saber.SaberType.SaberB)
+            {
+                eventManager = rightEventManager;
+            }
+
+            return eventManager;
         }
 
         #region Events
@@ -450,14 +427,8 @@ namespace CustomSaber.Utilities
             }
             else
             {
-                if (noteCutInfo.saberType == Saber.SaberType.SaberA)
-                {
-                    leftEventManager?.OnSlice?.Invoke();
-                }
-                else if (noteCutInfo.saberType == Saber.SaberType.SaberB)
-                {
-                    rightEventManager?.OnSlice?.Invoke();
-                }
+                EventManager eventManager = GetEventManagerByType(noteCutInfo.saberType);
+                eventManager?.OnSlice?.Invoke();
             }
 
             if (noteController.noteData.id == lastNoteId)
@@ -493,26 +464,14 @@ namespace CustomSaber.Utilities
 
         private void SaberStartCollide(Saber.SaberType saberType)
         {
-            if (saberType == Saber.SaberType.SaberA)
-            {
-                leftEventManager?.SaberStartColliding?.Invoke();
-            }
-            else if (saberType == Saber.SaberType.SaberB)
-            {
-                rightEventManager?.SaberStartColliding?.Invoke();
-            }
+            EventManager eventManager = GetEventManagerByType(saberType);
+            eventManager?.SaberStartColliding?.Invoke();
         }
 
         private void SaberEndCollide(Saber.SaberType saberType)
         {
-            if (saberType == Saber.SaberType.SaberA)
-            {
-                leftEventManager?.SaberStopColliding?.Invoke();
-            }
-            else if (saberType == Saber.SaberType.SaberB)
-            {
-                rightEventManager?.SaberStopColliding?.Invoke();
-            }
+            EventManager eventManager = GetEventManagerByType(saberType);
+            eventManager?.SaberStopColliding?.Invoke();
         }
 
         private void FailLevelCallBack()
