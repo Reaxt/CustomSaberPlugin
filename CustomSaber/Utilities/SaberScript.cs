@@ -356,8 +356,12 @@ namespace CustomSaber.Utilities
                             continue;
                         }
 
-                        if (renderMaterial.HasProperty("_Glow") && renderMaterial.GetFloat("_Glow") > 0
-                            || renderMaterial.HasProperty("_Bloom") && renderMaterial.GetFloat("_Bloom") > 0)
+                        if (renderMaterial.HasProperty("_CustomColors"))
+                        {
+                            if (renderMaterial.GetFloat("_CustomColors") > 0)
+                                renderMaterial.SetColor("_Color", color);
+                        }
+                        else if (renderMaterial.HasProperty("_Glow") && renderMaterial.GetFloat("_Glow") > 0 || renderMaterial.HasProperty("_Bloom") && renderMaterial.GetFloat("_Bloom") > 0)
                         {
                             renderMaterial.SetColor("_Color", color);
                         }
