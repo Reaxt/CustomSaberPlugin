@@ -55,7 +55,7 @@ namespace CustomSaber.Utilities
                 try
                 {
                     CustomSaberData newSaber = new CustomSaberData(customSaberFile);
-                    if (newSaber.AssetBundle != null)
+                    if (newSaber != null)
                     {
                         customSabers.Add(newSaber);
                     }

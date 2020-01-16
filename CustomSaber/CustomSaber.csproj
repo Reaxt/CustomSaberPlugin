@@ -137,9 +137,4 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(BeatSaberDir)\Plugins"</PostBuildEvent>
   </PropertyGroup>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties manifest_1json__JsonSchema="https://raw.githubusercontent.com/nike4613/ModSaber-MetadataFileSchema/master/Schema.json" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>

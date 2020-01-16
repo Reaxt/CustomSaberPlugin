@@ -24,12 +24,14 @@ namespace CustomSaber.Utilities
 
             foreach (string filter in filters)
             {
+                IEnumerable<string> directoryFiles = Directory.GetFiles(path, filter, searchOption);
+
                 if (returnShortPath)
                 {
-                    foreach (string directoryFile in Directory.GetFiles(path, filter, searchOption))
+                    foreach (string directoryFile in directoryFiles)
                     {
                         string filePath = directoryFile.Replace(path, "");
-                        if (filePath.StartsWith(@"\") && filePath.Length > 0)
+                        if (filePath.Length > 0 && filePath.StartsWith(@"\"))
                         {
                             filePath = filePath.Substring(1, filePath.Length - 1);
                         }
@@ -42,7 +44,7 @@ namespace CustomSaber.Utilities
                 }
                 else
                 {
-                    filePaths = filePaths.Union(Directory.GetFiles(path, filter, searchOption)).ToList();
+                    filePaths = filePaths.Union(directoryFiles).ToList();
                 }
             }
 
@@ -51,7 +53,7 @@ namespace CustomSaber.Utilities
 
         public static Sprite GetDefaultCoverImage()
         {
-            if (defaultCoverImage == null)
+            if (!defaultCoverImage)
             {
                 defaultCoverImage = LoadSpriteFromResources("CustomSaber.Resources.fa-magic.png");
                 defaultCoverImage.texture.wrapMode = TextureWrapMode.Clamp;
@@ -74,7 +76,7 @@ namespace CustomSaber.Utilities
 
         public static Sprite GetErrorCoverImage()
         {
-            if (errorCoverImage == null)
+            if (!errorCoverImage)
             {
                 errorCoverImage = LoadSpriteFromResources("CustomSaber.Resources.fa-magic-error.png");
                 errorCoverImage.texture.wrapMode = TextureWrapMode.Clamp;
