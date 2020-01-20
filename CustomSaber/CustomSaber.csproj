@@ -105,7 +105,7 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\Configuration.cs" />
-    <Compile Include="Settings\UI\CustomSaberFlowCoordinator.cs" />
+    <Compile Include="Settings\UI\SabersFlowCoordinator.cs" />
     <Compile Include="Settings\UI\SaberListViewController.cs" />
     <Compile Include="Settings\UI\SaberPreviewController.cs" />
     <Compile Include="Settings\UI\SettingsUI.cs" />

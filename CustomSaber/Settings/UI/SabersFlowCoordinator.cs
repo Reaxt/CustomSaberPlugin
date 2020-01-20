@@ -5,7 +5,7 @@ using System;
 
 namespace CustomSaber.Settings.UI
 {
-    internal class CustomSaberFlowCoordinator : FlowCoordinator
+    internal class SabersFlowCoordinator : FlowCoordinator
     {
         private SaberListView saberListView;
         private SaberPreviewView saberPreviewView;

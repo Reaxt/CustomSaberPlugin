@@ -8,9 +8,6 @@ namespace CustomSaber.Utilities
 {
     public class Utils
     {
-        private static Sprite defaultCoverImage = null;
-        private static Sprite errorCoverImage = null;
-
         /// <summary>
         /// Gets every file matching the filter in a path.
         /// </summary>
@@ -51,12 +48,17 @@ namespace CustomSaber.Utilities
             return filePaths.Distinct();
         }
 
+        private static Sprite defaultCoverImage = null;
         public static Sprite GetDefaultCoverImage()
         {
             if (!defaultCoverImage)
             {
-                defaultCoverImage = LoadSpriteFromResources("CustomSaber.Resources.fa-magic.png");
-                defaultCoverImage.texture.wrapMode = TextureWrapMode.Clamp;
+                try
+                {
+                    defaultCoverImage = LoadSpriteFromResources("CustomSaber.Resources.fa-magic.png");
+                    defaultCoverImage.texture.wrapMode = TextureWrapMode.Clamp;
+                }
+                catch { }
             }
 
             return defaultCoverImage;
@@ -74,12 +76,17 @@ namespace CustomSaber.Utilities
             return LoadSpriteFromResources(imagePath);
         }
 
+        private static Sprite errorCoverImage = null;
         public static Sprite GetErrorCoverImage()
         {
             if (!errorCoverImage)
             {
-                errorCoverImage = LoadSpriteFromResources("CustomSaber.Resources.fa-magic-error.png");
-                errorCoverImage.texture.wrapMode = TextureWrapMode.Clamp;
+                try
+                {
+                    errorCoverImage = LoadSpriteFromResources("CustomSaber.Resources.fa-magic-error.png");
+                    errorCoverImage.texture.wrapMode = TextureWrapMode.Clamp;
+                }
+                catch { }
             }
 
             return errorCoverImage;

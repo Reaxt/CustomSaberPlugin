@@ -5,7 +5,7 @@
     "#![CustomSaber.Resources.description.md]",
     "Default description"
   ],
-  "gameVersion": "1.6.1",
+  "gameVersion": "1.6.2",
   "id": "Custom Sabers",
   "name": "Custom Sabers",
   "version": "4.0.2",
