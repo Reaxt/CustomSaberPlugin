@@ -42,7 +42,7 @@ namespace CustomSaber.Settings.UI
             customListTableData.data.Clear();
             foreach (CustomSaberData saber in SaberAssetLoader.CustomSabers)
             {
-                CustomListTableData.CustomCellInfo customCellInfo = new CustomListTableData.CustomCellInfo(saber.SaberDescriptor.SaberName, saber.SaberDescriptor.AuthorName, saber.SaberDescriptor.CoverImage.texture);
+                CustomListTableData.CustomCellInfo customCellInfo = new CustomListTableData.CustomCellInfo(saber.SaberDescriptor.SaberName, saber.SaberDescriptor.AuthorName, saber.SaberDescriptor.CoverImage?.texture);
                 customListTableData.data.Add(customCellInfo);
             }
 
