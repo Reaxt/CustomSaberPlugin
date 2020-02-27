@@ -10,6 +10,7 @@ namespace CustomSaber.Data
         public AssetBundle AssetBundle { get; }
         public SaberDescriptor Descriptor { get; }
         public GameObject Sabers { get; }
+        public string ErrorMessage { get; } = string.Empty;
 
         public CustomSaberData(string fileName)
         {
@@ -32,13 +33,14 @@ namespace CustomSaber.Data
                     {
                         SaberName = "Invalid Saber (Delete it)",
                         AuthorName = fileName,
-                        Description = $"File: '{fileName}'" +
+                        CoverImage = Utils.GetErrorCoverImage()
+                    };
+
+                    ErrorMessage = $"File: '{fileName}'" +
                                     "\n\nThis file failed to load." +
                                     "\n\nThis may have been caused by having duplicated files," +
                                     " another saber with the same name already exists or that the custom saber is simply just broken." +
-                                    "\n\nThe best thing is probably just to delete it!",
-                        CoverImage = Utils.GetErrorCoverImage()
-                    };
+                                    "\n\nThe best thing is probably just to delete it!";
 
                     FileName = "DefaultSabers";
                 }
@@ -63,6 +65,7 @@ namespace CustomSaber.Data
             {
                 SaberName = "Default",
                 AuthorName = "Beat Games",
+                Description = "This is the default sabers.",
                 CoverImage = Utils.GetRandomCoverImage(),
             };
 

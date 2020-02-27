@@ -1,12 +1,12 @@
 ﻿using BS_Utils.Gameplay;
-using BS_Utils.Utilities;
 using CustomSaber.Data;
+using CustomSaber.Settings;
+using IPA.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Xft;
 
 namespace CustomSaber.Utilities
@@ -27,7 +27,7 @@ namespace CustomSaber.Utilities
         private EventManager rightEventManager;
 
         // Controllers
-        private BeatmapObjectManager beatmapObjectSpawnController;
+        private BeatmapObjectManager beatmapObjectManager;
         private ScoreController scoreController;
         private ObstacleSaberSparkleEffectManager saberCollisionManager;
         private GameEnergyCounter gameEnergyCounter;
@@ -63,18 +63,15 @@ namespace CustomSaber.Utilities
         {
             OnDestroy();
 
-            if (sabers)
+            if (sabers && Configuration.CustomEventsEnabled)
             {
                 AddEvents();
             }
         }
 
-        private void SceneManagerOnSceneLoaded(Scene newScene, LoadSceneMode mode) => Restart();
-
         private void Start()
         {
             lastNoteId = -1;
-
             Restart();
         }
 
@@ -103,15 +100,15 @@ namespace CustomSaber.Utilities
 
             try
             {
-                beatmapObjectSpawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectManager>().FirstOrDefault();
-                if (beatmapObjectSpawnController)
+                beatmapObjectManager = Resources.FindObjectsOfTypeAll<BeatmapObjectManager>().FirstOrDefault();
+                if (beatmapObjectManager)
                 {
-                    beatmapObjectSpawnController.noteWasCutEvent += SliceCallBack;
-                    beatmapObjectSpawnController.noteWasMissedEvent += NoteMissCallBack;
+                    beatmapObjectManager.noteWasCutEvent += SliceCallBack;
+                    beatmapObjectManager.noteWasMissedEvent += NoteMissCallBack;
                 }
                 else
                 {
-                    Logger.log.Warn($"Failed to locate a suitable '{nameof(BeatmapObjectSpawnController)}'.");
+                    Logger.log.Warn($"Failed to locate a suitable '{nameof(BeatmapObjectManager)}'.");
                 }
 
                 scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
@@ -181,18 +178,16 @@ namespace CustomSaber.Utilities
                     for (int i = beatmapObjectsData.Count - 1; i >= 0; i--)
                     {
                         BeatmapObjectData beatmapObjectData = beatmapObjectsData[i];
-                        if (beatmapObjectData.beatmapObjectType == BeatmapObjectType.Note)
+                        if (beatmapObjectData.beatmapObjectType == BeatmapObjectType.Note
+                            && ((NoteData)beatmapObjectData).noteType != NoteType.Bomb)
                         {
-                            if (((NoteData)beatmapObjectData).noteType != NoteType.Bomb)
+                            if (beatmapObjectData.time > LastTime)
                             {
-                                if (beatmapObjectData.time > LastTime)
-                                {
-                                    lastNoteId = beatmapObjectData.id;
-                                    LastTime = beatmapObjectData.time;
-                                }
-
-                                break;
+                                lastNoteId = beatmapObjectData.id;
+                                LastTime = beatmapObjectData.time;
                             }
+
+                            break;
                         }
                     }
                 }
@@ -206,10 +201,10 @@ namespace CustomSaber.Utilities
 
         private void OnDestroy()
         {
-            if (beatmapObjectSpawnController)
+            if (beatmapObjectManager)
             {
-                beatmapObjectSpawnController.noteWasCutEvent -= SliceCallBack;
-                beatmapObjectSpawnController.noteWasMissedEvent -= NoteMissCallBack;
+                beatmapObjectManager.noteWasCutEvent -= SliceCallBack;
+                beatmapObjectManager.noteWasMissedEvent -= NoteMissCallBack;
             }
 
             if (scoreController)
@@ -245,13 +240,7 @@ namespace CustomSaber.Utilities
 
             colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().LastOrDefault();
 
-            // Reset Trails
-            IEnumerable<SaberWeaponTrail> trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>();
-            foreach (SaberWeaponTrail trail in trails)
-            {
-                ReflectionUtil.SetPrivateField(trail, "_multiplierSaberColor", new Color(1f, 1f, 1f, 0.251f));
-                ReflectionUtil.SetPrivateField(trail as XWeaponTrail, "_whiteSteps", 4);
-            }
+            ResetVanillaTrails();
 
             CustomSaberData customSaber = SaberAssetLoader.CustomSabers[SaberAssetLoader.SelectedSaber];
             if (customSaber != null)
@@ -280,6 +269,11 @@ namespace CustomSaber.Utilities
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
 
+            if (Configuration.TrailType == TrailType.None)
+            {
+                HideVanillaTrails();
+            }
+
             IEnumerable<Saber> defaultSabers = Resources.FindObjectsOfTypeAll<Saber>();
             foreach (Saber defaultSaber in defaultSabers)
             {
@@ -301,10 +295,13 @@ namespace CustomSaber.Utilities
                     saber.transform.position = defaultSaber.transform.position;
                     saber.transform.rotation = defaultSaber.transform.rotation;
 
-                    IEnumerable<CustomTrail> trails = saber.GetComponents<CustomTrail>();
-                    foreach (CustomTrail trail in trails)
+                    if (Configuration.TrailType == TrailType.Custom)
                     {
-                        trail.Init(defaultSaber, colorManager);
+                        IEnumerable<CustomTrail> customTrails = saber.GetComponents<CustomTrail>();
+                        foreach (CustomTrail trail in customTrails)
+                        {
+                            trail.Init(defaultSaber, colorManager);
+                        }
                     }
 
                     ApplyColorsToSaber(saber, colorManager.ColorForSaberType(defaultSaber.saberType));
@@ -344,6 +341,12 @@ namespace CustomSaber.Utilities
         private IEnumerator WaitToCheckDefault()
         {
             yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Any());
+
+
+            if (Configuration.TrailType == TrailType.None)
+            {
+                HideVanillaTrails();
+            }
 
             bool hideOneSaber = false;
             SaberType hiddenSaberType = SaberType.SaberA;
@@ -386,6 +389,18 @@ namespace CustomSaber.Utilities
                 }
 
                 playerHeadWasInObstacle = !playerHeadWasInObstacle;
+            }
+        }
+
+        private void HideVanillaTrails() => SetVanillaTrailVisibility(new Color(0, 0, 0, 0), 0);
+        private void ResetVanillaTrails() => SetVanillaTrailVisibility(new Color(1, 1, 1, 0.251f), 4);
+        private void SetVanillaTrailVisibility(Color color, int whiteSteps)
+        {
+            IEnumerable<SaberWeaponTrail> trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>();
+            foreach (SaberWeaponTrail trail in trails)
+            {
+                ReflectionUtil.SetField(trail, "_multiplierSaberColor", color);
+                ReflectionUtil.SetField(trail as XWeaponTrail, "_whiteSteps", whiteSteps);
             }
         }
 

@@ -140,8 +140,8 @@ namespace CustomSaber.Settings.UI
 
         private void ClearPreview()
         {
-            DestroyGameObject(ref preview);
             ClearSabers();
+            DestroyGameObject(ref preview);
         }
 
         private void ClearSabers()

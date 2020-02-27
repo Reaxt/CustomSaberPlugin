@@ -96,7 +96,7 @@
     <Compile Include="Data\CustomSaberData.cs" />
     <Compile Include="Data\SaberExtensions\ComboReachedEvent.cs" />
     <Compile Include="Data\SaberExtensions\CustomTrails.cs" />
-    <Compile Include="Settings\UI\SaberDetailsViewController.cs" />
+    <Compile Include="Settings\UI\SaberSettingsViewController.cs" />
     <Compile Include="Utilities\CustomWeaponTrail.cs" />
     <Compile Include="Data\SaberExtensions\EventFilterBehaviour.cs" />
     <Compile Include="Data\SaberExtensions\EventManager.cs" />
@@ -133,7 +133,7 @@
     <EmbeddedResource Include="Resources\icon.png" />
     <EmbeddedResource Include="Settings\UI\Views\saberList.bsml" />
     <EmbeddedResource Include="Settings\UI\Views\saberPreview.bsml" />
-    <EmbeddedResource Include="Settings\UI\Views\saberDetails.bsml" />
+    <EmbeddedResource Include="Settings\UI\Views\saberSettings.bsml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

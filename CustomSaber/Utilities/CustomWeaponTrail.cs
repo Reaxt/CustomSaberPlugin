@@ -1,9 +1,16 @@
-﻿using BS_Utils.Utilities;
+﻿using IPA.Utilities;
 using UnityEngine;
 using Xft;
 
 namespace CustomSaber.Utilities
 {
+    public enum TrailType
+    {
+        Custom,
+        Vanilla,
+        None
+    }
+
     internal class CustomWeaponTrail : XWeaponTrail
     {
         public ColorType _saberType;
@@ -50,7 +57,7 @@ namespace CustomSaber.Utilities
         public override void Start()
         {
             base.Start();
-            ReflectionUtil.GetPrivateField<MeshRenderer>(_trailRenderer, "_meshRenderer").material = _customMaterial;
+            ReflectionUtil.GetField<MeshRenderer, XWeaponTrailRenderer>(_trailRenderer, "_meshRenderer").material = _customMaterial;
         }
 
         public void SetColor(Color newColor)
@@ -61,7 +68,7 @@ namespace CustomSaber.Utilities
         public void SetMaterial(Material newMaterial)
         {
             _customMaterial = newMaterial;
-            ReflectionUtil.GetPrivateField<MeshRenderer>(_trailRenderer, "_meshRenderer").material = _customMaterial;
+            ReflectionUtil.GetField<MeshRenderer, XWeaponTrailRenderer>(_trailRenderer, "_meshRenderer").material = _customMaterial;
         }
     }
 }

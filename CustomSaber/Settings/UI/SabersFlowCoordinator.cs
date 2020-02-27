@@ -8,7 +8,7 @@ namespace CustomSaber.Settings.UI
     {
         private SaberListViewController saberListView;
         private SaberPreviewViewController saberPreviewView;
-        private SaberDetailsViewController saberDetailsView;
+        private SaberSettingsViewController saberSettingsView;
 
         public void Awake()
         {
@@ -17,15 +17,15 @@ namespace CustomSaber.Settings.UI
                 saberPreviewView = BeatSaberUI.CreateViewController<SaberPreviewViewController>();
             }
 
-            if (!saberDetailsView)
+            if (!saberSettingsView)
             {
-                saberDetailsView = BeatSaberUI.CreateViewController<SaberDetailsViewController>();
+                saberSettingsView = BeatSaberUI.CreateViewController<SaberSettingsViewController>();
             }
 
             if (!saberListView)
             {
                 saberListView = BeatSaberUI.CreateViewController<SaberListViewController>();
-                saberListView.customSaberChanged += saberDetailsView.OnSaberWasChanged;
+                saberListView.customSaberChanged += saberPreviewView.OnSaberWasChanged;
             }
         }
 
@@ -37,7 +37,7 @@ namespace CustomSaber.Settings.UI
                 {
                     title = "Custom Sabers";
                     showBackButton = true;
-                    ProvideInitialViewControllers(saberListView, saberDetailsView, saberPreviewView);
+                    ProvideInitialViewControllers(saberListView, saberSettingsView, saberPreviewView);
                 }
             }
             catch (Exception ex)
