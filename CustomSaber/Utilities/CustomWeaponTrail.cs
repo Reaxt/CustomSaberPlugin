@@ -1,4 +1,4 @@
-﻿using IPA.Utilities;
+﻿using BS_Utils.Utilities;
 using UnityEngine;
 using Xft;
 
@@ -21,11 +21,11 @@ namespace CustomSaber.Utilities
                 {
                     if (_saberType.Equals(ColorType.LeftSaber))
                     {
-                        tempColor = _colorManager.ColorForSaberType(Saber.SaberType.SaberA) * _multiplierSaberColor;
+                        tempColor = _colorManager.ColorForSaberType(SaberType.SaberA) * _multiplierSaberColor;
                     }
                     else if (_saberType.Equals(ColorType.RightSaber))
                     {
-                        tempColor = _colorManager.ColorForSaberType(Saber.SaberType.SaberB) * _multiplierSaberColor;
+                        tempColor = _colorManager.ColorForSaberType(SaberType.SaberB) * _multiplierSaberColor;
                     }
                 }
 

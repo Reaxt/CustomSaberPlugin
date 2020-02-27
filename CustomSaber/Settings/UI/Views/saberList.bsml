@@ -1,5 +1,10 @@
-﻿<vertical xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
-  <page-button event-click='saberList#PageUp' direction='Up' />
-  <list id='saberList' expand-cell='true' select-cell='saberSelect' />
-  <page-button event-click='saberList#PageDown' direction='Down' />
-</vertical>
+﻿<horizontal xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+  <vertical pad-left='50'>
+    <page-button event-click='saberList#PageUp' direction='Up' />
+    <list id='saberList' expand-cell='true' select-cell='saberSelect' />
+    <page-button event-click='saberList#PageDown' direction='Down' />
+  </vertical>
+  <vertical child-control-height='false'>
+    <button text='Reload all sabers' on-click='reloadSabers' />
+  </vertical>
+</horizontal>

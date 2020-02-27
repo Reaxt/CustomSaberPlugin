@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace CustomSaber.Settings.UI
 {
-    internal class SaberListView : BSMLResourceViewController
+    internal class SaberListViewController : BSMLResourceViewController
     {
         public override string ResourceName => "CustomSaber.Settings.UI.Views.saberList.bsml";
 
@@ -24,16 +24,26 @@ namespace CustomSaber.Settings.UI
         private Vector3 saberLeftPos = new Vector3(0, 0, 0);
         private Vector3 saberRightPos = new Vector3(0, 0.5f, 0);
 
+        public Action<CustomSaberData> customSaberChanged;
+
         [UIComponent("saberList")]
         public CustomListTableData customListTableData;
 
         [UIAction("saberSelect")]
-        internal void Select(TableView _, int row)
+        public void Select(TableView _, int row)
         {
             SaberAssetLoader.SelectedSaber = row;
             Configuration.CurrentlySelectedSaber = SaberAssetLoader.CustomSabers[row].FileName;
 
             GenerateSaberPreview(row);
+        }
+
+        [UIAction("reloadSabers")]
+        public void ReloadMaterials()
+        {
+            SaberAssetLoader.Reload();
+            SetupList();
+            Select(customListTableData.tableView, SaberAssetLoader.SelectedSaber);
         }
 
         [UIAction("#post-parse")]
@@ -42,7 +52,7 @@ namespace CustomSaber.Settings.UI
             customListTableData.data.Clear();
             foreach (CustomSaberData saber in SaberAssetLoader.CustomSabers)
             {
-                CustomListTableData.CustomCellInfo customCellInfo = new CustomListTableData.CustomCellInfo(saber.SaberDescriptor.SaberName, saber.SaberDescriptor.AuthorName, saber.SaberDescriptor.CoverImage?.texture);
+                CustomListTableData.CustomCellInfo customCellInfo = new CustomListTableData.CustomCellInfo(saber.Descriptor.SaberName, saber.Descriptor.AuthorName, saber.Descriptor.CoverImage?.texture);
                 customListTableData.data.Add(customCellInfo);
             }
 
@@ -85,6 +95,8 @@ namespace CustomSaber.Settings.UI
                     CustomSaberData customSaber = SaberAssetLoader.CustomSabers[selectedSaber];
                     if (customSaber != null)
                     {
+                        customSaberChanged?.Invoke(customSaber);
+
                         sabers = CreatePreviewSaber(customSaber.Sabers, preview.transform, sabersPos);
                         PositionPreviewSaber(saberLeftPos, sabers?.transform.Find("LeftSaber").gameObject);
                         PositionPreviewSaber(saberRightPos, sabers?.transform.Find("RightSaber").gameObject);

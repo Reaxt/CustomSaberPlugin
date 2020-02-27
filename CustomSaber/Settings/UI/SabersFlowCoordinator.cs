@@ -1,25 +1,31 @@
 ﻿using BeatSaberMarkupLanguage;
 using HMUI;
-using IPA.Utilities;
 using System;
 
 namespace CustomSaber.Settings.UI
 {
     internal class SabersFlowCoordinator : FlowCoordinator
     {
-        private SaberListView saberListView;
-        private SaberPreviewView saberPreviewView;
+        private SaberListViewController saberListView;
+        private SaberPreviewViewController saberPreviewView;
+        private SaberDetailsViewController saberDetailsView;
 
         public void Awake()
         {
-            if (saberListView == null)
+            if (!saberPreviewView)
             {
-                saberListView = BeatSaberUI.CreateViewController<SaberListView>();
+                saberPreviewView = BeatSaberUI.CreateViewController<SaberPreviewViewController>();
             }
 
-            if (saberPreviewView == null)
+            if (!saberDetailsView)
             {
-                saberPreviewView = BeatSaberUI.CreateViewController<SaberPreviewView>();
+                saberDetailsView = BeatSaberUI.CreateViewController<SaberDetailsViewController>();
+            }
+
+            if (!saberListView)
+            {
+                saberListView = BeatSaberUI.CreateViewController<SaberListViewController>();
+                saberListView.customSaberChanged += saberDetailsView.OnSaberWasChanged;
             }
         }
 
@@ -31,7 +37,7 @@ namespace CustomSaber.Settings.UI
                 {
                     title = "Custom Sabers";
                     showBackButton = true;
-                    ProvideInitialViewControllers(saberListView, null, saberPreviewView);
+                    ProvideInitialViewControllers(saberListView, saberDetailsView, saberPreviewView);
                 }
             }
             catch (Exception ex)
@@ -43,8 +49,7 @@ namespace CustomSaber.Settings.UI
         protected override void BackButtonWasPressed(ViewController topViewController)
         {
             // Dismiss ourselves
-            MainFlowCoordinator mainFlow = BeatSaberUI.MainFlowCoordinator;
-            mainFlow.InvokePrivateMethod("DismissFlowCoordinator", this, null, false);
+            BeatSaberUI.MainFlowCoordinator.DismissFlowCoordinator(this, null, false);
         }
     }
 }

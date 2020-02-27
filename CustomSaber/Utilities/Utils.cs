@@ -48,6 +48,36 @@ namespace CustomSaber.Utilities
             return filePaths.Distinct();
         }
 
+        /// <summary>
+        /// Safely unescape \n and \t
+        /// </summary>
+        /// <param name="text"></param>
+        public static string SafeUnescape(string text)
+        {
+            string unescapedString;
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    unescapedString = string.Empty;
+                }
+                else
+                {
+                    // Unescape just some of the basic formatting characters
+                    unescapedString = text;
+                    unescapedString = unescapedString.Replace("\\n", "\n");
+                    unescapedString = unescapedString.Replace("\\t", "\t");
+                }
+            }
+            catch
+            {
+                unescapedString = text;
+            }
+
+            return unescapedString;
+        }
+
         private static Sprite defaultCoverImage = null;
         public static Sprite GetDefaultCoverImage()
         {
