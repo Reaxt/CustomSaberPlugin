@@ -1,0 +1,18 @@
+﻿<vertical xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+  <vertical child-control-height='false'>
+    <horizontal bg='panel-top' pad-left='10' pad-right='10'>
+      <text text='Saber Settings' align='Center' font-size='10' />
+    </horizontal>
+  </vertical>
+
+  <!-- Settings -->
+  <vertical ignore-layout='true' pad-top='20' spacing='2'
+            child-control-height='false' child-expand-height='false'>
+    <horizontal>
+      <list-setting text='Saber Trail' value='trail-type' options='trail-type-list' apply-on-change='true'
+                    hover-hint='Select the type of trail to use'/>
+    </horizontal>
+    <checkbox-setting text='Enable custom events' value='custom-events-enabled' apply-on-change='true'
+                      hover-hint='Enable custom events for supported sabers'/>
+  </vertical>
+</vertical>

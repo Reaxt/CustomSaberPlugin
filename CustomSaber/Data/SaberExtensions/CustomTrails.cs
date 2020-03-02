@@ -1,4 +1,5 @@
 ﻿#if PLUGIN
+using CustomSaber.Settings;
 using CustomSaber.Utilities;
 using IPA.Utilities;
 using System;
@@ -48,23 +49,23 @@ namespace CustomSaber
                 Destroy(this);
             }
 
-            IEnumerable<SaberWeaponTrail> trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>().ToArray();
+            IEnumerable<SaberWeaponTrail> trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>();
             foreach (SaberWeaponTrail trail in trails)
             {
-                ReflectionUtil.SetPrivateField(trail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
-                ReflectionUtil.SetPrivateField(trail as XWeaponTrail, "_whiteSteps", 0);
+                ReflectionUtil.SetField(trail, "_multiplierSaberColor", new Color(0f, 0f, 0f, 0f));
+                ReflectionUtil.SetField(trail as XWeaponTrail, "_whiteSteps", 0);
             }
 
             SaberWeaponTrail oldtrail = Resources.FindObjectsOfTypeAll<GameCoreSceneSetup>().FirstOrDefault()
-                ?.GetPrivateField<BasicSaberModelController>("_basicSaberModelControllerPrefab")
-                ?.GetPrivateField<SaberWeaponTrail>("_saberWeaponTrail");
+                ?.GetField<BasicSaberModelController, GameCoreSceneSetup>("_basicSaberModelControllerPrefab")
+                ?.GetField<SaberWeaponTrail, BasicSaberModelController>("_saberWeaponTrail");
 
             if (oldtrail)
             {
                 try
                 {
-                    //Logger.log.Debug(ReflectionUtil.GetPrivateField<Color>(oldtrail, "_multiplierSaberColor").ToString());
-                    oldTrailRendererPrefab = ReflectionUtil.GetPrivateField<XWeaponTrailRenderer>(oldtrail, "_trailRendererPrefab");
+                    //Logger.log.Debug(ReflectionUtil.GetField<Color, SaberWeaponTrail>(oldtrail, "_multiplierSaberColor").ToString());
+                    oldTrailRendererPrefab = ReflectionUtil.GetField<XWeaponTrailRenderer, XWeaponTrail>(oldtrail, "_trailRendererPrefab");
                 }
                 catch (Exception ex)
                 {

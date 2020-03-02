@@ -1,12 +1,11 @@
 ﻿using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.MenuButtons;
-using BS_Utils.Utilities;
 
 namespace CustomSaber.Settings.UI
 {
     internal class SettingsUI
     {
-        public static CustomSaberFlowCoordinator sabersFlowCoordinator;
+        public static SabersFlowCoordinator sabersFlowCoordinator;
         public static bool created = false;
 
         public static void CreateMenu()
@@ -24,10 +23,10 @@ namespace CustomSaber.Settings.UI
         {
             if (sabersFlowCoordinator == null)
             {
-                sabersFlowCoordinator = BeatSaberUI.CreateFlowCoordinator<CustomSaberFlowCoordinator>();
+                sabersFlowCoordinator = BeatSaberUI.CreateFlowCoordinator<SabersFlowCoordinator>();
             }
 
-            BeatSaberUI.MainFlowCoordinator.InvokeMethod("PresentFlowCoordinator", sabersFlowCoordinator, null, false, false);
+            BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(sabersFlowCoordinator, null, false, false);
         }
 
         private static void SabersMenuButtonPressed() => ShowSaberFlow();

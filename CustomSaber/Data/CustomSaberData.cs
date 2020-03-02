@@ -8,8 +8,9 @@ namespace CustomSaber.Data
     {
         public string FileName { get; }
         public AssetBundle AssetBundle { get; }
-        public SaberDescriptor SaberDescriptor { get; }
+        public SaberDescriptor Descriptor { get; }
         public GameObject Sabers { get; }
+        public string ErrorMessage { get; } = string.Empty;
 
         public CustomSaberData(string fileName)
         {
@@ -21,33 +22,36 @@ namespace CustomSaber.Data
                 {
                     AssetBundle = AssetBundle.LoadFromFile(Path.Combine(Plugin.PluginAssetPath, fileName));
                     Sabers = AssetBundle.LoadAsset<GameObject>("_CustomSaber");
-                    SaberDescriptor = Sabers.GetComponent<SaberDescriptor>();
-
-                    if (SaberDescriptor.CoverImage == null)
-                    {
-                        SaberDescriptor.CoverImage = Utils.GetDefaultCoverImage();
-                    }
+                    Descriptor = Sabers.GetComponent<SaberDescriptor>();
+                    Descriptor.CoverImage = Descriptor.CoverImage ?? Utils.GetDefaultCoverImage();
                 }
                 catch
                 {
                     Logger.log.Warn($"Something went wrong getting the AssetBundle for '{fileName}'!");
 
-                    SaberDescriptor = new SaberDescriptor
+                    Descriptor = new SaberDescriptor
                     {
                         SaberName = "Invalid Saber (Delete it)",
-                        AuthorName = FileName,
+                        AuthorName = fileName,
                         CoverImage = Utils.GetErrorCoverImage()
                     };
+
+                    ErrorMessage = $"File: '{fileName}'" +
+                                    "\n\nThis file failed to load." +
+                                    "\n\nThis may have been caused by having duplicated files," +
+                                    " another saber with the same name already exists or that the custom saber is simply just broken." +
+                                    "\n\nThe best thing is probably just to delete it!";
 
                     FileName = "DefaultSabers";
                 }
             }
             else
             {
-                SaberDescriptor = new SaberDescriptor
+                Descriptor = new SaberDescriptor
                 {
                     SaberName = "Default",
                     AuthorName = "Beat Saber",
+                    Description = "This is the default sabers. (No preview available)",
                     CoverImage = Utils.GetRandomCoverImage(),
                 };
             }
@@ -57,10 +61,11 @@ namespace CustomSaber.Data
         {
             FileName = "DefaultSabers";
 
-            SaberDescriptor = new SaberDescriptor
+            Descriptor = new SaberDescriptor
             {
                 SaberName = "Default",
                 AuthorName = "Beat Games",
+                Description = "This is the default sabers.",
                 CoverImage = Utils.GetRandomCoverImage(),
             };
 
@@ -72,6 +77,18 @@ namespace CustomSaber.Data
             }
 
             Sabers = saberParent;
+        }
+
+        public void Destroy()
+        {
+            if (AssetBundle != null)
+            {
+                AssetBundle.Unload(true);
+            }
+            else
+            {
+                Object.Destroy(Descriptor);
+            }
         }
     }
 }

@@ -1,17 +1,16 @@
 ﻿{
-  "$schema": "https://raw.githubusercontent.com/nike4613/ModSaber-MetadataFileSchema/master/Schema.json",
+  "$schema": "https://raw.githubusercontent.com/beat-saber-modding-group/BSIPA-MetadataFileSchema/master/Schema.json",
   "author": "Various Modders",
   "description": [
     "#![CustomSaber.Resources.description.md]",
     "Default description"
   ],
-  "gameVersion": "1.6.0",
+  "gameVersion": "1.8.0",
   "id": "Custom Sabers",
   "name": "Custom Sabers",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "icon": "CustomSaber.Resources.icon.png",
   "dependsOn": {
-    "BSIPA": "^3.13.4",
     "BS Utils": "^1.4.0",
     "BeatSaberMarkupLanguage": "^1.1.0"
   },

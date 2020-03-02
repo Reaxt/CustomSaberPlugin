@@ -6,21 +6,22 @@ using IPA.Config;
 using IPA.Loader;
 using IPA.Utilities;
 using System.IO;
-using UnityEngine.SceneManagement;
 using IPALogger = IPA.Logging.Logger;
 
 namespace CustomSaber
 {
-    public class Plugin : IBeatSaberPlugin
+    [Plugin(RuntimeOptions.SingleStartInit)]
+    public class Plugin
     {
         public static string PluginName => "Custom Sabers";
         public static SemVer.Version PluginVersion { get; private set; } = new SemVer.Version("0.0.0"); // Default.
-        public static string PluginAssetPath => Path.Combine(BeatSaber.InstallPath, "CustomSabers");
+        public static string PluginAssetPath => Path.Combine(UnityGame.InstallPath, "CustomSabers");
 
-        public void Init(IPALogger logger, [Config.Prefer("json")] IConfigProvider cfgProvider, PluginLoader.PluginMetadata metadata)
+        [Init]
+        public void Init(IPALogger logger, Config config, PluginMetadata metadata)
         {
             Logger.log = logger;
-            Configuration.Init(cfgProvider);
+            Configuration.Init(config);
 
             if (metadata != null)
             {
@@ -28,33 +29,41 @@ namespace CustomSaber
             }
         }
 
+        [OnStart]
         public void OnApplicationStart() => Load();
+        [OnExit]
         public void OnApplicationQuit() => Unload();
 
-        public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
+        private void OnGameSceneLoaded()
         {
-            if (nextScene.name == "GameCore")
-            {
-                SaberScript.Load();
-            }
+            SaberScript.Load();
         }
-
-        public void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode) { }
-        public void OnSceneUnloaded(Scene scene) { }
-        public void OnUpdate() { }
-        public void OnFixedUpdate() { }
 
         private void Load()
         {
             Configuration.Load();
-            SaberAssetLoader.LoadCustomSabers();
+            SaberAssetLoader.Load();
             SettingsUI.CreateMenu();
+            AddEvents();
             Logger.log.Info($"{PluginName} v.{PluginVersion} has started.");
         }
 
         private void Unload()
         {
             Configuration.Save();
+            SaberAssetLoader.Clear();
+            RemoveEvents();
+        }
+
+        private void AddEvents()
+        {
+            RemoveEvents();
+            BS_Utils.Utilities.BSEvents.gameSceneLoaded += OnGameSceneLoaded;
+        }
+
+        private void RemoveEvents()
+        {
+            BS_Utils.Utilities.BSEvents.gameSceneLoaded -= OnGameSceneLoaded;
         }
     }
 }

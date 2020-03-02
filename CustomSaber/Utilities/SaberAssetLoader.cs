@@ -14,18 +14,18 @@ namespace CustomSaber.Utilities
         public static IList<CustomSaberData> CustomSabers { get; private set; } = new List<CustomSaberData>();
         public static IEnumerable<string> CustomSaberFiles { get; private set; } = Enumerable.Empty<string>();
 
-        internal static void LoadCustomSabers()
+        internal static void Load()
         {
             if (!IsLoaded)
             {
                 Directory.CreateDirectory(Plugin.PluginAssetPath);
 
                 IEnumerable<string> saberFilter = new List<string> { "*.saber" };
-                CustomSaberFiles = Utils.GetFileNames(Plugin.PluginAssetPath, saberFilter, SearchOption.TopDirectoryOnly);
-                Logger.log.Debug($"{CustomSaberFiles.Count()} saber(s) found.");
+                CustomSaberFiles = Utils.GetFileNames(Plugin.PluginAssetPath, saberFilter, SearchOption.AllDirectories, true);
+                Logger.log.Debug($"{CustomSaberFiles.Count()} external saber(s) found.");
 
                 CustomSabers = LoadCustomSabers(CustomSaberFiles);
-                Logger.log.Debug($"{CustomSabers.Count} saber(s) loaded.");
+                Logger.log.Debug($"{CustomSabers.Count} total saber(s) loaded.");
 
                 if (Configuration.CurrentlySelectedSaber != null)
                 {
@@ -43,6 +43,34 @@ namespace CustomSaber.Utilities
             }
         }
 
+        /// <summary>
+        /// Reload all CustomMaterials
+        /// </summary>
+        internal static void Reload()
+        {
+            Logger.log.Debug("Reloading the SaberAssetLoader");
+            Clear();
+            Load();
+        }
+
+        /// <summary>
+        /// Clear all loaded CustomMaterials
+        /// </summary>
+        internal static void Clear()
+        {
+            int numberOfObjects = CustomSabers.Count;
+            for (int i = 0; i < numberOfObjects; i++)
+            {
+                CustomSabers[i].Destroy();
+                CustomSabers[i] = null;
+            }
+
+            IsLoaded = false;
+            SelectedSaber = 0;
+            CustomSabers = new List<CustomSaberData>();
+            CustomSaberFiles = Enumerable.Empty<string>();
+        }
+
         private static IList<CustomSaberData> LoadCustomSabers(IEnumerable<string> customSaberFiles)
         {
             IList<CustomSaberData> customSabers = new List<CustomSaberData>
@@ -55,7 +83,10 @@ namespace CustomSaber.Utilities
                 try
                 {
                     CustomSaberData newSaber = new CustomSaberData(customSaberFile);
-                    customSabers.Add(newSaber);
+                    if (newSaber != null)
+                    {
+                        customSabers.Add(newSaber);
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -1,39 +1,34 @@
 ﻿using CustomSaber.Settings.Utilities;
+using CustomSaber.Utilities;
 using IPA.Config;
-using IPA.Utilities;
+using IPA.Config.Stores;
+using System;
 
 namespace CustomSaber.Settings
 {
     public class Configuration
     {
-        private static Ref<PluginConfig> config;
-        private static IConfigProvider configProvider;
-
         public static string CurrentlySelectedSaber { get; internal set; }
+        public static TrailType TrailType { get; internal set; }
+        public static bool CustomEventsEnabled { get; internal set; }
 
-        internal static void Init(IConfigProvider cfgProvider)
+        internal static void Init(Config config)
         {
-            configProvider = cfgProvider;
-            config = cfgProvider.MakeLink<PluginConfig>((p, v) =>
-            {
-                if (v.Value == null || v.Value.RegenerateConfig)
-                {
-                    p.Store(v.Value = new PluginConfig() { RegenerateConfig = false });
-                }
-                config = v;
-            });
+            PluginConfig.Instance = config.Generated<PluginConfig>();
         }
 
         internal static void Load()
         {
-            CurrentlySelectedSaber = config.Value.lastSaber;
+            CurrentlySelectedSaber = PluginConfig.Instance.lastSaber;
+            TrailType = Enum.TryParse(PluginConfig.Instance.trailType, out TrailType trailType) ? trailType : TrailType.Custom;
+            CustomEventsEnabled = PluginConfig.Instance.customEventsEnabled;
         }
 
         internal static void Save()
         {
-            config.Value.lastSaber = CurrentlySelectedSaber;
-
-            configProvider.Store(config.Value);
+            PluginConfig.Instance.lastSaber = CurrentlySelectedSaber;
+            PluginConfig.Instance.trailType = TrailType.ToString();
+            PluginConfig.Instance.customEventsEnabled = CustomEventsEnabled;
         }
     }
 }

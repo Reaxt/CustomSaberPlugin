@@ -8,48 +8,87 @@ namespace CustomSaber.Utilities
 {
     public class Utils
     {
-        private static Sprite defaultCoverImage = null;
-        private static Sprite errorCoverImage = null;
-
         /// <summary>
         /// Gets every file matching the filter in a path.
         /// </summary>
         /// <param name="path">Directory to search in.</param>
         /// <param name="filters">Pattern(s) to search for.</param>
         /// <param name="searchOption">Search options.</param>
-        /// <param name="fullPath">Keep filepaths.</param>
-        public static IEnumerable<string> GetFileNames(string path, IEnumerable<string> filters, SearchOption searchOption, bool fullPath = false)
+        /// <param name="returnShortPath">Remove path from filepaths.</param>
+        public static IEnumerable<string> GetFileNames(string path, IEnumerable<string> filters, SearchOption searchOption, bool returnShortPath = false)
         {
-            IEnumerable<string> filePaths = Enumerable.Empty<string>();
+            IList<string> filePaths = new List<string>();
+
             foreach (string filter in filters)
             {
-                filePaths = filePaths.Union(Directory.GetFiles(path, filter, searchOption));
-            }
+                IEnumerable<string> directoryFiles = Directory.GetFiles(path, filter, searchOption);
 
-            if (fullPath)
-            {
-                return filePaths.Distinct();
-            }
-
-            IList<string> fileNames = new List<string>();
-            foreach (string filePath in filePaths)
-            {
-                string fileName = Path.GetFileName(filePath);
-                if (!fileNames.Contains(fileName))
+                if (returnShortPath)
                 {
-                    fileNames.Add(fileName);
+                    foreach (string directoryFile in directoryFiles)
+                    {
+                        string filePath = directoryFile.Replace(path, "");
+                        if (filePath.Length > 0 && filePath.StartsWith(@"\"))
+                        {
+                            filePath = filePath.Substring(1, filePath.Length - 1);
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(filePath) && !filePaths.Contains(filePath))
+                        {
+                            filePaths.Add(filePath);
+                        }
+                    }
+                }
+                else
+                {
+                    filePaths = filePaths.Union(directoryFiles).ToList();
                 }
             }
 
-            return fileNames.Distinct();
+            return filePaths.Distinct();
         }
 
+        /// <summary>
+        /// Safely unescape \n and \t
+        /// </summary>
+        /// <param name="text"></param>
+        public static string SafeUnescape(string text)
+        {
+            string unescapedString;
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    unescapedString = string.Empty;
+                }
+                else
+                {
+                    // Unescape just some of the basic formatting characters
+                    unescapedString = text;
+                    unescapedString = unescapedString.Replace("\\n", "\n");
+                    unescapedString = unescapedString.Replace("\\t", "\t");
+                }
+            }
+            catch
+            {
+                unescapedString = text;
+            }
+
+            return unescapedString;
+        }
+
+        private static Sprite defaultCoverImage = null;
         public static Sprite GetDefaultCoverImage()
         {
-            if (defaultCoverImage == null)
+            if (!defaultCoverImage)
             {
-                defaultCoverImage = LoadSpriteFromResources("CustomSaber.Resources.fa-magic.png");
-                defaultCoverImage.texture.wrapMode = TextureWrapMode.Clamp;
+                try
+                {
+                    defaultCoverImage = LoadSpriteFromResources("CustomSaber.Resources.fa-magic.png");
+                    defaultCoverImage.texture.wrapMode = TextureWrapMode.Clamp;
+                }
+                catch { }
             }
 
             return defaultCoverImage;
@@ -67,12 +106,17 @@ namespace CustomSaber.Utilities
             return LoadSpriteFromResources(imagePath);
         }
 
+        private static Sprite errorCoverImage = null;
         public static Sprite GetErrorCoverImage()
         {
-            if (errorCoverImage == null)
+            if (!errorCoverImage)
             {
-                errorCoverImage = LoadSpriteFromResources("CustomSaber.Resources.fa-magic-error.png");
-                errorCoverImage.texture.wrapMode = TextureWrapMode.Clamp;
+                try
+                {
+                    errorCoverImage = LoadSpriteFromResources("CustomSaber.Resources.fa-magic-error.png");
+                    errorCoverImage.texture.wrapMode = TextureWrapMode.Clamp;
+                }
+                catch { }
             }
 
             return errorCoverImage;

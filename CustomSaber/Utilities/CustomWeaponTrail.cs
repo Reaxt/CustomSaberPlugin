@@ -4,6 +4,13 @@ using Xft;
 
 namespace CustomSaber.Utilities
 {
+    public enum TrailType
+    {
+        Custom,
+        Vanilla,
+        None
+    }
+
     internal class CustomWeaponTrail : XWeaponTrail
     {
         public ColorType _saberType;
@@ -21,11 +28,11 @@ namespace CustomSaber.Utilities
                 {
                     if (_saberType.Equals(ColorType.LeftSaber))
                     {
-                        tempColor = _colorManager.ColorForSaberType(Saber.SaberType.SaberA) * _multiplierSaberColor;
+                        tempColor = _colorManager.ColorForSaberType(SaberType.SaberA) * _multiplierSaberColor;
                     }
                     else if (_saberType.Equals(ColorType.RightSaber))
                     {
-                        tempColor = _colorManager.ColorForSaberType(Saber.SaberType.SaberB) * _multiplierSaberColor;
+                        tempColor = _colorManager.ColorForSaberType(SaberType.SaberB) * _multiplierSaberColor;
                     }
                 }
 
@@ -50,7 +57,7 @@ namespace CustomSaber.Utilities
         public override void Start()
         {
             base.Start();
-            ReflectionUtil.GetPrivateField<MeshRenderer>(_trailRenderer, "_meshRenderer").material = _customMaterial;
+            ReflectionUtil.GetField<MeshRenderer, XWeaponTrailRenderer>(_trailRenderer, "_meshRenderer").material = _customMaterial;
         }
 
         public void SetColor(Color newColor)
@@ -61,7 +68,7 @@ namespace CustomSaber.Utilities
         public void SetMaterial(Material newMaterial)
         {
             _customMaterial = newMaterial;
-            ReflectionUtil.GetPrivateField<MeshRenderer>(_trailRenderer, "_meshRenderer").material = _customMaterial;
+            ReflectionUtil.GetField<MeshRenderer, XWeaponTrailRenderer>(_trailRenderer, "_meshRenderer").material = _customMaterial;
         }
     }
 }
