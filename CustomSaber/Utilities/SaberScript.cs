@@ -392,15 +392,14 @@ namespace CustomSaber.Utilities
             }
         }
 
-        private void HideVanillaTrails() => SetVanillaTrailVisibility(new Color(0, 0, 0, 0), 0);
-        private void ResetVanillaTrails() => SetVanillaTrailVisibility(new Color(1, 1, 1, 0.251f), 4);
-        private void SetVanillaTrailVisibility(Color color, int whiteSteps)
+        private void HideVanillaTrails() => SetVanillaTrailVisibility(0f);
+        private void ResetVanillaTrails() => SetVanillaTrailVisibility(1.007f);
+        private void SetVanillaTrailVisibility(float trailWidth)
         {
-            IEnumerable<SaberWeaponTrail> trails = Resources.FindObjectsOfTypeAll<SaberWeaponTrail>();
-            foreach (SaberWeaponTrail trail in trails)
+            IEnumerable<XWeaponTrail> trails = Resources.FindObjectsOfTypeAll<XWeaponTrail>();
+            foreach (XWeaponTrail trail in trails)
             {
-                ReflectionUtil.SetField(trail, "_multiplierSaberColor", color);
-                ReflectionUtil.SetField(trail as XWeaponTrail, "_whiteSteps", whiteSteps);
+                ReflectionUtil.SetField(trail, "_trailWidth", trailWidth);
             }
         }
 
