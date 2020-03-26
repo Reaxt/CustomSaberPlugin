@@ -19,7 +19,7 @@ namespace CustomSaber.Utilities
         public Color _customColor;
         public Material _customMaterial;
 
-        protected override Color color
+        public override Color color
         {
             get
             {
