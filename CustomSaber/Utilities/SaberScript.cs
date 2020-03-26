@@ -394,12 +394,12 @@ namespace CustomSaber.Utilities
 
         private void HideVanillaTrails() => SetVanillaTrailVisibility(0f);
         private void ResetVanillaTrails() => SetVanillaTrailVisibility(1.007f);
-        private void SetVanillaTrailVisibility(float trailLength)
+        private void SetVanillaTrailVisibility(float trailWidth)
         {
             IEnumerable<XWeaponTrail> trails = Resources.FindObjectsOfTypeAll<XWeaponTrail>();
             foreach (XWeaponTrail trail in trails)
             {
-                ReflectionUtil.SetField(trail, "_trailWidth", trailLength);
+                ReflectionUtil.SetField(trail, "_trailWidth", trailWidth);
             }
         }
 
