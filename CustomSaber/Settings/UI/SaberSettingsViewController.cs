@@ -27,5 +27,12 @@ namespace CustomSaber.Settings.UI
             get => Configuration.CustomEventsEnabled;
             set => Configuration.CustomEventsEnabled = value;
         }
+
+        [UIValue("random-sabers-enabled")]
+        public bool RandomSabersEnabled
+        {
+            get => Configuration.RandomSabersEnabled;
+            set => Configuration.RandomSabersEnabled = value;
+        }
     }
 }

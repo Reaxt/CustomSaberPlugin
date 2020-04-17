@@ -14,5 +14,7 @@
     </horizontal>
     <checkbox-setting text='Enable custom events' value='custom-events-enabled' apply-on-change='true'
                       hover-hint='Enable custom events for supported sabers'/>
+    <checkbox-setting text='Enable random sabers' value='random-sabers-enabled'  apply-on-change='true'
+                      hover-hint='Select random sabers for each map' />
   </vertical>
 </vertical>

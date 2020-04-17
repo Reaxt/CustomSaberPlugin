@@ -11,6 +11,7 @@ namespace CustomSaber.Settings
         public static string CurrentlySelectedSaber { get; internal set; }
         public static TrailType TrailType { get; internal set; }
         public static bool CustomEventsEnabled { get; internal set; }
+        public static bool RandomSabersEnabled { get; internal set; }
 
         internal static void Init(Config config)
         {
@@ -22,6 +23,7 @@ namespace CustomSaber.Settings
             CurrentlySelectedSaber = PluginConfig.Instance.lastSaber;
             TrailType = Enum.TryParse(PluginConfig.Instance.trailType, out TrailType trailType) ? trailType : TrailType.Custom;
             CustomEventsEnabled = PluginConfig.Instance.customEventsEnabled;
+            RandomSabersEnabled = PluginConfig.Instance.randomSabersEnabled;
         }
 
         internal static void Save()
@@ -29,6 +31,7 @@ namespace CustomSaber.Settings
             PluginConfig.Instance.lastSaber = CurrentlySelectedSaber;
             PluginConfig.Instance.trailType = TrailType.ToString();
             PluginConfig.Instance.customEventsEnabled = CustomEventsEnabled;
+            PluginConfig.Instance.randomSabersEnabled = RandomSabersEnabled;
         }
     }
 }

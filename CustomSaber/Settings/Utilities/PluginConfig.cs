@@ -7,5 +7,6 @@
         public string lastSaber;
         public string trailType;
         public bool customEventsEnabled = true;
+        public bool randomSabersEnabled = false;
     }
 }
