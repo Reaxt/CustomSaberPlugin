@@ -71,8 +71,11 @@ namespace CustomSaber
                     throw;
                 }
 
-                trail = gameObject.AddComponent<CustomWeaponTrail>();
-                trail.Init(oldTrailRendererPrefab, colorManager, PointStart, PointEnd, TrailMaterial, TrailColor, Length, MultiplierColor, colorType);
+                if (Length > 1)
+                {
+                    trail = gameObject.AddComponent<CustomWeaponTrail>();
+                    trail.Init(oldTrailRendererPrefab, colorManager, PointStart, PointEnd, TrailMaterial, TrailColor, Length, MultiplierColor, colorType);
+                }
             }
             else
             {
