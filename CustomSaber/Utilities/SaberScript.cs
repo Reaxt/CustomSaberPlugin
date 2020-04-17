@@ -242,7 +242,7 @@ namespace CustomSaber.Utilities
 
             ResetVanillaTrails();
 
-            CustomSaberData customSaber = SaberAssetLoader.CustomSabers[SaberAssetLoader.SelectedSaber];
+            CustomSaberData customSaber = (Configuration.RandomSabersEnabled) ? SaberAssetLoader.GetRandomSaber() : SaberAssetLoader.CustomSabers[SaberAssetLoader.SelectedSaber];
             if (customSaber != null)
             {
                 if (customSaber.FileName == "DefaultSabers")

@@ -10,24 +10,9 @@ namespace CustomSaber.Utilities
     public class SaberAssetLoader
     {
         public static bool IsLoaded { get; private set; }
+        public static int SelectedSaber { get; internal set; } = 0;
         public static IList<CustomSaberData> CustomSabers { get; private set; } = new List<CustomSaberData>();
         public static IEnumerable<string> CustomSaberFiles { get; private set; } = Enumerable.Empty<string>();
-
-        private static int _selectedSaber = 0;
-        public static int SelectedSaber
-        {
-            get
-            {
-                UnityEngine.Random.InitState(System.DateTime.Now.Millisecond);
-                var saber = UnityEngine.Random.Range(0, CustomSabers.Count);
-                Logger.log.Debug(saber.ToString());
-                return (Configuration.RandomSabersEnabled) ? saber : _selectedSaber;
-            }
-            internal set
-            {
-                _selectedSaber = value;
-            }
-        }
 
         internal static void Load()
         {
@@ -111,6 +96,12 @@ namespace CustomSaber.Utilities
             }
 
             return customSabers;
+        }
+
+        public static CustomSaberData GetRandomSaber()
+        {
+            UnityEngine.Random.InitState(System.DateTime.Now.Millisecond);
+            return CustomSabers[UnityEngine.Random.Range(0, CustomSabers.Count)];
         }
     }
 }
