@@ -119,6 +119,7 @@ namespace CustomSaber.Utilities
             {
                 Logger.log.Error($"Failed to delete Saber: {CustomSabers[SelectedSaber].Descriptor.SaberName} - {filePath}");
                 Logger.log.Error($"{e.Message} - {e.StackTrace}");
+                return 0;
             }
 
             CustomSabers[SelectedSaber].Destroy();
