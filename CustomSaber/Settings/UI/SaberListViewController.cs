@@ -6,6 +6,8 @@ using CustomSaber.Utilities;
 using HMUI;
 using System;
 using UnityEngine;
+using System.Linq;
+using TMPro;
 
 namespace CustomSaber.Settings.UI
 {
@@ -46,6 +48,26 @@ namespace CustomSaber.Settings.UI
             Select(customListTableData.tableView, SaberAssetLoader.SelectedSaber);
         }
 
+        [UIAction("deleteSaber")]
+        public void DeleteCurrentSaber()
+        {
+            var deletedSaber = SaberAssetLoader.DeleteCurrentSaber();
+
+            if (deletedSaber == 0) return;
+
+            SetupList();
+            Select(customListTableData.tableView, SaberAssetLoader.SelectedSaber);
+        }
+
+        [UIAction("update-confirmation")]
+        public void UpdateDeleteConfirmation()
+        {
+            confirmationText.text = $"Are you sure you want to delete\n<color=\"red\">{SaberAssetLoader.CustomSabers[SaberAssetLoader.SelectedSaber].Descriptor.SaberName}</color>?";
+        }
+
+        [UIComponent("delete-saber-confirmation-text")]
+        public TextMeshProUGUI confirmationText;
+
         [UIAction("#post-parse")]
         public void SetupList()
         {
@@ -59,8 +81,9 @@ namespace CustomSaber.Settings.UI
             customListTableData.tableView.ReloadData();
             int selectedSaber = SaberAssetLoader.SelectedSaber;
 
-            customListTableData.tableView.ScrollToCellWithIdx(selectedSaber, TableViewScroller.ScrollPositionType.Beginning, false);
             customListTableData.tableView.SelectCellWithIdx(selectedSaber);
+            if (!customListTableData.tableView.visibleCells.Where(x => x.selected).Any())
+                customListTableData.tableView.ScrollToCellWithIdx(selectedSaber, TableViewScroller.ScrollPositionType.Beginning, true);
         }
 
         protected override void DidActivate(bool firstActivation, ActivationType type)

@@ -103,5 +103,30 @@ namespace CustomSaber.Utilities
             UnityEngine.Random.InitState(System.DateTime.Now.Millisecond);
             return CustomSabers[UnityEngine.Random.Range(0, CustomSabers.Count)];
         }
+
+        public static int DeleteCurrentSaber()
+        {
+            if (SelectedSaber == 0) return 0;
+
+            var filePath = Path.Combine(Plugin.PluginAssetPath, CustomSabers[SelectedSaber].FileName);
+            var saberToDelete = SelectedSaber;
+
+            try
+            {
+                File.Delete(filePath);
+            }
+            catch (Exception e)
+            {
+                Logger.log.Error($"Failed to delete Saber: {CustomSabers[SelectedSaber].Descriptor.SaberName} - {filePath}");
+                Logger.log.Error($"{e.Message} - {e.StackTrace}");
+            }
+
+            CustomSabers[SelectedSaber].Destroy();
+            CustomSabers.RemoveAt(SelectedSaber);
+
+            SelectedSaber = (SelectedSaber < CustomSabers.Count - 1) ? SelectedSaber : SelectedSaber - 1;
+            Configuration.CurrentlySelectedSaber = CustomSabers[SelectedSaber].FileName;
+            return saberToDelete;
+        }
     }
 }
