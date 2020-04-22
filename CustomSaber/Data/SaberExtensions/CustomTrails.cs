@@ -19,6 +19,7 @@ namespace CustomSaber
         CustomColor
     }
 
+    [UnityEngine.AddComponentMenu("Custom Sabers/Custom Trail")]
     public class CustomTrail : MonoBehaviour
     {
         public Transform PointStart;

@@ -5,6 +5,7 @@ using UnityEngine.Events;
 // Class has to be in this namespace due to compatibility
 namespace CustomSaber
 {
+    [AddComponentMenu("Custom Sabers/Event Manager")]
     public class EventManager : MonoBehaviour
     {
         public UnityEvent OnSlice;
@@ -18,6 +19,7 @@ namespace CustomSaber
         public UnityEvent OnBlueLightOn;
         public UnityEvent OnRedLightOn;
 
+        [HideInInspector]
         public ComboChangedEvent OnComboChanged = new ComboChangedEvent();
 
         [Serializable]

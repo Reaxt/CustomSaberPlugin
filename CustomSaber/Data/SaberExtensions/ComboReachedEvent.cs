@@ -3,6 +3,7 @@
 // Class has to be in this namespace due to compatibility
 namespace CustomSaber
 {
+    [UnityEngine.AddComponentMenu("Custom Sabers/Combo Reached Event")]
     public class ComboReachedEvent : EventFilterBehaviour
     {
         public int ComboTarget = 50;

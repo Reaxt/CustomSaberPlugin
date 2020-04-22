@@ -3,6 +3,7 @@
 // Class has to be in this namespace due to compatibility
 namespace CustomSaber
 {
+    [UnityEngine.AddComponentMenu("Custom Sabers/Every Nth Combo")]
     public class EveryNthComboFilter : EventFilterBehaviour
     {
         public int ComboStep = 50;
