@@ -38,6 +38,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CustomSaber\Data\SaberExtensions\AccuracyReachedEvent.cs">
+      <Link>Data\SaberExtensions\AccuracyReachedEvent.cs</Link>
+    </Compile>
     <Compile Include="..\CustomSaber\Data\SaberExtensions\EventFilterBehaviour.cs">
       <Link>Data\SaberExtensions\EventFilterBehaviour.cs</Link>
     </Compile>
@@ -53,16 +56,16 @@
     <Compile Include="..\CustomSaber\Data\SaberExtensions\SaberDescriptor.cs">
       <Link>Data\SaberExtensions\SaberDescriptor.cs</Link>
     </Compile>
-    <Compile Include="Dynamic Bones\DynamicBone.cs">
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBone.cs">
       <Link>Dynamic Bones\DynamicBone.cs</Link>
     </Compile>
-    <Compile Include="Dynamic Bones\DynamicBoneCollider.cs">
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBoneCollider.cs">
       <Link>Dynamic Bones\DynamicBoneCollider.cs</Link>
     </Compile>
-    <Compile Include="Dynamic Bones\DynamicBoneColliderBase.cs">
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBoneColliderBase.cs">
       <Link>Dynamic Bones\DynamicBoneColliderBase.cs</Link>
     </Compile>
-    <Compile Include="Dynamic Bones\DynamicBonePlaneCollider.cs">
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBonePlaneCollider.cs">
       <Link>Dynamic Bones\DynamicBonePlaneCollider.cs</Link>
     </Compile>
     <Compile Include="..\CustomSaber\Data\SaberExtensions\CustomTrails.cs">
