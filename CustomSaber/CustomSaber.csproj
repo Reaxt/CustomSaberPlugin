@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\CustomSaberData.cs" />
+    <Compile Include="Data\SaberExtensions\AccuracyReachedEvent.cs" />
     <Compile Include="Data\SaberExtensions\ComboReachedEvent.cs" />
     <Compile Include="Data\SaberExtensions\CustomTrails.cs" />
     <Compile Include="Settings\UI\SaberSettingsViewController.cs" />

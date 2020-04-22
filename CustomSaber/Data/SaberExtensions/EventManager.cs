@@ -21,8 +21,13 @@ namespace CustomSaber
 
         [HideInInspector]
         public ComboChangedEvent OnComboChanged = new ComboChangedEvent();
+        [HideInInspector]
+        public AccuracyChangedEvent OnAccuracyChanged = new AccuracyChangedEvent();
 
         [Serializable]
         public class ComboChangedEvent : UnityEvent<int> { }
+
+        [Serializable]
+        public class AccuracyChangedEvent : UnityEvent<float> { }
     }
 }

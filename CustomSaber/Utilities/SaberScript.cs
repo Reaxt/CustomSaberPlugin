@@ -445,11 +445,14 @@ namespace CustomSaber.Utilities
             {
                 leftEventManager?.OnComboBreak?.Invoke();
                 rightEventManager?.OnComboBreak?.Invoke();
+                StartCoroutine(CalculateAccuracyAndFireEvents());
             }
             else
             {
                 EventManager eventManager = GetEventManagerByType(noteCutInfo.saberType);
                 eventManager?.OnSlice?.Invoke();
+                noteCutInfo.swingRatingCounter.didFinishEvent += OnSwingRatingCounterFinished;
+
             }
 
             if (noteController.noteData.id == lastNoteId)
@@ -472,6 +475,8 @@ namespace CustomSaber.Utilities
                 leftEventManager?.OnLevelEnded?.Invoke();
                 rightEventManager?.OnLevelEnded?.Invoke();
             }
+
+            StartCoroutine(CalculateAccuracyAndFireEvents());
         }
 
         private void MultiplierCallBack(int multiplier, float progress)
@@ -523,6 +528,25 @@ namespace CustomSaber.Utilities
         {
             leftEventManager?.OnComboChanged?.Invoke(combo);
             rightEventManager?.OnComboChanged?.Invoke(combo);
+        }
+
+        private IEnumerator CalculateAccuracyAndFireEvents()
+        {
+            // wait for next frame to let the scoreController catch up
+            yield return null;
+
+            var rawScore = scoreController.prevFrameRawScore;
+            var maximumScore = ScoreModel.MaxRawScoreForNumberOfNotes(ReflectionUtil.GetField<int, ScoreController>(scoreController, "_cutOrMissedNotes"));
+            var accuracy = (float)rawScore / (float)maximumScore;
+
+            leftEventManager?.OnAccuracyChanged?.Invoke(accuracy);
+            rightEventManager?.OnAccuracyChanged?.Invoke(accuracy);
+        }
+
+        private void OnSwingRatingCounterFinished(SaberSwingRatingCounter afterCutRating)
+        {
+            afterCutRating.didFinishEvent -= OnSwingRatingCounterFinished;
+            StartCoroutine(CalculateAccuracyAndFireEvents());
         }
 
         #endregion
