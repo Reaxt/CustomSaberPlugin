@@ -34,5 +34,26 @@ namespace CustomSaber.Settings.UI
             get => Configuration.RandomSabersEnabled;
             set => Configuration.RandomSabersEnabled = value;
         }
+
+        [UIValue("sabers-in-menu")]
+        public bool ShowSabersInSaberMenu
+        {
+            get => Configuration.ShowSabersInSaberMenu;
+            set => Configuration.ShowSabersInSaberMenu = value;
+        }
+
+        [UIAction("sabers-in-menu-changed")]
+        public void OnSabersInMenuChanged(bool value)
+        {
+            if (value)
+            {
+                SaberListViewController.Instance?.GenerateHandheldSaberPreview();
+            }
+            else
+            {
+                SaberListViewController.Instance?.ClearHandheldSabers();
+                SaberListViewController.Instance?.ShowMenuHandles();
+            }
+        }
     }
 }

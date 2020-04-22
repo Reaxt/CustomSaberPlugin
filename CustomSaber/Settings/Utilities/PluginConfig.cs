@@ -8,5 +8,6 @@
         public string trailType;
         public bool customEventsEnabled = true;
         public bool randomSabersEnabled = false;
+        public bool showSabersInSaberMenu = false;
     }
 }

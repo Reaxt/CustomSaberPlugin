@@ -5,9 +5,10 @@ using CustomSaber.Data;
 using CustomSaber.Utilities;
 using HMUI;
 using System;
-using UnityEngine;
 using System.Linq;
 using TMPro;
+using UnityEngine;
+using UnityEngine.XR;
 
 namespace CustomSaber.Settings.UI
 {
@@ -15,11 +16,15 @@ namespace CustomSaber.Settings.UI
     {
         public override string ResourceName => "CustomSaber.Settings.UI.Views.saberList.bsml";
 
+        public static SaberListViewController Instance;
+
         private bool isGeneratingPreview;
         private GameObject preview;
 
         // Sabers
-        private GameObject sabers;
+        private GameObject previewSabers;
+        private GameObject leftSaber;
+        private GameObject rightSaber;
 
         // SaberPositions (Local to the previewer)
         private Vector3 sabersPos = new Vector3(0, 0, 0);
@@ -60,10 +65,7 @@ namespace CustomSaber.Settings.UI
         }
 
         [UIAction("update-confirmation")]
-        public void UpdateDeleteConfirmation()
-        {
-            confirmationText.text = $"Are you sure you want to delete\n<color=\"red\">{SaberAssetLoader.CustomSabers[SaberAssetLoader.SelectedSaber].Descriptor.SaberName}</color>?";
-        }
+        public void UpdateDeleteConfirmation() => confirmationText.text = $"Are you sure you want to delete\n<color=\"red\">{SaberAssetLoader.CustomSabers[SaberAssetLoader.SelectedSaber].Descriptor.SaberName}</color>?";
 
         [UIComponent("delete-saber-confirmation-text")]
         public TextMeshProUGUI confirmationText;
@@ -72,14 +74,14 @@ namespace CustomSaber.Settings.UI
         public void SetupList()
         {
             customListTableData.data.Clear();
-            foreach (CustomSaberData saber in SaberAssetLoader.CustomSabers)
+            foreach (var saber in SaberAssetLoader.CustomSabers)
             {
-                CustomListTableData.CustomCellInfo customCellInfo = new CustomListTableData.CustomCellInfo(saber.Descriptor.SaberName, saber.Descriptor.AuthorName, saber.Descriptor.CoverImage?.texture);
+                var customCellInfo = new CustomListTableData.CustomCellInfo(saber.Descriptor.SaberName, saber.Descriptor.AuthorName, saber.Descriptor.CoverImage?.texture);
                 customListTableData.data.Add(customCellInfo);
             }
 
             customListTableData.tableView.ReloadData();
-            int selectedSaber = SaberAssetLoader.SelectedSaber;
+            var selectedSaber = SaberAssetLoader.SelectedSaber;
 
             customListTableData.tableView.SelectCellWithIdx(selectedSaber);
             if (!customListTableData.tableView.visibleCells.Where(x => x.selected).Any())
@@ -89,6 +91,8 @@ namespace CustomSaber.Settings.UI
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
             base.DidActivate(firstActivation, type);
+
+            Instance = this;
 
             if (!preview)
             {
@@ -115,14 +119,17 @@ namespace CustomSaber.Settings.UI
                     isGeneratingPreview = true;
                     ClearSabers();
 
-                    CustomSaberData customSaber = SaberAssetLoader.CustomSabers[selectedSaber];
+                    var customSaber = SaberAssetLoader.CustomSabers[selectedSaber];
                     if (customSaber != null)
                     {
                         customSaberChanged?.Invoke(customSaber);
 
-                        sabers = CreatePreviewSaber(customSaber.Sabers, preview.transform, sabersPos);
-                        PositionPreviewSaber(saberLeftPos, sabers?.transform.Find("LeftSaber").gameObject);
-                        PositionPreviewSaber(saberRightPos, sabers?.transform.Find("RightSaber").gameObject);
+                        previewSabers = CreatePreviewSaber(customSaber.Sabers, preview.transform, sabersPos);
+                        PositionPreviewSaber(saberLeftPos, previewSabers?.transform.Find("LeftSaber").gameObject);
+                        PositionPreviewSaber(saberRightPos, previewSabers?.transform.Find("RightSaber").gameObject);
+
+                        if (Configuration.ShowSabersInSaberMenu)
+                            GenerateHandheldSaberPreview();
                     }
                 }
                 catch (Exception ex)
@@ -138,9 +145,41 @@ namespace CustomSaber.Settings.UI
 
         private GameObject CreatePreviewSaber(GameObject saber, Transform transform, Vector3 localPosition)
         {
-            GameObject saberObject = InstantiateGameObject(saber, transform);
+            var saberObject = InstantiateGameObject(saber, transform);
             PositionPreviewSaber(localPosition, saberObject);
             return saberObject;
+        }
+
+        public void GenerateHandheldSaberPreview()
+        {
+            if (SaberAssetLoader.SelectedSaber == 0) return;
+            var customSaber = SaberAssetLoader.CustomSabers[SaberAssetLoader.SelectedSaber];
+            var controllers = Resources.FindObjectsOfTypeAll<VRController>();
+            var sabers = CreatePreviewSaber(customSaber.Sabers, preview.transform, sabersPos);
+
+            foreach (var controller in controllers)
+            {
+                if (controller.node == XRNode.LeftHand)
+                {
+                    leftSaber = sabers?.transform.Find("LeftSaber").gameObject;
+
+                    leftSaber.transform.parent = controller.transform;
+                    leftSaber.transform.position = controller.transform.position;
+                    leftSaber.transform.rotation = controller.transform.rotation;
+
+                    controller.transform.Find("MenuHandle").gameObject.SetActive(false);
+                }
+                else if (controller.node == XRNode.RightHand)
+                {
+                    rightSaber = sabers?.transform.Find("RightSaber").gameObject;
+
+                    rightSaber.transform.parent = controller.transform;
+                    rightSaber.transform.position = controller.transform.position;
+                    rightSaber.transform.rotation = controller.transform.rotation;
+
+                    controller.transform.Find("MenuHandle").gameObject.SetActive(false);
+                }
+            }
         }
 
         private GameObject InstantiateGameObject(GameObject gameObject, Transform transform = null)
@@ -165,11 +204,27 @@ namespace CustomSaber.Settings.UI
         {
             ClearSabers();
             DestroyGameObject(ref preview);
+            ShowMenuHandles();
         }
 
         private void ClearSabers()
         {
-            DestroyGameObject(ref sabers);
+            DestroyGameObject(ref previewSabers);
+            ClearHandheldSabers();
+        }
+
+        public void ClearHandheldSabers()
+        {
+            DestroyGameObject(ref leftSaber);
+            DestroyGameObject(ref rightSaber);
+        }
+
+        public void ShowMenuHandles()
+        {
+            foreach (var controller in Resources.FindObjectsOfTypeAll<VRController>())
+            {
+                controller.transform.Find("MenuHandle").gameObject.SetActive(true);
+            }
         }
 
         private void DestroyGameObject(ref GameObject gameObject)
