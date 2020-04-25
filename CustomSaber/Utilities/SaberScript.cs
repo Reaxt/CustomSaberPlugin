@@ -309,7 +309,7 @@ namespace CustomSaber.Utilities
             }
         }
 
-        public void ApplyColorsToSaber(GameObject saber, Color color)
+        public static void ApplyColorsToSaber(GameObject saber, Color color)
         {
             //Logger.log.Debug($"Applying Color: {color} to saber: {saber.name}");
             IEnumerable<Renderer> renderers = saber.GetComponentsInChildren<Renderer>();

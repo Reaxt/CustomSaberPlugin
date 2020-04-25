@@ -131,6 +131,11 @@ namespace CustomSaber.Settings.UI
                         PositionPreviewSaber(saberLeftPos, previewSabers?.transform.Find("LeftSaber").gameObject);
                         PositionPreviewSaber(saberRightPos, previewSabers?.transform.Find("RightSaber").gameObject);
 
+                        previewSabers?.transform.Find("LeftSaber").gameObject.SetActive(true);
+                        previewSabers?.transform.Find("LeftSaber").gameObject.gameObject.AddComponent<DummySaber>();
+                        previewSabers?.transform.Find("RightSaber").gameObject.SetActive(true);
+                        previewSabers?.transform.Find("RightSaber").gameObject.gameObject.AddComponent<DummySaber>();
+
                         if (Configuration.ShowSabersInSaberMenu)
                             GenerateHandheldSaberPreview();
                     }
@@ -156,11 +161,11 @@ namespace CustomSaber.Settings.UI
 
         public void GenerateHandheldSaberPreview()
         {
-            if (SaberAssetLoader.SelectedSaber == 0) return;
             if (Environment.CommandLine.Contains("fpfc")) return;
             var customSaber = SaberAssetLoader.CustomSabers[SaberAssetLoader.SelectedSaber];
             var controllers = Resources.FindObjectsOfTypeAll<VRController>();
             var sabers = CreatePreviewSaber(customSaber.Sabers, preview.transform, sabersPos);
+            var colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().First();
 
             try
             {

@@ -44,7 +44,6 @@ namespace CustomSaber.Utilities
                 isSceneLoaded = true;
                 Logger.log.Debug("Loaded!");
 
-                yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Count() > 1);
                 BasicSaberModelController saber = Resources.FindObjectsOfTypeAll<BasicSaberModelController>().FirstOrDefault();
                 trail = saber.GetComponent<Xft.XWeaponTrail>();
 
@@ -64,6 +63,7 @@ namespace CustomSaber.Utilities
                 defaultLeftSaber.gameObject.name = "LeftSaber";
                 defaultLeftSaber.transform.localPosition = Vector3.zero;
                 defaultLeftSaber.transform.localRotation = Quaternion.identity;
+                defaultLeftSaber.AddComponent<DummySaber>();
 
                 // Right Saber
                 defaultRightSaber = Instantiate(saber).gameObject;
@@ -77,6 +77,7 @@ namespace CustomSaber.Utilities
                 defaultRightSaber.gameObject.name = "RightSaber";
                 defaultRightSaber.transform.localPosition = Vector3.zero;
                 defaultRightSaber.transform.localRotation = Quaternion.identity;
+                defaultRightSaber.AddComponent<DummySaber>();
 
                 Logger.log.Debug("Finished! Got default sabers! Setting active state");
 
