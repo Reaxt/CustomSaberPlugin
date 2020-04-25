@@ -122,6 +122,7 @@
     <Compile Include="Settings\UI\SettingsUI.cs" />
     <Compile Include="Settings\Utilities\PluginConfig.cs" />
     <Compile Include="Utilities\DefaultSaberGrabber.cs" />
+    <Compile Include="Utilities\DummySaber.cs" />
     <Compile Include="Utilities\SaberAssetLoader.cs" />
     <Compile Include="Utilities\SaberScript.cs" />
     <Compile Include="Utilities\Utils.cs" />
