@@ -84,6 +84,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 53c1908fb15e43a46933237b3c7936a9, type: 2}
   - {fileID: 2100000, guid: 3143870f908ec5341ac10b160a7af42f, type: 2}
@@ -112,7 +113,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1431200817413524}
-  m_Mesh: {fileID: 4300002, guid: 37957df1b7d30e443aedff551cd211df, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 0be170befdad1fa4da03405ad8c3dace, type: 3}
 --- !u!114 &114059280685970346
 MonoBehaviour:
   m_ObjectHideFlags: 1
