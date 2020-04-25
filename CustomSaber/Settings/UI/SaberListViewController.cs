@@ -169,11 +169,8 @@ namespace CustomSaber.Settings.UI
 
             try
             {
-
-                    controller.transform.Find("MenuHandle").gameObject.SetActive(false);
                 foreach (var controller in controllers)
                 {
-                    controller.transform.Find("MenuHandle").gameObject.SetActive(false);
                     if (controller?.node == XRNode.LeftHand)
                     {
                         leftSaber = sabers?.transform.Find("LeftSaber").gameObject;
@@ -206,6 +203,9 @@ namespace CustomSaber.Settings.UI
                         }
 
                         leftSaber.AddComponent<DummySaber>();
+
+                        controller.transform.Find("MenuHandle")?.gameObject.SetActive(false);
+                    }
                     else if (controller?.node == XRNode.RightHand)
                     {
                         rightSaber = sabers?.transform.Find("RightSaber").gameObject;
@@ -239,9 +239,11 @@ namespace CustomSaber.Settings.UI
 
                         rightSaber.AddComponent<DummySaber>();
 
+                        controller.transform.Find("MenuHandle")?.gameObject.SetActive(false);
                     }
                     if (leftSaber && rightSaber) break;
                 }
+                StartCoroutine(HideOrShowPointer());
             }
             finally
             {
