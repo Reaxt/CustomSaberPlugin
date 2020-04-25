@@ -57,7 +57,7 @@ namespace CustomSaber.Data
             }
         }
 
-        public CustomSaberData(Saber leftSaber, Saber rightSaber)
+        public CustomSaberData(GameObject leftSaber, GameObject rightSaber)
         {
             FileName = "DefaultSabers";
 

@@ -44,6 +44,9 @@ namespace CustomSaber.Settings.UI
             {
                 Logger.log.Error(ex);
             }
+
+            var grabber = new UnityEngine.GameObject("Default Saber Grabber").AddComponent<CustomSaber.Utilities.DefaultSaberGrabber>();
+            DontDestroyOnLoad(grabber);
         }
 
         protected override void BackButtonWasPressed(ViewController topViewController)

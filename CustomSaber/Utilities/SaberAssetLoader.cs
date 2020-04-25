@@ -16,6 +16,7 @@ namespace CustomSaber.Utilities
 
         internal static void Load()
         {
+            var startTime = System.DateTime.Now;
             if (!IsLoaded)
             {
                 Directory.CreateDirectory(Plugin.PluginAssetPath);
@@ -25,7 +26,7 @@ namespace CustomSaber.Utilities
                 Logger.log.Debug($"{CustomSaberFiles.Count()} external saber(s) found.");
 
                 CustomSabers = LoadCustomSabers(CustomSaberFiles);
-                Logger.log.Debug($"{CustomSabers.Count} total saber(s) loaded.");
+                Logger.log.Debug($"{CustomSabers.Count} total saber(s) loaded in {(DateTime.Now - startTime).TotalSeconds} seconds.");
 
                 if (Configuration.CurrentlySelectedSaber != null)
                 {

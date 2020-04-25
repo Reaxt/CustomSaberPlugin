@@ -1,9 +1,9 @@
 ﻿using CustomSaber.Data;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using IPA.Utilities;
 
 namespace CustomSaber.Utilities
 {
@@ -15,8 +15,14 @@ namespace CustomSaber.Utilities
     {
         public static bool isCompleted { get; private set; } = false;
 
+
+        public static GameObject defaultLeftSaber = null;
+        public static GameObject defaultRightSaber = null;
+        public static Xft.XWeaponTrail trail = null;
+
         private void Awake()
         {
+            DontDestroyOnLoad(this);
             if (!isCompleted)
             {
                 StartCoroutine(PreloadDefaultSabers());
@@ -30,54 +36,67 @@ namespace CustomSaber.Utilities
 
             try
             {
-                Saber defaultLeftSaber = null;
-                Saber defaultRightSaber = null;
-
                 Logger.log.Debug($"Loading {sceneName} scene");
-                SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+                var loadScene = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+
+                while (!loadScene.isDone) yield return null;
+
                 isSceneLoaded = true;
                 Logger.log.Debug("Loaded!");
 
                 yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Count() > 1);
+                BasicSaberModelController saber = Resources.FindObjectsOfTypeAll<BasicSaberModelController>().FirstOrDefault();
+                trail = saber.GetComponent<Xft.XWeaponTrail>();
 
                 Logger.log.Debug("Got sabers!");
 
-                IEnumerable<Saber> sabers = Resources.FindObjectsOfTypeAll<Saber>();
-                foreach (Saber saber in sabers)
-                {
-                    Logger.log.Debug($"Saber: {saber.name}, GameObj: {saber.gameObject.name}, {saber.ToString()}");
-                    if (saber.name == "LeftSaber")
-                    {
-                        defaultLeftSaber = Instantiate(saber);
-                    }
-                    else if (saber.name == "RightSaber")
-                    {
-                        defaultRightSaber = Instantiate(saber);
-                    }
-                }
+                Logger.log.Debug($"Saber: {saber.name}, GameObj: {saber.gameObject.name}, {saber.ToString()}");
+
+                // Left Saber
+                defaultLeftSaber = Instantiate(saber).gameObject;
+                DestroyImmediate(defaultLeftSaber.GetComponent<BasicSaberModelController>());
+                DestroyImmediate(defaultLeftSaber.GetComponentInChildren<ConditionalMaterialSwitcher>());
+                foreach (var c in defaultLeftSaber.GetComponentsInChildren<SetSaberGlowColor>())
+                    DestroyImmediate(c);
+
+                DontDestroyOnLoad(defaultLeftSaber);
+                defaultLeftSaber.transform.SetParent(this.transform);
+                defaultLeftSaber.gameObject.name = "LeftSaber";
+                defaultLeftSaber.transform.localPosition = Vector3.zero;
+                defaultLeftSaber.transform.localRotation = Quaternion.identity;
+
+                // Right Saber
+                defaultRightSaber = Instantiate(saber).gameObject;
+                DestroyImmediate(defaultRightSaber.GetComponent<BasicSaberModelController>());
+                DestroyImmediate(defaultRightSaber.GetComponentInChildren<ConditionalMaterialSwitcher>());
+                foreach (var c in defaultRightSaber.GetComponentsInChildren<SetSaberGlowColor>())
+                    DestroyImmediate(c);
+
+                DontDestroyOnLoad(defaultRightSaber);
+                defaultRightSaber.transform.SetParent(this.transform);
+                defaultRightSaber.gameObject.name = "RightSaber";
+                defaultRightSaber.transform.localPosition = Vector3.zero;
+                defaultRightSaber.transform.localRotation = Quaternion.identity;
 
                 Logger.log.Debug("Finished! Got default sabers! Setting active state");
 
                 if (defaultLeftSaber)
                 {
                     Logger.log.Debug("Found default left saber");
-                    defaultLeftSaber.gameObject.SetActive(false);
-                    //defaultLeftSaber.name = "___OriginalSaberPreviewB";
-                    //DontDestroyOnLoad(defaultLeftSaber.gameObject);
+                    defaultLeftSaber.SetActive(false);
+
                 }
 
                 if (defaultRightSaber)
                 {
                     Logger.log.Debug("Found default right saber");
-                    defaultRightSaber.gameObject.SetActive(false);
-                    //defaultRightSaber.name = "___OriginalSaberPreviewA";
-                    //DontDestroyOnLoad(defaultRightSaber.gameObject);
+                    defaultRightSaber.SetActive(false);
                 }
 
                 if (defaultLeftSaber && defaultRightSaber)
                 {
                     // Add them as the first Object in the list, replacing the empty version.
-                    CustomSaberData defaultSabers = new CustomSaberData(defaultLeftSaber, defaultRightSaber);
+                    CustomSaberData defaultSabers = new CustomSaberData(defaultLeftSaber.gameObject, defaultRightSaber.gameObject);
                     SaberAssetLoader.CustomSabers[0] = defaultSabers;
                     isCompleted = true;
                 }

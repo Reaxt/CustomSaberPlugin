@@ -4,7 +4,9 @@ using BeatSaberMarkupLanguage.ViewControllers;
 using CustomSaber.Data;
 using CustomSaber.Utilities;
 using HMUI;
+using IPA.Utilities;
 using System;
+using System.Collections;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -42,7 +44,7 @@ namespace CustomSaber.Settings.UI
             SaberAssetLoader.SelectedSaber = row;
             Configuration.CurrentlySelectedSaber = SaberAssetLoader.CustomSabers[row].FileName;
 
-            GenerateSaberPreview(row);
+            StartCoroutine(GenerateSaberPreview(row));
         }
 
         [UIAction("reloadSabers")]
@@ -96,7 +98,7 @@ namespace CustomSaber.Settings.UI
 
             if (!preview)
             {
-                preview = new GameObject();
+                preview = new GameObject("Preview");
                 preview.transform.position = new Vector3(2.2f, 1.3f, 1.0f);
                 preview.transform.Rotate(0.0f, 330.0f, 0.0f);
             }
@@ -110,10 +112,11 @@ namespace CustomSaber.Settings.UI
             ClearPreview();
         }
 
-        public void GenerateSaberPreview(int selectedSaber)
+        public IEnumerator GenerateSaberPreview(int selectedSaber)
         {
             if (!isGeneratingPreview)
             {
+                yield return new WaitUntil(() => DefaultSaberGrabber.isCompleted);
                 try
                 {
                     isGeneratingPreview = true;
@@ -146,6 +149,7 @@ namespace CustomSaber.Settings.UI
         private GameObject CreatePreviewSaber(GameObject saber, Transform transform, Vector3 localPosition)
         {
             var saberObject = InstantiateGameObject(saber, transform);
+            saberObject.name = "Preview Saber Object";
             PositionPreviewSaber(localPosition, saberObject);
             return saberObject;
         }
@@ -153,32 +157,42 @@ namespace CustomSaber.Settings.UI
         public void GenerateHandheldSaberPreview()
         {
             if (SaberAssetLoader.SelectedSaber == 0) return;
+            if (Environment.CommandLine.Contains("fpfc")) return;
             var customSaber = SaberAssetLoader.CustomSabers[SaberAssetLoader.SelectedSaber];
             var controllers = Resources.FindObjectsOfTypeAll<VRController>();
             var sabers = CreatePreviewSaber(customSaber.Sabers, preview.transform, sabersPos);
 
-            foreach (var controller in controllers)
+            try
             {
-                if (controller.node == XRNode.LeftHand)
-                {
-                    leftSaber = sabers?.transform.Find("LeftSaber").gameObject;
-
-                    leftSaber.transform.parent = controller.transform;
-                    leftSaber.transform.position = controller.transform.position;
-                    leftSaber.transform.rotation = controller.transform.rotation;
 
                     controller.transform.Find("MenuHandle").gameObject.SetActive(false);
-                }
-                else if (controller.node == XRNode.RightHand)
+                foreach (var controller in controllers)
                 {
-                    rightSaber = sabers?.transform.Find("RightSaber").gameObject;
-
-                    rightSaber.transform.parent = controller.transform;
-                    rightSaber.transform.position = controller.transform.position;
-                    rightSaber.transform.rotation = controller.transform.rotation;
-
                     controller.transform.Find("MenuHandle").gameObject.SetActive(false);
+                    if (controller?.node == XRNode.LeftHand)
+                    {
+                        leftSaber = sabers?.transform.Find("LeftSaber").gameObject;
+                        if (!leftSaber) continue;
+
+                        leftSaber.transform.parent = controller.transform;
+                        leftSaber.transform.position = controller.transform.position;
+                        leftSaber.transform.rotation = controller.transform.rotation;
+
+                        leftSaber.SetActive(true);
+                    else if (controller?.node == XRNode.RightHand)
+                    {
+                        rightSaber = sabers?.transform.Find("RightSaber").gameObject;
+                        if (!rightSaber) continue;
+
+                        rightSaber.transform.parent = controller.transform;
+                        rightSaber.transform.position = controller.transform.position;
+                        rightSaber.transform.rotation = controller.transform.rotation;
+
                 }
+            }
+            finally
+            {
+                DestroyGameObject(ref sabers);
             }
         }
 
@@ -231,7 +245,7 @@ namespace CustomSaber.Settings.UI
         {
             if (gameObject)
             {
-                Destroy(gameObject);
+                DestroyImmediate(gameObject);
                 gameObject = null;
             }
         }
