@@ -184,6 +184,28 @@ namespace CustomSaber.Settings.UI
                         leftSaber.transform.rotation = controller.transform.rotation;
 
                         leftSaber.SetActive(true);
+
+                        var trails = leftSaber.GetComponentsInChildren<CustomTrail>();
+
+                        if (trails == null || trails.Count() == 0)
+                        {
+                            var defaultTrail = Instantiate(DefaultSaberGrabber.defaultLeftSaber, leftSaber.transform);
+                            defaultTrail.SetActive(true);
+                            defaultTrail.transform.localPosition = Vector3.zero;
+                            defaultTrail.transform.localRotation = Quaternion.identity;
+                            defaultTrail.transform.Find("BasicSaber").gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            foreach (var trail in trails)
+                            {
+                                if (trail.Length < 2 || !trail.PointStart || !trail.PointEnd) continue;
+                                leftSaber.AddComponent<CustomWeaponTrail>().Init(ReflectionUtil.GetField<XWeaponTrailRenderer, Xft.XWeaponTrail>(DefaultSaberGrabber.trail, "_trailRendererPrefab"),
+                                    colorManager, trail.PointStart, trail.PointEnd, trail.TrailMaterial, trail.TrailColor, trail.Length, trail.MultiplierColor, trail.colorType);
+                            }
+                        }
+
+                        leftSaber.AddComponent<DummySaber>();
                     else if (controller?.node == XRNode.RightHand)
                     {
                         rightSaber = sabers?.transform.Find("RightSaber").gameObject;
@@ -193,6 +215,32 @@ namespace CustomSaber.Settings.UI
                         rightSaber.transform.position = controller.transform.position;
                         rightSaber.transform.rotation = controller.transform.rotation;
 
+                        rightSaber.SetActive(true);
+
+                        var trails = rightSaber.GetComponentsInChildren<CustomTrail>();
+
+                        if (trails == null || trails.Count() == 0)
+                        {
+                            var defaultTrail = Instantiate(DefaultSaberGrabber.defaultRightSaber, rightSaber.transform);
+                            defaultTrail.SetActive(true);
+                            defaultTrail.transform.localPosition = Vector3.zero;
+                            defaultTrail.transform.localRotation = Quaternion.identity;
+                            defaultTrail.transform.Find("BasicSaber").gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            foreach (var trail in trails)
+                            {
+                                if (trail.Length < 2 || !trail.PointStart || !trail.PointEnd) continue;
+                                rightSaber.AddComponent<CustomWeaponTrail>().Init(ReflectionUtil.GetField<XWeaponTrailRenderer, Xft.XWeaponTrail>(DefaultSaberGrabber.trail, "_trailRendererPrefab"),
+                                    colorManager, trail.PointStart, trail.PointEnd, trail.TrailMaterial, trail.TrailColor, trail.Length, trail.MultiplierColor, trail.colorType);
+                            }
+                        }
+
+                        rightSaber.AddComponent<DummySaber>();
+
+                    }
+                    if (leftSaber && rightSaber) break;
                 }
             }
             finally
@@ -238,12 +286,23 @@ namespace CustomSaber.Settings.UI
             DestroyGameObject(ref rightSaber);
         }
 
+        float initialSize = -1;
+        VRUIControls.VRPointer pointer = null;
+        IEnumerator HideOrShowPointer(bool enable = false)
+        {
+            yield return new WaitUntil(() => pointer = Resources.FindObjectsOfTypeAll<VRUIControls.VRPointer>().FirstOrDefault());
+            if (initialSize == -1) initialSize = ReflectionUtil.GetField<float, VRUIControls.VRPointer>(pointer, "_laserPointerWidth");
+            pointer.SetField("_laserPointerWidth", enable ? initialSize : 0f);
+        }
+
         public void ShowMenuHandles()
         {
             foreach (var controller in Resources.FindObjectsOfTypeAll<VRController>())
             {
-                controller.transform.Find("MenuHandle").gameObject.SetActive(true);
+                controller.transform?.Find("MenuHandle")?.gameObject?.SetActive(true);
             }
+
+            StartCoroutine(HideOrShowPointer(true));
         }
 
         private void DestroyGameObject(ref GameObject gameObject)
