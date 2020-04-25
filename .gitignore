@@ -53,3 +53,8 @@ bld/
 # We would prefer not to distribute these files, as they are
 # paid assets from the Unity store. Buy them you greedy mushroom!
 */Dynamic Bones/*.cs
+
+# Unity Project Files #
+#######################
+/UnityProject/Library/*
+/UnityProject/Temp/*
