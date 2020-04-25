@@ -1,12 +1,13 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "BeatSaber/Unlit Glow"
+Shader "BeatSaber/Unlit Glow (glowmap)"
 {
 	Properties
 	{
 		_Color ("Color", Color) = (1,1,1,1)
 		[MaterialToggle] _CustomColors("Custom Colors", Float) = 0
 		_MainTex ("Texture", 2D) = "white" {}
+		_GlowMap ("Glow Map", 2D) = "white" {}
 		_Glow ("Glow", Range (0, 1)) = 0
 	}
 	SubShader
@@ -41,7 +42,9 @@ Shader "BeatSaber/Unlit Glow"
 			float _Glow;
 
 			sampler2D _MainTex;
+			sampler2D _GlowMap;
 			float4 _MainTex_ST;
+			float4 _GlowMap_ST;
 			
 			v2f vert (appdata v)
 			{
@@ -56,8 +59,8 @@ Shader "BeatSaber/Unlit Glow"
 			{
 				// sample the texture
 				fixed4 col = _Color * tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
-
-				return col * float4(1.0,1.0,1.0,_Glow) * i.color;
+				float glow = _Glow * tex2D(_GlowMap, TRANSFORM_TEX(i.uv, _GlowMap).r);
+				return col * float4(1.0,1.0,1.0,glow);
 			}
 			ENDCG
 		}

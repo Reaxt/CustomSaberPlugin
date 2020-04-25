@@ -1,12 +1,13 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "BeatSaber/Unlit Glow"
+Shader "BeatSaber/Unlit Animated Gradient"
 {
 	Properties
 	{
-		_Color ("Color", Color) = (1,1,1,1)
-		[MaterialToggle] _CustomColors("Custom Colors", Float) = 0
-		_MainTex ("Texture", 2D) = "white" {}
+		_MainTex("Texture", 2D) = "white" {}
+		_Gradient ("Gradient texture", 
+		2D) = "white" {}
+		_Speed ("Speed", Float) = 1
 		_Glow ("Glow", Range (0, 1)) = 0
 	}
 	SubShader
@@ -37,11 +38,12 @@ Shader "BeatSaber/Unlit Glow"
 				half4 color : COLOR;
 			};
 
-			float4 _Color;
+			float _Speed;
 			float _Glow;
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
+			sampler2D _Gradient;
 			
 			v2f vert (appdata v)
 			{
@@ -55,7 +57,7 @@ Shader "BeatSaber/Unlit Glow"
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// sample the texture
-				fixed4 col = _Color * tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
+				fixed4 col = tex2D(_Gradient,float2(_Time.y * _Speed,0.0)) * tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
 
 				return col * float4(1.0,1.0,1.0,_Glow) * i.color;
 			}

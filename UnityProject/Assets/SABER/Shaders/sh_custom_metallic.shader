@@ -5,7 +5,8 @@ Shader "BeatSaber/Metallic"
 	Properties
 	{
 		_Color ("Color", Color) = (1,1,1,1)
-		_Tex ("Reflection Texture", 2D) = "white" {}
+		[MaterialToggle] _CustomColors("Custom Colors", Float) = 0
+		_MainTex("Reflection Texture", 2D) = "white" {}
 	}
 	SubShader
 	{
@@ -41,7 +42,7 @@ Shader "BeatSaber/Metallic"
 			};
 
 			float4 _Color;
-			sampler2D _Tex;
+			sampler2D _MainTex;
 			
 			v2f vert (appdata v)
 			{
@@ -58,7 +59,7 @@ Shader "BeatSaber/Metallic"
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// sample the texture
-				fixed4 col = _Color * (pow(tex2D(_Tex, float2(dot(i.normal.xyz,i.viewDir.xyz),dot(i.normal.xzy,i.viewDir.zyx))).r,10.0)*2.0);
+				fixed4 col = _Color * (pow(tex2D(_MainTex, float2(dot(i.normal.xyz,i.viewDir.xyz),dot(i.normal.xzy,i.viewDir.zyx))).r,10.0)*2.0);
 
 				// apply fog
 				UNITY_APPLY_FOG(i.fogCoord, col);

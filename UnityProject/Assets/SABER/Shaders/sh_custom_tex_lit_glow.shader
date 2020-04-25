@@ -1,15 +1,17 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "BeatSaber/Lit Glow"
+Shader "BeatSaber/Tex Lit-Unlit Glow"
 {
 	Properties
 	{
-		_Color ("Color", Color) = (1,1,1,1)
+		_Color("Color", Color) = (1,1,1,1)
 		[MaterialToggle] _CustomColors("Custom Colors", Float) = 0
-		_MainTex ("Texture", 2D) = "white" {}
-		_Glow ("Glow", Range (0, 1)) = 0
-		_Ambient ("Ambient Lighting", Range (0, 1)) = 0
-		_LightDir ("Light Direction", Vector) = (-1,-1,0,1)
+		_MainTex("Texture", 2D) = "white" {}
+		_Ambient("Ambient Lighting", Range(0, 1)) = 0
+		_LightDir("Light Direction", Vector) = (-1,-1,0,1)
+		_GlowColor ("Glow Color", Color) = (1,1,1,1)
+		_Cutout("Cutout", Range(0, 1)) = 0.5
+		_Glow("Glow", Range(0, 2)) = 0
 	}
 	SubShader
 	{
@@ -19,6 +21,7 @@ Shader "BeatSaber/Lit Glow"
 		Pass
 		{
 			CGPROGRAM
+
 			#pragma vertex vert
 			#pragma fragment frag
 			// make fog work
@@ -29,6 +32,7 @@ Shader "BeatSaber/Lit Glow"
 			struct appdata
 			{
 				float4 vertex : POSITION;
+				fixed4 color : COLOR;
 				float2 uv : TEXCOORD0;
 				float3 normal : NORMAL;
 			};
@@ -36,7 +40,9 @@ Shader "BeatSaber/Lit Glow"
 			struct v2f
 			{
 				float2 uv : TEXCOORD0;
+				UNITY_FOG_COORDS(1)
 				float4 vertex : SV_POSITION;
+				half4 color : COLOR;
 				float4 worldPos : TEXCOORD1;
 				float3 viewDir : TEXCOORD2;
 				float3 normal : NORMAL;
@@ -44,20 +50,24 @@ Shader "BeatSaber/Lit Glow"
 
 			float4 _Color;
 			float _Glow;
+			sampler2D _MainTex;
+			float _Cutout;
+			float4 _MainTex_ST;
+
+			float4 _GlowColor;
 			float _Ambient;
 			float4 _LightDir;
-
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
 			
 			v2f vert (appdata v)
 			{
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = v.uv;
+				o.color = v.color;
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex);
 				o.viewDir = normalize(UnityWorldSpaceViewDir(o.worldPos));
 				o.normal = UnityObjectToWorldNormal(v.normal);
+				UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
 			}
 			
@@ -68,9 +78,18 @@ Shader "BeatSaber/Lit Glow"
 				// sample the texture
 				fixed4 col = _Color * tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
 
-				col = col * clamp(col * _Ambient + shadow,0.0,1.0);
+				fixed cmax = max(max(col.x, col.y), col.z);
 
-				return col * float4(1.0,1.0,1.0,_Glow);
+				col = col * clamp(col * _Ambient + shadow,0.0,1.0);
+				col.a = 0.0;
+				
+				if (cmax > _Cutout) {
+					// sample the color
+					col = _GlowColor;
+					col.a = col.a * _Glow;
+				}
+
+				return col * i.color;
 			}
 			ENDCG
 		}
