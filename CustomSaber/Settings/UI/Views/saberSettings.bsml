@@ -17,6 +17,8 @@
                         hover-hint='Select random sabers for each map' />
       <checkbox-setting text='Show Sabers in Menu' value='sabers-in-menu'  apply-on-change='true'
                         hover-hint='(Only in Custom Saber menu)' on-change='sabers-in-menu-changed' />
+      <slider-setting text='Saber Width' value='saber-width-adjust' min='0' max='2' increment='.1' apply-on-change='true' formatter='percent-formatter'
+                      hover-hint='Increase or Decrease width of sabers (does not affect hitbox)' />
     </vertical>
   </tab>
 

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 using IPA.Utilities;
+using CustomSaber.Settings;
 
 namespace CustomSaber.Utilities
 {
@@ -34,6 +35,8 @@ namespace CustomSaber.Utilities
             }
             var trails = gameObject.GetComponentsInChildren<Xft.XWeaponTrail>();
             foreach (var trail in trails) trail.color = color;
+
+            transform.localScale = new Vector3 (Configuration.SaberWidthAdjust, Configuration.SaberWidthAdjust, 1);
         }
 
         private ColorScheme GetDefaultColorScheme()

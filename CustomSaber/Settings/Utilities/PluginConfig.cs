@@ -11,5 +11,6 @@
         public bool showSabersInSaberMenu = false;
         public bool overrideCustomTrailLength = false;
         public float trailLength = 1f;
+        public float saberWidthAdjust = 1f;
     }
 }

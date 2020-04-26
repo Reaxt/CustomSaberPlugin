@@ -70,6 +70,13 @@ namespace CustomSaber.Settings.UI
             set => Configuration.TrailLength = value;
         }
 
+        [UIValue("saber-width-adjust")]
+        public float SaberWidthAdjust
+        {
+            get => Configuration.SaberWidthAdjust;
+            set => Configuration.SaberWidthAdjust = value;
+        }
+
         [UIAction("percent-formatter")]
         public string OnFormatPercent(float obj) => $"{obj * 100}%";
     }

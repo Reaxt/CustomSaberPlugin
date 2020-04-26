@@ -317,6 +317,7 @@ namespace CustomSaber.Utilities
                     }
 
                     ApplyColorsToSaber(saber, colorManager.ColorForSaberType(defaultSaber.saberType));
+                    ApplyScaleToSabers();
                 }
             }
         }
@@ -331,6 +332,12 @@ namespace CustomSaber.Utilities
                 return;
             }
             ReflectionUtil.SetField(trail, "_maxFrame", length);
+        }
+
+        void ApplyScaleToSabers()
+        {
+            leftSaber.transform.localScale = new Vector3(Configuration.SaberWidthAdjust, Configuration.SaberWidthAdjust, 1);
+            rightSaber.transform.localScale = new Vector3(Configuration.SaberWidthAdjust, Configuration.SaberWidthAdjust, 1);
         }
 
         public static void ApplyColorsToSaber(GameObject saber, Color color)
