@@ -196,6 +196,7 @@ namespace CustomSaber.Settings.UI
                         {
                             foreach (var trail in trails)
                             {
+                                trail.Length = (Configuration.OverrideTrailLength) ? (int) (trail.Length * Configuration.TrailLength) : trail.Length;
                                 if (trail.Length < 2 || !trail.PointStart || !trail.PointEnd) continue;
                                 leftSaber.AddComponent<CustomWeaponTrail>().Init(ReflectionUtil.GetField<XWeaponTrailRenderer, Xft.XWeaponTrail>(DefaultSaberGrabber.trail, "_trailRendererPrefab"),
                                     colorManager, trail.PointStart, trail.PointEnd, trail.TrailMaterial, trail.TrailColor, trail.Length, trail.MultiplierColor, trail.colorType);
@@ -231,6 +232,7 @@ namespace CustomSaber.Settings.UI
                         {
                             foreach (var trail in trails)
                             {
+                                trail.Length = (Configuration.OverrideTrailLength) ? (int)(trail.Length * Configuration.TrailLength) : trail.Length;
                                 if (trail.Length < 2 || !trail.PointStart || !trail.PointEnd) continue;
                                 rightSaber.AddComponent<CustomWeaponTrail>().Init(ReflectionUtil.GetField<XWeaponTrailRenderer, Xft.XWeaponTrail>(DefaultSaberGrabber.trail, "_trailRendererPrefab"),
                                     colorManager, trail.PointStart, trail.PointEnd, trail.TrailMaterial, trail.TrailColor, trail.Length, trail.MultiplierColor, trail.colorType);
