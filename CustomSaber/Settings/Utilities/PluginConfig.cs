@@ -9,5 +9,7 @@
         public bool customEventsEnabled = true;
         public bool randomSabersEnabled = false;
         public bool showSabersInSaberMenu = false;
+        public bool overrideCustomTrailLength = false;
+        public float trailLength = 1f;
     }
 }

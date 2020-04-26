@@ -55,5 +55,22 @@ namespace CustomSaber.Settings.UI
                 SaberListViewController.Instance?.ShowMenuHandles();
             }
         }
+
+        [UIValue("override-trail-length")]
+        public bool OverrideTrailLength
+        {
+            get => Configuration.OverrideTrailLength;
+            set => Configuration.OverrideTrailLength = value;
+        }
+
+        [UIValue("trail-length")]
+        public float TrailLength
+        {
+            get => Configuration.TrailLength;
+            set => Configuration.TrailLength = value;
+        }
+
+        [UIAction("percent-formatter")]
+        public string OnFormatPercent(float obj) => $"{obj * 100}%";
     }
 }

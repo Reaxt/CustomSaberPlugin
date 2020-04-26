@@ -298,15 +298,39 @@ namespace CustomSaber.Utilities
                     if (Configuration.TrailType == TrailType.Custom)
                     {
                         IEnumerable<CustomTrail> customTrails = saber.GetComponents<CustomTrail>();
-                        foreach (CustomTrail trail in customTrails)
+
+                        if (customTrails.Count() == 0 && Configuration.OverrideTrailLength)
                         {
-                            trail.Init(defaultSaber, colorManager);
+                            SetDefaultTrailLength(defaultSaber);
                         }
+                        else
+                        {
+                            foreach (CustomTrail trail in customTrails)
+                            {
+                                trail.Init(defaultSaber, colorManager);
+                            }
+                        }
+                    }
+                    else if (Configuration.TrailType == TrailType.Vanilla && Configuration.OverrideTrailLength)
+                    {
+                        SetDefaultTrailLength(defaultSaber);
                     }
 
                     ApplyColorsToSaber(saber, colorManager.ColorForSaberType(defaultSaber.saberType));
                 }
             }
+        }
+
+        void SetDefaultTrailLength(Saber saber)
+        {
+            var trail = saber.GetComponentInChildren<XWeaponTrail>();
+            int length = (int)(Configuration.TrailLength * 30);
+            if (length < 2)
+            {
+                HideVanillaTrails();
+                return;
+            }
+            ReflectionUtil.SetField(trail, "_maxFrame", length);
         }
 
         public static void ApplyColorsToSaber(GameObject saber, Color color)

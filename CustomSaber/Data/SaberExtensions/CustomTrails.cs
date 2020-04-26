@@ -72,6 +72,8 @@ namespace CustomSaber
                     throw;
                 }
 
+                if (Configuration.OverrideTrailLength) Length = (int) (Length * Configuration.TrailLength);
+
                 if (Length > 1)
                 {
                     trail = gameObject.AddComponent<CustomWeaponTrail>();
