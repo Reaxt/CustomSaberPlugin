@@ -56,6 +56,13 @@ namespace CustomSaber.Settings.UI
             }
         }
 
+        [UIValue("disable-whitestep")]
+        public bool DisableWhitestep
+        {
+            get => Configuration.DisableWhitestep;
+            set => Configuration.DisableWhitestep = value;
+        }
+
         [UIValue("override-trail-length")]
         public bool OverrideTrailLength
         {

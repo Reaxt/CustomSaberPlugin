@@ -58,6 +58,7 @@ namespace CustomSaber.Utilities
         {
             base.Start();
             ReflectionUtil.GetField<MeshRenderer, XWeaponTrailRenderer>(_trailRenderer, "_meshRenderer").material = _customMaterial;
+            if (Settings.Configuration.DisableWhitestep) ReflectionUtil.SetField<XWeaponTrail, int>(this, "_whiteSteps", 0);
         }
 
         public void SetColor(Color newColor)

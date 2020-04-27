@@ -16,6 +16,7 @@ namespace CustomSaber.Settings
         public static bool OverrideTrailLength { get; internal set; }
         public static float TrailLength { get; internal set; }
         public static float SaberWidthAdjust { get; internal set; }
+        public static bool DisableWhitestep { get; internal set; }
 
         internal static void Init(Config config)
         {
@@ -32,6 +33,7 @@ namespace CustomSaber.Settings
             OverrideTrailLength = PluginConfig.Instance.overrideCustomTrailLength;
             TrailLength = PluginConfig.Instance.trailLength;
             SaberWidthAdjust = PluginConfig.Instance.saberWidthAdjust;
+            DisableWhitestep = PluginConfig.Instance.disableWhitestep;
         }
 
         internal static void Save()
@@ -44,6 +46,7 @@ namespace CustomSaber.Settings
             PluginConfig.Instance.overrideCustomTrailLength = OverrideTrailLength;
             PluginConfig.Instance.trailLength = TrailLength;
             PluginConfig.Instance.saberWidthAdjust = SaberWidthAdjust;
+            PluginConfig.Instance.disableWhitestep = DisableWhitestep;
         }
     }
 }

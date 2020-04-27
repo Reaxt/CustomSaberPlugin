@@ -26,6 +26,8 @@
     <tab tags='settings-tab' tab-name='Trails' >
       <vertical pad='10' pad-top='5' child-control-height='false' child-expand-height='false'>
         <list-setting text='Saber Trail' value='trail-type' options='trail-type-list' apply-on-change='true'
+                        hover-hint='Select the type of trail to use'/>
+        <checkbox-setting text='Disable Whitestep' value='disable-whitestep' apply-on-change='true'
                           hover-hint='Toggles the initial white part of trails' />
         <checkbox-setting text='Override Custom Trail Length' value='override-trail-length' apply-on-change='true'
                           hover-hint='Override the length of trails' />
