@@ -1,35 +1,41 @@
-﻿<vertical xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd' child-control-height='false' child-expand-height='false'>
-  <vertical child-control-height='false'>
-    <horizontal bg='panel-top' pad-left='10' pad-right='10'>
-      <text text='Saber Settings' align='Center' font-size='7' />
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+  <vertical xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd' child-control-height='false' child-expand-height='false'>
+    <vertical child-control-height='false'>
+      <horizontal bg='panel-top' pad-left='10' pad-right='10'>
+        <text text='Saber Settings' align='Center' font-size='7' />
+      </horizontal>
+    </vertical>
+
+    <horizontal pad-top='12'>
+      <tab-selector tab-tag='settings-tab' />
     </horizontal>
+
+    <tab tags='settings-tab' tab-name='Main Settings' >
+      <vertical pad='10' pad-top='5' child-control-height='false' child-expand-height='false'>
+        <checkbox-setting text='Enable custom events' value='custom-events-enabled' apply-on-change='true'
+                          hover-hint='Enable custom events for supported sabers'/>
+        <checkbox-setting text='Enable random sabers' value='random-sabers-enabled'  apply-on-change='true'
+                          hover-hint='Select random sabers for each map' />
+        <checkbox-setting text='Show Sabers in Menu' value='sabers-in-menu'  apply-on-change='true'
+                          hover-hint='(Only in Custom Saber menu)' on-change='sabers-in-menu-changed' />
+        <slider-setting text='Saber Width' value='saber-width-adjust' min='0' max='2' increment='.1' apply-on-change='true' formatter='percent-formatter'
+                        hover-hint='Increase or Decrease width of sabers (does not affect hitbox)' />
+      </vertical>
+    </tab>
+
+    <tab tags='settings-tab' tab-name='Trails' >
+      <vertical pad='10' pad-top='5' child-control-height='false' child-expand-height='false'>
+        <list-setting text='Saber Trail' value='trail-type' options='trail-type-list' apply-on-change='true'
+                          hover-hint='Toggles the initial white part of trails' />
+        <checkbox-setting text='Override Custom Trail Length' value='override-trail-length' apply-on-change='true'
+                          hover-hint='Override the length of trails' />
+        <slider-setting text='Trail Length' value='trail-length' min='0' max='3' increment='.01' apply-on-change='true' formatter='percent-formatter'
+                          hover-hint='Percentage to increase trail length by' />
+      </vertical>
+    </tab>
+    
   </vertical>
-
-  <horizontal pad-top='12'>
-    <tab-selector tab-tag='settings-tab' />
-  </horizontal>
-
-  <tab tags='settings-tab' tab-name='Main Settings' >
-    <vertical pad='10' pad-top='5' child-control-height='false' child-expand-height='false'>
-      <checkbox-setting text='Enable custom events' value='custom-events-enabled' apply-on-change='true'
-                        hover-hint='Enable custom events for supported sabers'/>
-      <checkbox-setting text='Enable random sabers' value='random-sabers-enabled'  apply-on-change='true'
-                        hover-hint='Select random sabers for each map' />
-      <checkbox-setting text='Show Sabers in Menu' value='sabers-in-menu'  apply-on-change='true'
-                        hover-hint='(Only in Custom Saber menu)' on-change='sabers-in-menu-changed' />
-      <slider-setting text='Saber Width' value='saber-width-adjust' min='0' max='2' increment='.1' apply-on-change='true' formatter='percent-formatter'
-                      hover-hint='Increase or Decrease width of sabers (does not affect hitbox)' />
-    </vertical>
-  </tab>
-
-  <tab tags='settings-tab' tab-name='Trails' >
-    <vertical pad='10' pad-top='5' child-control-height='false' child-expand-height='false'>
-      <list-setting text='Saber Trail' value='trail-type' options='trail-type-list' apply-on-change='true'
-                      hover-hint='Select the type of trail to use'/>
-    <checkbox-setting text='Override Custom Trail Length' value='override-trail-length' apply-on-change='true' 
-                      hover-hint='Override the length of trails' />
-    <slider-setting text='Trail Length' value='trail-length' min='0' max='3' increment='.01' apply-on-change='true' formatter='percent-formatter'
-                      hover-hint='Percentage to increase trail length by' />
-    </vertical>
-  </tab>
-</vertical>
+  <vertical child-control-height='false' pad-top='68' >
+    <button text='Refresh Previews' on-click='refreshPreview' />
+  </vertical>
+</bg>

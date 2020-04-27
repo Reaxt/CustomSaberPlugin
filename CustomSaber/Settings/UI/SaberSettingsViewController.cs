@@ -79,5 +79,11 @@ namespace CustomSaber.Settings.UI
 
         [UIAction("percent-formatter")]
         public string OnFormatPercent(float obj) => $"{obj * 100}%";
+
+        [UIAction("refreshPreview")]
+        public void RefreshPreview()
+        {
+            StartCoroutine(SaberListViewController.Instance.GenerateSaberPreview(SaberAssetLoader.SelectedSaber));
+        }
     }
 }
