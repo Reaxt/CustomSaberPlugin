@@ -43,6 +43,7 @@ namespace CustomSaber.Settings.UI
         {
             SaberAssetLoader.SelectedSaber = row;
             Configuration.CurrentlySelectedSaber = SaberAssetLoader.CustomSabers[row].FileName;
+            customSaberChanged?.Invoke(SaberAssetLoader.CustomSabers[row]);
 
             StartCoroutine(GenerateSaberPreview(row));
         }
@@ -125,7 +126,6 @@ namespace CustomSaber.Settings.UI
                     var customSaber = SaberAssetLoader.CustomSabers[selectedSaber];
                     if (customSaber != null)
                     {
-                        customSaberChanged?.Invoke(customSaber);
 
                         previewSabers = CreatePreviewSaber(customSaber.Sabers, preview.transform, sabersPos);
                         PositionPreviewSaber(saberLeftPos, previewSabers?.transform.Find("LeftSaber").gameObject);

@@ -14,6 +14,8 @@ namespace CustomSaber.Utilities
         public static IList<CustomSaberData> CustomSabers { get; private set; } = new List<CustomSaberData>();
         public static IEnumerable<string> CustomSaberFiles { get; private set; } = Enumerable.Empty<string>();
 
+        public static Action customSabersReloaded;
+
         internal static void Load()
         {
             var startTime = System.DateTime.Now;
@@ -52,6 +54,7 @@ namespace CustomSaber.Utilities
             Logger.log.Debug("Reloading the SaberAssetLoader");
             Clear();
             Load();
+            customSabersReloaded?.Invoke();
         }
 
         /// <summary>
