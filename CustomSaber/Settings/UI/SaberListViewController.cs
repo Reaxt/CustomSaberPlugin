@@ -153,6 +153,7 @@ namespace CustomSaber.Settings.UI
 
         private GameObject CreatePreviewSaber(GameObject saber, Transform transform, Vector3 localPosition)
         {
+            if (!saber) return null;
             var saberObject = InstantiateGameObject(saber, transform);
             saberObject.name = "Preview Saber Object";
             PositionPreviewSaber(localPosition, saberObject);
@@ -163,6 +164,7 @@ namespace CustomSaber.Settings.UI
         {
             if (Environment.CommandLine.Contains("fpfc")) return;
             var customSaber = SaberAssetLoader.CustomSabers[SaberAssetLoader.SelectedSaber];
+            if (customSaber == null || !customSaber.Sabers) return;
             var controllers = Resources.FindObjectsOfTypeAll<VRController>();
             var sabers = CreatePreviewSaber(customSaber.Sabers, preview.transform, sabersPos);
             var colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().First();
@@ -199,7 +201,7 @@ namespace CustomSaber.Settings.UI
                                 trail.Length = (Configuration.OverrideTrailLength) ? (int) (trail.Length * Configuration.TrailLength) : trail.Length;
                                 if (trail.Length < 2 || !trail.PointStart || !trail.PointEnd) continue;
                                 leftSaber.AddComponent<CustomWeaponTrail>().Init(ReflectionUtil.GetField<XWeaponTrailRenderer, Xft.XWeaponTrail>(DefaultSaberGrabber.trail, "_trailRendererPrefab"),
-                                    colorManager, trail.PointStart, trail.PointEnd, trail.TrailMaterial, trail.TrailColor, trail.Length, trail.MultiplierColor, trail.colorType);
+                                    colorManager, trail.PointStart, trail.PointEnd, trail.TrailMaterial, trail.TrailColor, trail.Length, trail.Granularity, trail.MultiplierColor, trail.colorType);
                             }
                         }
 
@@ -235,7 +237,7 @@ namespace CustomSaber.Settings.UI
                                 trail.Length = (Configuration.OverrideTrailLength) ? (int)(trail.Length * Configuration.TrailLength) : trail.Length;
                                 if (trail.Length < 2 || !trail.PointStart || !trail.PointEnd) continue;
                                 rightSaber.AddComponent<CustomWeaponTrail>().Init(ReflectionUtil.GetField<XWeaponTrailRenderer, Xft.XWeaponTrail>(DefaultSaberGrabber.trail, "_trailRendererPrefab"),
-                                    colorManager, trail.PointStart, trail.PointEnd, trail.TrailMaterial, trail.TrailColor, trail.Length, trail.MultiplierColor, trail.colorType);
+                                    colorManager, trail.PointStart, trail.PointEnd, trail.TrailMaterial, trail.TrailColor, trail.Length, trail.Granularity, trail.MultiplierColor, trail.colorType);
                             }
                         }
 
@@ -246,6 +248,10 @@ namespace CustomSaber.Settings.UI
                     if (leftSaber && rightSaber) break;
                 }
                 StartCoroutine(HideOrShowPointer());
+            }
+            catch(Exception e)
+            {
+                Logger.log.Error($"Error generating saber preview\n{e.Message} - {e.StackTrace}");
             }
             finally
             {
