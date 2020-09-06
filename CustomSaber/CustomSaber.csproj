@@ -106,6 +106,10 @@
     <Compile Include="Data\SaberExtensions\AccuracyReachedEvent.cs" />
     <Compile Include="Data\SaberExtensions\ComboReachedEvent.cs" />
     <Compile Include="Data\SaberExtensions\CustomTrails.cs" />
+    <Compile Include="Dynamic Bones\DynamicBone.cs" />
+    <Compile Include="Dynamic Bones\DynamicBoneCollider.cs" />
+    <Compile Include="Dynamic Bones\DynamicBoneColliderBase.cs" />
+    <Compile Include="Dynamic Bones\DynamicBonePlaneCollider.cs" />
     <Compile Include="Settings\UI\SaberSettingsViewController.cs" />
     <Compile Include="Utilities\CustomWeaponTrail.cs" />
     <Compile Include="Data\SaberExtensions\EventFilterBehaviour.cs" />
