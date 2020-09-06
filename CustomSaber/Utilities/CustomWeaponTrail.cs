@@ -40,7 +40,7 @@ namespace CustomSaber.Utilities
             }
         }
 
-        public void Init(XWeaponTrailRenderer TrailRendererPrefab, ColorManager colorManager, Transform PointStart, Transform PointEnd, Material TrailMaterial, Color TrailColor, int Length, Color multiplierSaberColor, ColorType colorType)
+        public void Init(XWeaponTrailRenderer TrailRendererPrefab, ColorManager colorManager, Transform PointStart, Transform PointEnd, Material TrailMaterial, Color TrailColor, int Length, int Granularity, Color multiplierSaberColor, ColorType colorType)
         {
             _colorManager = colorManager;
             _multiplierSaberColor = multiplierSaberColor;
@@ -51,6 +51,8 @@ namespace CustomSaber.Utilities
             _pointStart = PointStart;
             _pointEnd = PointEnd;
             _maxFrame = Length;
+            Logger.log.Info($"Granularity: {_granularity}");
+            _granularity = Granularity;
             _trailRendererPrefab = TrailRendererPrefab;
         }
 

@@ -29,6 +29,7 @@ namespace CustomSaber
         public Color TrailColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         public Color MultiplierColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
         public int Length = 20;
+        public int Granularity = 60;
 
 #if PLUGIN
         private CustomWeaponTrail trail;
@@ -72,13 +73,19 @@ namespace CustomSaber
                     throw;
                 }
 
-                if (Configuration.OverrideTrailLength) Length = (int) (Length * Configuration.TrailLength);
+                if (Configuration.OverrideTrailLength)
+                {
+                    Length = (int)(Length * Configuration.TrailLength);
+                    Granularity = (int)(Granularity * Configuration.TrailLength);
+                }
 
                 if (Length > 1)
                 {
                     trail = gameObject.AddComponent<CustomWeaponTrail>();
-                    trail.Init(oldTrailRendererPrefab, colorManager, PointStart, PointEnd, TrailMaterial, TrailColor, Length, MultiplierColor, colorType);
+                    trail.Init(oldTrailRendererPrefab, colorManager, PointStart, PointEnd, TrailMaterial, TrailColor, Length, Granularity, MultiplierColor, colorType);
                 }
+
+                //if (Configuration.OverrideTrailLength) SetGranularity((int)(trail.GetField<int, CustomWeaponTrail>("_granularity") * Configuration.TrailLength));
             }
             else
             {
@@ -102,6 +109,12 @@ namespace CustomSaber
         {
             TrailColor = newColor;
             trail.SetColor(newColor);
+        }
+
+        public void SetGranularity(int granularity)
+        {
+            ReflectionUtil.SetProperty<CustomWeaponTrail, int>(trail, "_granularity", granularity);
+            Logger.log.Info($"granularity: {trail.GetField<int, CustomWeaponTrail>("_granularity").ToString()}");
         }
 #endif
     }
