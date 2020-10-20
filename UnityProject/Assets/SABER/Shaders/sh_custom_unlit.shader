@@ -5,7 +5,8 @@ Shader "BeatSaber/Unlit Glow"
 	Properties
 	{
 		_Color ("Color", Color) = (1,1,1,1)
-		_Tex ("Texture", 2D) = "white" {}
+		[MaterialToggle] _CustomColors("Custom Colors", Float) = 0
+		_MainTex ("Texture", 2D) = "white" {}
 		_Glow ("Glow", Range (0, 1)) = 0
 	}
 	SubShader
@@ -39,8 +40,8 @@ Shader "BeatSaber/Unlit Glow"
 			float4 _Color;
 			float _Glow;
 
-			sampler2D _Tex;
-			float4 _Tex_ST;
+			sampler2D _MainTex;
+			float4 _MainTex_ST;
 			
 			v2f vert (appdata v)
 			{
@@ -54,7 +55,7 @@ Shader "BeatSaber/Unlit Glow"
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// sample the texture
-				fixed4 col = _Color * tex2D(_Tex, TRANSFORM_TEX(i.uv, _Tex));
+				fixed4 col = _Color * tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
 
 				return col * float4(1.0,1.0,1.0,_Glow) * i.color;
 			}

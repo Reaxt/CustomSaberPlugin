@@ -1,167 +1,69 @@
-﻿using IPA;
+﻿using CustomSaber.Settings;
+using CustomSaber.Settings.UI;
+using CustomSaber.Utilities;
+using IPA;
+using IPA.Config;
 using IPA.Loader;
-using System.Collections;
-using System.Collections.Generic;
+using IPA.Utilities;
 using System.IO;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using IPALogger = IPA.Logging.Logger;
+
 namespace CustomSaber
 {
-    public class Plugin : IBeatSaberPlugin
+    [Plugin(RuntimeOptions.SingleStartInit)]
+    public class Plugin
     {
         public static string PluginName => "Custom Sabers";
-        public static string PluginVersion { get; private set; } = "0"; // Default. Actual version is retrieved from the manifest
+        public static SemVer.Version PluginVersion { get; private set; } = new SemVer.Version("0.0.0"); // Default.
+        public static string PluginAssetPath => Path.Combine(UnityGame.InstallPath, "CustomSabers");
 
-        private static List<string> _saberPaths;
-        public static string _currentSaberName;
-        public static ColorManager colorManager;
-        public static Saber LeftSaber;
-        public static Saber RightSaber;
-
-        private bool _init;
-        public bool FirstFetch = true;
-
-        public void Init(IPALogger logger, PluginLoader.PluginMetadata metadata)
+        [Init]
+        public void Init(IPALogger logger, Config config, PluginMetadata metadata)
         {
-            if (logger != null)
-            {
-                Logger.logger = logger;
-                Logger.Log("Logger prepared");
-            }
+            Logger.log = logger;
+            Configuration.Init(config);
 
             if (metadata != null)
             {
-                Plugin.PluginVersion = metadata.Version.ToString();
+                PluginVersion = metadata.Version;
             }
         }
 
-        public void OnApplicationStart()
+        [OnStart]
+        public void OnApplicationStart() => Load();
+        [OnExit]
+        public void OnApplicationQuit() => Unload();
+
+        private void OnGameSceneLoaded()
         {
-            if (_init)
-            {
-                return;
-            }
-            _init = true;
-
-            Logger.Log($"Custom Sabers v{Plugin.PluginVersion} has started", Logger.LogLevel.Notice);
-
-            SaberLoader.LoadSabers();
-
-            if (SaberLoader.AllSabers.Count == 0)
-            {
-                Logger.Log("No custom sabers found.");
-                return;
-            }
-
-            _currentSaberName = PlayerPrefs.GetString("lastSaber", null);
-            if (_currentSaberName == null || SaberLoader.FindSaberByName(_currentSaberName) == -1)
-            {
-                _currentSaberName = SaberLoader.AllSabers[0].Name;
-            }
-            CustomSaberUI.OnLoad();
+            SaberScript.Load();
         }
 
-        public void OnApplicationQuit() { }
-
-        public void OnActiveSceneChanged(Scene from, Scene to)
+        private void Load()
         {
-            //if (scene.buildIndex > 0)
-            //{
-            //    if (FirstFetch)
-            //    {
-            //        //Logger.Log("Launching coroutine to grab original sabers!", LogLevel.Debug);
-            //        //SharedCoroutineStarter.instance.StartCoroutine(PreloadDefaultSabers());
-            //        //Logger.Log("Launched!", LogLevel.Debug);
-            //    }
-            //}
-
-            if (to.name == "GameCore")
-            {
-                colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().LastOrDefault();
-                LoadNewSaber(_currentSaberName);
-                SaberScript.LoadAssets();
-            }
+            Configuration.Load();
+            SaberAssetLoader.Load();
+            SettingsUI.CreateMenu();
+            AddEvents();
+            Logger.log.Info($"{PluginName} v.{PluginVersion} has started.");
         }
 
-        private IEnumerator PreloadDefaultSabers()
+        private void Unload()
         {
-            FirstFetch = false;
-
-            //Logger.Log("Preloading default sabers!", LogLevel.Debug);
-            //HarmonyInstance harmony = HarmonyInstance.Create("CustomSaberHarmonyInstance");
-            //harmony.PatchAll(Assembly.GetExecutingAssembly());
-
-            Logger.Log("Loading GameCore scene");
-            SceneManager.LoadSceneAsync("GameCore", LoadSceneMode.Additive);
-            Logger.Log("Loaded!");
-
-            yield return new WaitUntil(() => Resources.FindObjectsOfTypeAll<Saber>().Count() > 1);
-            Logger.Log("Got sabers!");
-
-            foreach (var s in Resources.FindObjectsOfTypeAll<Saber>())
-            {
-                Logger.Log($"Saber: {s.name}, GameObj: {s.gameObject.name}, {s.ToString()}");
-                if (s.name == "LeftSaber")
-                {
-                    LeftSaber = Saber.Instantiate(s);
-                }
-                else if (s.name == "RightSaber")
-                {
-                    RightSaber = Saber.Instantiate(s);
-                }
-            }
-            Logger.Log("Finished! Got default sabers! Setting active state");
-
-            if (LeftSaber)
-            {
-                Object.DontDestroyOnLoad(LeftSaber.gameObject);
-                LeftSaber.gameObject.SetActive(false);
-                LeftSaber.name = "___OriginalSaberPreviewB";
-            }
-
-            if (RightSaber)
-            {
-                Object.DontDestroyOnLoad(RightSaber.gameObject);
-                RightSaber.gameObject.SetActive(false);
-                RightSaber.name = "___OriginalSaberPreviewA";
-            }
-
-            Logger.Log("Unloading GameCore");
-            SceneManager.UnloadSceneAsync("GameCore");
-
-            //Logger.Log("Unloading harmony patches", LogLevel.Debug);
-            //harmony.UnpatchAll("CustomSaberHarmonyInstance");
+            Configuration.Save();
+            SaberAssetLoader.Clear();
+            RemoveEvents();
         }
 
-        public static List<string> RetrieveCustomSabers()
+        private void AddEvents()
         {
-            if (!Directory.Exists(Path.Combine(Application.dataPath, "../CustomSabers/")))
-                Directory.CreateDirectory(Path.Combine(Application.dataPath, "../CustomSabers/"));
-
-            _saberPaths = (Directory.GetFiles(Path.Combine(Application.dataPath, "../CustomSabers/"), "*.saber", SearchOption.AllDirectories).ToList());
-            Logger.Log($"Found {_saberPaths.Count} sabers");
-
-            _saberPaths.Insert(0, "DefaultSabers");
-            return _saberPaths;
+            RemoveEvents();
+            BS_Utils.Utilities.BSEvents.gameSceneLoaded += OnGameSceneLoaded;
         }
 
-        public void OnUpdate() { }
-
-        public static void LoadNewSaber(string name)
+        private void RemoveEvents()
         {
-            if (name != "DefaultSabers")
-            {
-                SaberScript.CustomSaber = SaberLoader.GetSaberAssetBundle(name);
-            }
-
-            PlayerPrefs.SetString("lastSaber", name);
-            Logger.Log($"Loaded saber {name}");
+            BS_Utils.Utilities.BSEvents.gameSceneLoaded -= OnGameSceneLoaded;
         }
-
-        public void OnFixedUpdate() { }
-        public void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode) { }
-        public void OnSceneUnloaded(Scene scene) { }
     }
 }
