@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Handle_mat
-  m_Shader: {fileID: 4800000, guid: b224a9a12b08b854b83192a84cae55b4, type: 3}
+  m_Shader: {fileID: 4800000, guid: 6a19ef017bd33964d9b8e7e209f9277c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

@@ -5,7 +5,8 @@ Shader "BeatSaber/Lit Glow"
 	Properties
 	{
 		_Color ("Color", Color) = (1,1,1,1)
-		_Tex ("Texture", 2D) = "white" {}
+		[MaterialToggle] _CustomColors("Custom Colors", Float) = 0
+		_MainTex ("Texture", 2D) = "white" {}
 		_Glow ("Glow", Range (0, 1)) = 0
 		_Ambient ("Ambient Lighting", Range (0, 1)) = 0
 		_LightDir ("Light Direction", Vector) = (-1,-1,0,1)
@@ -46,8 +47,8 @@ Shader "BeatSaber/Lit Glow"
 			float _Ambient;
 			float4 _LightDir;
 
-			sampler2D _Tex;
-			float4 _Tex_ST;
+			sampler2D _MainTex;
+			float4 _MainTex_ST;
 			
 			v2f vert (appdata v)
 			{
@@ -65,7 +66,7 @@ Shader "BeatSaber/Lit Glow"
 				float3 lightDir = normalize(_LightDir.xyz) * -1.0;
 				float shadow = max(dot(lightDir,i.normal),0);
 				// sample the texture
-				fixed4 col = _Color * tex2D(_Tex, TRANSFORM_TEX(i.uv, _Tex));
+				fixed4 col = _Color * tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
 
 				col = col * clamp(col * _Ambient + shadow,0.0,1.0);
 

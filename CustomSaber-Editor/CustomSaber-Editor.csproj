@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{272257A9-D168-40E8-985D-A642A6DB60D3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CustomSaber_Editor</RootNamespace>
+    <AssemblyName>CustomSaber</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <PathMap>$(SolutionDir)=C:\</PathMap>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CustomSaber\Data\SaberExtensions\AccuracyReachedEvent.cs">
+      <Link>Data\SaberExtensions\AccuracyReachedEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Data\SaberExtensions\EventFilterBehaviour.cs">
+      <Link>Data\SaberExtensions\EventFilterBehaviour.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Data\SaberExtensions\EveryNthComboFilter.cs">
+      <Link>Data\SaberExtensions\EveryNthComboFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Data\SaberExtensions\ComboReachedEvent.cs">
+      <Link>Data\SaberExtensions\ComboReachedEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Data\SaberExtensions\EventManager.cs">
+      <Link>Data\SaberExtensions\EventManager.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Data\SaberExtensions\SaberDescriptor.cs">
+      <Link>Data\SaberExtensions\SaberDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBone.cs">
+      <Link>Dynamic Bones\DynamicBone.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBoneCollider.cs">
+      <Link>Dynamic Bones\DynamicBoneCollider.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBoneColliderBase.cs">
+      <Link>Dynamic Bones\DynamicBoneColliderBase.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Dynamic Bones\DynamicBonePlaneCollider.cs">
+      <Link>Dynamic Bones\DynamicBonePlaneCollider.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomSaber\Data\SaberExtensions\CustomTrails.cs">
+      <Link>Data\SaberExtensions\CustomTrails.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Dynamic Bones\DYNAMIC BONE SCRIPTS GOES HERE" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

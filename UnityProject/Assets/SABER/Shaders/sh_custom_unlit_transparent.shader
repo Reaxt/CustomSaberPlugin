@@ -5,10 +5,11 @@ Shader "BeatSaber/Unlit Glow Cutout Dithered"
 	Properties
 	{
 		_Color ("Color", Color) = (1,1,1,1)
-		_Tex ("Texture", 2D) = "white" {}
+		[MaterialToggle] _CustomColors("Custom Colors", Float) = 0
+		_MainTex("Texture", 2D) = "white" {}
 		_Bloom ("Glow", Range (0, 1)) = 0
 		_DitherMaskScale("Dither Mask Scale", Float) = 40
-		_DitherMask("Dither Mask", 2D) = "white" {}
+		_DitherMask("Dither Mask", 2D) = "black" {}
 		_Alpha("Alpha", Float) = 1
 		_Cutout ("Cutout", Range (0, 1)) = 0.5
 	}
@@ -49,8 +50,8 @@ Shader "BeatSaber/Unlit Glow Cutout Dithered"
 			float _Alpha;
 			float _Cutout;
 
-			sampler2D _Tex;
-			float4 _Tex_ST;
+			sampler2D _MainTex;
+			float4 _MainTex_ST;
 			
 			v2f vert (appdata_full v)
 			{
@@ -64,7 +65,7 @@ Shader "BeatSaber/Unlit Glow Cutout Dithered"
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				fixed4 col = _Color * tex2D(_Tex, TRANSFORM_TEX(i.uv, _Tex));
+				fixed4 col = _Color * tex2D(_MainTex, TRANSFORM_TEX(i.uv, _MainTex));
 
 				if (col.a < _Cutout) discard;
 
